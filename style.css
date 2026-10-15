@@ -86,7 +86,7 @@ a { color: inherit; text-decoration: none; }
 .btn3d.yellow { background: linear-gradient(180deg, #ffd96a, var(--yellow)); box-shadow: 0 7px 0 #b8841a, 0 16px 30px rgba(0,0,0,0.5); }
 .btn3d.blue { background: linear-gradient(180deg, #6ea4ff, var(--blue)); color: #fff; box-shadow: 0 7px 0 #1b4ca8, 0 16px 30px rgba(0,0,0,0.5); }
 .btn3d:hover { transform: translateY(2px); }
-.btn3d.px { font-family: var(--pixel); font-size: 11px; text-transform: none; }
+.btn3d.pxbtn { font-family: var(--pixel); font-size: 11px; text-transform: none; }
 .btn3d:active, .btn3d.yellow:active { transform: translateY(6px); box-shadow: 0 1px 0 #b8841a, 0 6px 14px rgba(0,0,0,0.5); }
 .stats { display: flex; flex-wrap: wrap; gap: 10px; }
 .stat { display: inline-flex; align-items: center; gap: 10px; background: #fff; color: var(--plastic-ink); border-radius: 999px; padding: 8px 18px 8px 8px; box-shadow: 0 6px 0 #cfcbc2, 0 14px 30px rgba(0,0,0,0.45); }
