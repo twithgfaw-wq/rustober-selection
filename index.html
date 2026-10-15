@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rustober Selection</title>
+<meta name="description" content="Трекер відбору скінів Rust з Halloween 2026 Contest: хто проходить голосування, а хто вибув.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%23e8e5de%27/%3E%3Crect x=%276%27 y=%276%27 width=%2720%27 height=%2714%27 rx=%272%27 fill=%27%23213553%27/%3E%3Ccircle cx=%2710%27 cy=%2726%27 r=%272.5%27 fill=%27%232f7bff%27/%3E%3Ccircle cx=%2716%27 cy=%2726%27 r=%272.5%27 fill=%27%23ffc63a%27/%3E%3Ccircle cx=%2722%27 cy=%2726%27 r=%272.5%27 fill=%27%23ff5a3c%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="bg" aria-hidden="true">
+  <div class="bg-grid"></div>
+  <div class="bg-mark">RSTBR</div>
+  <div class="bg-noise"></div>
+</div>
+
+<div class="boot" id="boot" aria-hidden="true">
+  <div class="boot-screen">
+    <div class="px pumpkin" id="bootPumpkin"></div>
+    <div class="boot-title">RUSTOBER</div>
+    <div class="boot-lines" id="bootLines"></div>
+    <div class="boot-bar"><i></i></div>
+  </div>
+</div>
+
+<nav class="top">
+  <a class="logo" href="#top">RSTBR<span>26</span></a>
+  <div class="pill small" id="status"><i class="led on"></i><span>LIVE</span></div>
+  <div class="nav-links">
+    <a href="#survivors">Проходять</a>
+    <a href="#terminated">Вибули</a>
+    <a href="#howto">Правила</a>
+    <a id="collLink" class="pill small link" href="#" target="_blank" rel="noopener"><span class="ico">↗</span>Колекція Steam</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-text">
+    <div class="eyebrow">RUST WORKSHOP · HALLOWEEN 2026 CONTEST</div>
+    <h1 class="title"><span class="t1">RUSTOBER</span><span class="t2">SELECTION</span></h1>
+    <p class="lead">
+      Хто зі скінів конкурсу потрапляє в приховані колекції голосування і йде далі, а хто вибуває.
+      Пройшов усі рівні — лишився на екрані й потрапив у гру. Не пройшов — консоль вимикається.
+    </p>
+    <div class="cta">
+      <a href="#survivors" class="btn3d yellow">START ▶</a>
+      <a href="#howto" class="btn3d blue">Правила</a>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="updated" id="updated"></div>
+  </div>
+
+  <div class="hero-device">
+    <div class="device" id="device">
+      <i class="screw tl"></i><i class="screw tr"></i><i class="screw bl"></i><i class="screw br"></i>
+      <div class="grill"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="screen">
+        <div class="screen-inner">
+          <div class="px pumpkin" id="heroPumpkin"></div>
+          <div class="screen-title">RUSTOBER<br>SELECTION</div>
+          <div class="screen-sub" id="screenSub">LEVEL —</div>
+          <div class="screen-ticker"><span id="ticker"></span></div>
+        </div>
+        <div class="screen-glare"></div>
+      </div>
+      <div class="slot"></div>
+      <div class="buttons">
+        <i class="rb blue" title="Проходять"></i><i class="rb yellow" title="Під загрозою"></i><i class="rb red" title="Вибули"></i>
+        <a class="bigbtn" href="#survivors" title="Start"><i></i></a>
+      </div>
+      <div class="dpad"></div>
+      <div class="led-strip"><i class="led on"></i><i class="led"></i></div>
+    </div>
+    <svg class="cable" viewBox="0 0 400 220" aria-hidden="true"><path d="M200 0 C 200 90, 60 60, 40 150 S 180 230, 400 200" fill="none" stroke="#f1efe9" stroke-width="7" stroke-linecap="round"/><path d="M200 0 C 200 90, 60 60, 40 150 S 180 230, 400 200" fill="none" stroke="#b9b5ad" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 10"/></svg>
+  </div>
+</header>
+
+<section class="wrap">
+  <div class="sec-head"><h2>HIGH SCORE</h2><span class="hint">топ-3 за прихованими колекціями</span></div>
+  <div class="podium" id="podium"></div>
+</section>
+
+<section class="wrap">
+  <div class="sec-head"><h2>LEVELS</h2><span class="hint" id="stageHint"></span></div>
+  <div class="rail" id="stages"></div>
+</section>
+
+<section class="wrap controls-wrap">
+  <div class="controls">
+    <label class="pill search"><span class="ico">⌕</span><input id="search" type="search" placeholder="пошук: назва, автор, предмет…" autocomplete="off"></label>
+    <label class="pill"><span class="ico">▣</span><select id="tag"><option value="">Усі предмети</option></select></label>
+    <label class="pill"><span class="ico">☺</span><select id="author"><option value="">Усі автори</option></select></label>
+    <label class="pill"><span class="ico">⇅</span><select id="sort">
+      <option value="rank">Рейтинг</option>
+      <option value="delta">Нові приховані (+)</option>
+      <option value="total">Усього колекцій</option>
+      <option value="title">Назва</option>
+      <option value="author">Автор</option>
+    </select></label>
+    <label class="pill toggle"><input type="checkbox" id="showDead"><i class="sw"></i><span>Вибулі</span></label>
+    <label class="pill toggle"><input type="checkbox" id="onlyNew"><i class="sw"></i><span>Лише +</span></label>
+  </div>
+</section>
+
+<main class="wrap">
+  <section class="block" id="survivors">
+    <div class="sec-head"><h2 class="ok">PLAYERS <small>// проходять далі</small></h2><span class="hint" id="aliveCount"></span></div>
+    <div class="grid" id="aliveGrid"></div>
+    <div class="empty" id="aliveEmpty" hidden>нічого не знайдено за цим фільтром</div>
+  </section>
+
+  <section class="block" id="terminated" hidden>
+    <div class="sec-head"><h2 class="bad">GAME OVER <small>// вибули з голосування</small></h2><span class="hint" id="deadCount"></span></div>
+    <div class="grid" id="deadGrid"></div>
+  </section>
+
+  <section class="block" id="howto">
+    <div class="sec-head"><h2>MANUAL</h2><span class="hint">як працює відбір</span></div>
+    <div class="howto" id="howtoBody"></div>
+  </section>
+</main>
+
+<footer class="foot">
+  <span>Джерело: сторінки майстерні Steam · приховані = усі колекції − публічні</span>
+  <span id="footSnap"></span>
+</footer>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="state.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
