@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rust Skin Market</title>
+<meta name="description" content="Ринок скінів Rust: хто росте, хто падає, що купують, магазин проти ринку та історія цін.">
+<meta name="theme-color" content="#0b0b0d">
+<link rel="manifest" href="manifest.webmanifest">
+<meta property="og:title" content="Rust Skin Market"><meta property="og:description" content="Інвестиції у скіни Rust: рух цін, обіг, магазин проти ринку."><meta property="og:image" content="https://twithgfaw-wq.github.io/rustober-selection/og.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css?v=mva5u3p1"><link rel="stylesheet" href="v2.css?v=mva5u3p1"><link rel="stylesheet" href="v3.css?v=mva5u3p1"><link rel="stylesheet" href="pages.css?v=mva5u3p1">
+</head>
+<body class="page ready">
+<div class="bg" aria-hidden="true"><div class="bg-grid" data-depth="0.15"></div><div class="bg-mark" data-depth="0.35">MARKET</div><div class="bg-noise"></div></div>
+
+<nav class="top">
+  <a class="logo" href="index.html">RSTBR<span>26</span></a>
+  <div class="pagenav"><a href="index.html">SELECTION</a><a href="authors.html">AUTHORS</a><a href="market.html" class="on">MARKET</a></div>
+  <div class="nav-links">
+    <button class="iconbtn" id="langBtn" title="UA / EN">EN</button>
+    <button class="iconbtn" id="themeBtn" title="Колір консолі">◐</button>
+    <a class="pill small link" href="https://rust.scmm.app/store" target="_blank" rel="noopener"><span class="ico">↗</span><span>SCMM</span></a>
+  </div>
+</nav>
+<div class="theme-pop" id="themePop" hidden>
+  <div class="theme-title">Видання консолі</div>
+  <div class="theme-grid">
+    <button data-theme="grey"><i style="--c1:#f4f2ec;--c2:#d7d3ca"></i>Classic</button><button data-theme="purple"><i style="--c1:#c9a8ff;--c2:#8a5cff"></i>Atomic</button><button data-theme="yellow"><i style="--c1:#ffe08a;--c2:#ffb000"></i>Dandelion</button>
+    <button data-theme="black"><i style="--c1:#4a4a52;--c2:#1f1f24"></i>Carbon</button><button data-theme="pumpkin"><i style="--c1:#ffb06b;--c2:#ff7a1f"></i>Pumpkin</button><button data-theme="mint"><i style="--c1:#c9f7dc;--c2:#6bd39a"></i>Mint</button>
+  </div>
+</div>
+
+<header class="hero compact" id="top">
+  <div class="hero-text" data-depth="0.05">
+    <div class="eyebrow">RUST SKINS · STEAM MARKET · INVESTING</div>
+    <h1 class="title"><span class="t1">SKIN</span><span class="t2">MARKET</span></h1>
+    <p class="lead" data-i18n="m.lead">Куди рухаються ціни на скіни Rust: хто росте і падає, що найбільше купують, скільки можна заробити на магазині, і як виглядає ринок загалом.</p>
+    <div class="stats" id="stats"></div>
+    <div class="updated" id="updated"></div>
+  </div>
+  <div class="hero-device" data-depth="-0.08">
+    <div class="device" id="device">
+      <i class="screw tl"></i><i class="screw tr"></i><i class="screw bl"></i><i class="screw br"></i>
+      <div class="grill"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="screen"><div class="screen-inner"><div class="frame f0 on"><div class="px px-sprite" id="sprite"></div><div class="frame-head" style="margin-top:14px">MARKET</div><div class="kv" id="arcadeKv"></div></div><div class="screen-ticker"><span id="ticker"></span></div></div><div class="screen-glare"></div></div>
+      <div class="slot"></div>
+      <div class="buttons"><i class="rb blue"></i><i class="rb yellow"></i><i class="rb red"></i><a class="bigbtn" href="#store"><i></i></a></div>
+      <div class="dpad"></div><div class="led-strip"><i class="led on"></i><i class="led"></i></div>
+    </div>
+  </div>
+</header>
+
+<section class="wrap reveal" id="index">
+  <div class="sec-head"><h2>MARKET INDEX</h2><span class="hint" id="indexHint"></span></div>
+  <div class="index-chart" id="chartIndex"></div>
+</section>
+
+<section class="wrap reveal" id="store">
+  <div class="sec-head"><h2>ITEM STORE NOW</h2><span class="hint" id="storeHint"></span></div>
+  <div class="mode-note" data-i18n="m.storeNote">ROI = скільки % можна заробити, купивши в магазині й продавши на ринку за поточною ціною (мінус 13% комісії Steam). Для нових предметів ринок відкривається через тиждень.</div>
+  <div class="mgrid" id="storeGrid"></div>
+</section>
+
+<section class="wrap reveal" id="movers">
+  <div class="sec-head"><h2>MOVERS</h2><span class="hint" id="moversHint"></span></div>
+  <div class="tabs" id="mtabs">
+    <button data-tab="gainers7" class="on" data-i18n="m.tab.g7">Ростуть · 7 днів</button>
+    <button data-tab="losers7" data-i18n="m.tab.l7">Падають · 7 днів</button>
+    <button data-tab="gainers30" data-i18n="m.tab.g30">Ростуть · 30 днів</button>
+    <button data-tab="losers30" data-i18n="m.tab.l30">Падають · 30 днів</button>
+    <button data-tab="mostTraded" data-i18n="m.tab.traded">Найбільший обіг</button>
+    <button data-tab="mostSold" data-i18n="m.tab.sold">Найбільше продажів</button>
+    <button data-tab="expensive" data-i18n="m.tab.exp">Найдорожчі</button>
+    <button data-tab="nearAth" data-i18n="m.tab.ath">Біля максимуму</button>
+    <button data-tab="farAth" data-i18n="m.tab.dip">Просіли від максимуму</button>
+    <button data-tab="rare" data-i18n="m.tab.rare">Рідкісні</button>
+    <button data-tab="storeRoiBest" data-i18n="m.tab.roi">Магазин → ринок: топ ROI</button>
+  </div>
+  <div class="mode-note" id="mModeNote"></div>
+  <div class="mgrid" id="mGrid"></div>
+</section>
+
+<section class="wrap reveal" id="rotations">
+  <div class="sec-head"><h2>STORE HISTORY</h2><span class="hint" data-i18n="m.rotHint">як окупалися ротації магазину: середній ROI предметів тижня</span></div>
+  <div class="rot-list" id="rotList"></div>
+</section>
+
+<section class="wrap reveal" id="types">
+  <div class="sec-head"><h2>BY ITEM TYPE</h2><span class="hint" data-i18n="m.typesHint">обіг за тиждень і капіталізація по типах предметів</span></div>
+  <div class="chart-card"><div class="chart" id="chartTypes"></div></div>
+</section>
+
+<div class="modal" id="modal" hidden><div class="modal-back" data-close></div><div class="modal-box" role="dialog" aria-modal="true"><button class="iconbtn modal-close" data-close>✕</button><div class="modal-content" id="modalContent"></div></div></div>
+<footer class="foot"><span>Дані: SCMM (api.scmm.app) · ціни в USD · <a href="market.json">JSON</a> · це не фінансова порада</span><span id="footSnap"></span></footer>
+<div class="toast" id="toast" hidden></div>
+<script src="market.js?v=mva5u3p1"></script>
+<script src="i18n.js?v=mva5u3p1"></script>
+<script src="pages.js?v=mva5u3p1"></script>
+</body>
+</html>

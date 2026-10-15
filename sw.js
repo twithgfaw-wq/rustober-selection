@@ -1,6 +1,6 @@
 // Service worker: сторінка працює офлайн з останнім знімком; state.js завжди береться з мережі, якщо вона є.
-const CACHE = 'rstbr-v3';
-const SHELL = ['./', 'index.html', 'style.css', 'v2.css', 'v3.css', 'app.js', 'v3.js', 'i18n.js', 'lqip.js', 'state.js', 'manifest.webmanifest'];
+const CACHE = 'rstbr-v4';
+const SHELL = ['./', 'index.html', 'style.css', 'v2.css', 'v3.css', 'app.js', 'v3.js', 'i18n.js', 'lqip.js', 'state.js', 'manifest.webmanifest', 'authors.html', 'market.html', 'pages.css', 'pages.js', 'authors.js', 'market.js'];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', (e) => {
