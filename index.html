@@ -2,44 +2,66 @@
 <html lang="uk">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Rustober Selection</title>
 <meta name="description" content="Трекер відбору скінів Rust з Halloween 2026 Contest: хто проходить голосування, а хто вибув.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Rustober Selection">
+<meta property="og:description" content="Хто зі скінів Halloween 2026 Contest проходить голосування за прихованими колекціями, а хто вибув. Оновлюється автоматично.">
+<meta property="og:url" content="https://twithgfaw-wq.github.io/rustober-selection/">
+<meta property="og:image" content="https://twithgfaw-wq.github.io/rustober-selection/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Rustober Selection">
+<meta name="twitter:image" content="https://twithgfaw-wq.github.io/rustober-selection/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%23e8e5de%27/%3E%3Crect x=%276%27 y=%276%27 width=%2720%27 height=%2714%27 rx=%272%27 fill=%27%23213553%27/%3E%3Ccircle cx=%2710%27 cy=%2726%27 r=%272.5%27 fill=%27%232f7bff%27/%3E%3Ccircle cx=%2716%27 cy=%2726%27 r=%272.5%27 fill=%27%23ffc63a%27/%3E%3Ccircle cx=%2722%27 cy=%2726%27 r=%272.5%27 fill=%27%23ff5a3c%27/%3E%3C/svg%3E">
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="v2.css">
 </head>
 <body>
 <div class="bg" aria-hidden="true">
-  <div class="bg-grid"></div>
-  <div class="bg-mark">RSTBR</div>
+  <div class="bg-grid" data-depth="0.15"></div>
+  <div class="bg-mark" data-depth="0.35">RSTBR</div>
   <div class="bg-noise"></div>
 </div>
 
+<!-- інтро: консоль вмикається -->
 <div class="boot" id="boot" aria-hidden="true">
-  <div class="boot-screen">
-    <div class="px pumpkin" id="bootPumpkin"></div>
-    <div class="boot-title">RUSTOBER</div>
-    <div class="boot-lines" id="bootLines"></div>
-    <div class="boot-bar"><i></i></div>
+  <div class="boot-tv">
+    <div class="boot-screen">
+      <div class="boot-static"></div>
+      <div class="boot-content">
+        <div class="px pumpkin" id="bootPumpkin"></div>
+        <div class="boot-title">RUSTOBER</div>
+        <div class="boot-lines" id="bootLines"></div>
+        <div class="boot-bar"><i></i></div>
+      </div>
+    </div>
   </div>
+  <div class="boot-skip">натисни будь-де, щоб пропустити</div>
 </div>
 
 <nav class="top">
   <a class="logo" href="#top">RSTBR<span>26</span></a>
   <div class="pill small" id="status"><i class="led on"></i><span>LIVE</span></div>
+  <div class="pill small countdown" id="countdown" title="до наступного оновлення даних"><span class="ico">⟳</span><span id="countdownText">—</span></div>
   <div class="nav-links">
     <a href="#survivors">Проходять</a>
-    <a href="#terminated">Вибули</a>
+    <a href="#log">Події</a>
+    <a href="#charts">Графіки</a>
     <a href="#howto">Правила</a>
+    <button class="iconbtn" id="soundBtn" title="Звук" aria-label="Звук">🔇</button>
+    <button class="iconbtn" id="tvBtn" title="TV-режим (повний екран)" aria-label="TV-режим">▭</button>
     <a id="collLink" class="pill small link" href="#" target="_blank" rel="noopener"><span class="ico">↗</span>Колекція Steam</a>
   </div>
 </nav>
 
 <header class="hero" id="top">
-  <div class="hero-text">
+  <div class="hero-text" data-depth="0.05">
     <div class="eyebrow">RUST WORKSHOP · HALLOWEEN 2026 CONTEST</div>
     <h1 class="title"><span class="t1">RUSTOBER</span><span class="t2">SELECTION</span></h1>
     <p class="lead">
@@ -47,37 +69,56 @@
       Пройшов усі рівні — лишився на екрані й потрапив у гру. Не пройшов — консоль вимикається.
     </p>
     <div class="cta">
-      <a href="#survivors" class="btn3d yellow">START ▶</a>
-      <a href="#howto" class="btn3d blue">Правила</a>
+      <a href="#survivors" class="btn3d yellow px">START ▶</a>
+      <a href="#find" class="btn3d blue">Знайти мій скін</a>
     </div>
     <div class="stats" id="stats"></div>
     <div class="updated" id="updated"></div>
   </div>
 
-  <div class="hero-device">
+  <div class="hero-device" data-depth="-0.08">
     <div class="device" id="device">
       <i class="screw tl"></i><i class="screw tr"></i><i class="screw bl"></i><i class="screw br"></i>
       <div class="grill"><i></i><i></i><i></i><i></i><i></i></div>
-      <div class="screen">
+      <div class="screen" id="screen">
         <div class="screen-inner">
-          <div class="px pumpkin" id="heroPumpkin"></div>
-          <div class="screen-title">RUSTOBER<br>SELECTION</div>
-          <div class="screen-sub" id="screenSub">LEVEL —</div>
+          <div class="frame f0 on">
+            <div class="px pumpkin" id="heroPumpkin"></div>
+            <div class="screen-title">RUSTOBER<br>SELECTION</div>
+            <div class="screen-sub" id="screenSub">LEVEL —</div>
+          </div>
+          <div class="frame f1"><div class="frame-head">HIGH SCORE</div><ol class="arcade" id="arcadeList"></ol></div>
+          <div class="frame f2"><div class="frame-head">STATUS</div><div class="arcade-stats" id="arcadeStats"></div></div>
+          <div class="frame f3"><div class="frame-head">NEXT WAVE</div><div class="arcade-next" id="arcadeNext"></div></div>
           <div class="screen-ticker"><span id="ticker"></span></div>
         </div>
         <div class="screen-glare"></div>
       </div>
       <div class="slot"></div>
       <div class="buttons">
-        <i class="rb blue" title="Проходять"></i><i class="rb yellow" title="Під загрозою"></i><i class="rb red" title="Вибули"></i>
+        <i class="rb blue" data-frame="1" title="HIGH SCORE"></i><i class="rb yellow" data-frame="2" title="STATUS"></i><i class="rb red" data-frame="3" title="NEXT WAVE"></i>
         <a class="bigbtn" href="#survivors" title="Start"><i></i></a>
       </div>
       <div class="dpad"></div>
-      <div class="led-strip"><i class="led on"></i><i class="led"></i></div>
+      <div class="led-strip"><i class="led on"></i><i class="led" id="ledScan"></i></div>
     </div>
     <svg class="cable" viewBox="0 0 400 220" aria-hidden="true"><path d="M200 0 C 200 90, 60 60, 40 150 S 180 230, 400 200" fill="none" stroke="#f1efe9" stroke-width="7" stroke-linecap="round"/><path d="M200 0 C 200 90, 60 60, 40 150 S 180 230, 400 200" fill="none" stroke="#b9b5ad" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 10"/></svg>
   </div>
 </header>
+
+<section class="wrap" id="find">
+  <div class="finder">
+    <div class="finder-text">
+      <h2>FIND MY SKIN</h2>
+      <p>Встав посилання на свою роботу в майстерні (або її ID) і отримай картку зі статусом та місцем у рейтингу.</p>
+    </div>
+    <form class="finder-form" id="findForm">
+      <label class="pill search"><span class="ico">⌕</span><input id="findInput" type="search" placeholder="https://steamcommunity.com/sharedfiles/filedetails/?id=…" autocomplete="off"></label>
+      <button class="btn3d yellow px" type="submit">GO</button>
+    </form>
+    <div class="finder-result" id="findResult" hidden></div>
+  </div>
+</section>
 
 <section class="wrap">
   <div class="sec-head"><h2>HIGH SCORE</h2><span class="hint">топ-3 за прихованими колекціями</span></div>
@@ -89,9 +130,30 @@
   <div class="rail" id="stages"></div>
 </section>
 
+<section class="wrap" id="log">
+  <div class="sec-head"><h2>ACTIVITY LOG</h2><span class="hint" id="logHint"></span></div>
+  <div class="log" id="logList"></div>
+  <button class="btn3d blue small" id="logMore" hidden>Показати ще</button>
+</section>
+
+<section class="wrap" id="charts">
+  <div class="sec-head"><h2>STATS</h2><span class="hint">хвилі, розподіл і час активності</span></div>
+  <div class="charts">
+    <div class="chart-card"><div class="chart-title">Скільки скінів на кожному рівні · по знімках</div><div class="chart" id="chartTimeline"></div></div>
+    <div class="chart-card"><div class="chart-title">Розподіл за прихованими колекціями</div><div class="chart" id="chartDist"></div></div>
+    <div class="chart-card"><div class="chart-title">Коли приходять нові приховані · по годинах</div><div class="chart" id="chartHeat"></div></div>
+    <div class="chart-card"><div class="chart-title">Предмети у відборі · топ-10 типів</div><div class="chart" id="chartTags"></div></div>
+  </div>
+</section>
+
+<section class="wrap" id="authors">
+  <div class="sec-head"><h2>AUTHORS</h2><span class="hint">хто має найбільше скінів, що проходять</span></div>
+  <div class="authors" id="authorsList"></div>
+</section>
+
 <section class="wrap controls-wrap">
   <div class="controls">
-    <label class="pill search"><span class="ico">⌕</span><input id="search" type="search" placeholder="пошук: назва, автор, предмет…" autocomplete="off"></label>
+    <label class="pill search"><span class="ico">⌕</span><input id="search" type="search" placeholder="пошук: назва, автор, предмет…  ( / )" autocomplete="off"></label>
     <label class="pill"><span class="ico">▣</span><select id="tag"><option value="">Усі предмети</option></select></label>
     <label class="pill"><span class="ico">☺</span><select id="author"><option value="">Усі автори</option></select></label>
     <label class="pill"><span class="ico">⇅</span><select id="sort">
@@ -102,7 +164,7 @@
       <option value="author">Автор</option>
     </select></label>
     <label class="pill toggle"><input type="checkbox" id="showDead"><i class="sw"></i><span>Вибулі</span></label>
-    <label class="pill toggle"><input type="checkbox" id="onlyNew"><i class="sw"></i><span>Лише +</span></label>
+    <label class="pill toggle"><input type="checkbox" id="onlyNew"><i class="sw"></i><span>Що змінилось</span></label>
   </div>
 </section>
 
@@ -125,9 +187,36 @@
 </main>
 
 <footer class="foot">
-  <span>Джерело: сторінки майстерні Steam · приховані = усі колекції − публічні</span>
+  <span>Джерело: сторінки майстерні Steam · приховані = усі колекції − публічні · <span class="kbd">/</span> пошук · <span class="kbd">Esc</span> закрити</span>
   <span id="footSnap"></span>
 </footer>
+
+<!-- панель порівняння -->
+<div class="compare" id="compare" hidden>
+  <div class="compare-head"><b>VS</b><span id="compareHint">обери до 3 скінів</span><button class="iconbtn" id="compareClear">✕</button></div>
+  <div class="compare-body" id="compareBody"></div>
+</div>
+
+<!-- модальне вікно скіна -->
+<div class="modal" id="modal" hidden>
+  <div class="modal-back" data-close></div>
+  <div class="modal-box" role="dialog" aria-modal="true">
+    <button class="iconbtn modal-close" data-close aria-label="Закрити">✕</button>
+    <div class="modal-content" id="modalContent"></div>
+  </div>
+</div>
+
+<!-- TV-режим -->
+<div class="tv" id="tv" hidden>
+  <div class="tv-head"><span class="logo">RSTBR<span>26</span></span><span id="tvTitle">TOP PLAYERS</span><span class="hint">Esc — вийти</span></div>
+  <div class="tv-body" id="tvBody"></div>
+</div>
+
+<!-- Konami: гра -->
+<div class="game" id="game" hidden>
+  <canvas id="gameCanvas" width="480" height="640"></canvas>
+  <div class="game-ui"><span id="gameScore">0</span><button class="iconbtn" id="gameClose">✕</button></div>
+</div>
 
 <div class="toast" id="toast" hidden></div>
 
