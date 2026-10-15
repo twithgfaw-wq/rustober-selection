@@ -42,3 +42,24 @@
 @media (max-width: 900px) { .game-stage { grid-template-columns: 1fr; } .game-side { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 600px) { .game-side { grid-template-columns: 1fr; } .device.big { padding: 16px 12px 18px; } .dpad-ctl { grid-template-columns: repeat(3, 40px); grid-template-rows: repeat(3, 40px); } .hud { font-size: 7px; } }
 .pageswitch { flex-wrap: nowrap; } @media (max-width: 760px) { .pageswitch.bottom { grid-template-columns: repeat(4, 1fr); } .pageswitch.bottom a { font-size: 7px; padding: 12px 2px; } }
+
+/* ---- v5.1: продуктивність і телефон ---- */
+.games-page { touch-action: manipulation; }
+.games-page .bg-noise { animation: none; }
+.game-screen canvas { image-rendering: pixelated; }
+.game-screen .scanlines { position: absolute; inset: 7px; z-index: 2; pointer-events: none; border-radius: 10px; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.14) 0 1px, transparent 1px 3px); }
+.dpad-ctl button, .ab .rb { -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }
+.full-btn { display: none; margin: 14px auto 0; font-family: var(--pixel); font-size: 8px; padding: 10px 14px; border-radius: 10px; border: 0; background: #1b1b20; color: #cfe3ff; box-shadow: 0 3px 0 #000; cursor: pointer; }
+@media (max-width: 900px) {
+  .full-btn { display: block; }
+  body.gamefull { overflow: hidden; }
+  body.gamefull .device.big { position: fixed; inset: 0; z-index: 70; max-width: none; border-radius: 0; padding: calc(8px + env(safe-area-inset-top, 0px)) 10px calc(10px + env(safe-area-inset-bottom, 0px)); margin: 0; display: flex; flex-direction: column; justify-content: center; gap: 10px; }
+  body.gamefull .device.big .screw, body.gamefull .device.big .grill, body.gamefull .device.big .slot, body.gamefull .device.big .led-strip { display: none; }
+  body.gamefull .game-screen { width: 100%; max-height: 58vh; aspect-ratio: 4 / 3; margin: 0 auto; }
+  body.gamefull .controls-row { margin-top: 6px; padding: 0 8px; }
+  body.gamefull .dpad-ctl { grid-template-columns: repeat(3, 58px); grid-template-rows: repeat(3, 58px); gap: 3px; }
+  body.gamefull .dpad-ctl button { font-size: 20px; }
+  body.gamefull .ab { flex-direction: column; gap: 12px; }
+  body.gamefull .full-btn { margin-top: 4px; }
+  body.gamefull .pageswitch.bottom, body.gamefull nav.top { display: none; }
+}

@@ -8,9 +8,9 @@
 <meta name="theme-color" content="#0b0b0d">
 <link rel="manifest" href="manifest.webmanifest">
 <meta property="og:title" content="Rust Mini Games"><meta property="og:description" content="Змійка в стилі Rust: збирай скрап, бий рекорд."><meta property="og:image" content="https://twithgfaw-wq.github.io/rustober-selection/og.png">
-<link rel="stylesheet" href="fonts.css?v=mva6hfb9">
+<link rel="stylesheet" href="fonts.css?v=mva6wxu3">
 <link rel="icon" href="icon-192.png">
-<link rel="stylesheet" href="style.css?v=mva6hfb9"><link rel="stylesheet" href="v2.css?v=mva6hfb9"><link rel="stylesheet" href="v3.css?v=mva6hfb9"><link rel="stylesheet" href="pages.css?v=mva6hfb9"><link rel="stylesheet" href="games.css?v=mva6hfb9">
+<link rel="stylesheet" href="style.css?v=mva6wxu3"><link rel="stylesheet" href="v2.css?v=mva6wxu3"><link rel="stylesheet" href="v3.css?v=mva6wxu3"><link rel="stylesheet" href="pages.css?v=mva6wxu3"><link rel="stylesheet" href="games.css?v=mva6wxu3">
 </head>
 <body class="page ready games-page">
 <div class="bg" aria-hidden="true"><div class="bg-grid"></div><div class="bg-mark">GAMES</div><div class="bg-noise"></div></div>
@@ -45,7 +45,7 @@
     <i class="screw tl"></i><i class="screw tr"></i><i class="screw bl"></i><i class="screw br"></i>
     <div class="grill"><i></i><i></i><i></i><i></i><i></i></div>
     <div class="screen game-screen" id="screen">
-      <canvas id="game" width="480" height="360"></canvas>
+      <canvas id="game" width="640" height="480"></canvas>
       <div class="hud"><span id="hudScore">SCRAP 0</span><span id="hudBest">BEST 0</span><span id="hudSpeed">SPD 1</span></div>
       <div class="overlay" id="overlay">
         <div class="ov-title" id="ovTitle">SCRAP SNAKE</div>
@@ -53,7 +53,7 @@
         <button class="btn3d yellow pxbtn" id="startBtn">START ▶</button>
         <div class="ov-sub" id="ovSub"></div>
       </div>
-      <div class="screen-glare"></div>
+      <div class="scanlines"></div><div class="screen-glare"></div>
     </div>
     <div class="slot"></div>
     <div class="controls-row">
@@ -70,6 +70,7 @@
       </div>
     </div>
     <div class="led-strip"><i class="led on"></i><i class="led" id="ledAlive"></i></div>
+    <button class="full-btn" id="btnFull">⛶ FULL SCREEN</button>
   </div>
   <div class="game-side">
     <div class="board">
@@ -101,6 +102,6 @@
 <div class="pageswitch bottom"><a href="index.html">SELECTION</a><a href="authors.html">AUTHORS</a><a href="market.html">MARKET</a><a href="games.html" class="on">GAMES</a></div>
 <div class="toast" id="toast" hidden></div>
 <footer class="foot"><span>Rust Arcade · рахунки зберігаються локально</span><span></span></footer>
-<script src="games.js?v=mva6hfb9"></script>
+<script src="games.js?v=mva6wxu3"></script>
 </body>
 </html>
