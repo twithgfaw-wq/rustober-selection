@@ -56,3 +56,20 @@ body.page .fog, body.page .bats, body.page .bg-moon { display: none; }
 .modal .m-prices svg { width: 100%; height: auto; background: #213553; border-radius: 10px; }
 .m-markets { display: flex; flex-wrap: wrap; gap: 8px; } .m-markets a { font-size: 13px; font-weight: 700; padding: 6px 10px; border-radius: 999px; background: #fff; color: var(--plastic-ink); box-shadow: 0 3px 0 #cfcbc2; }
 @media (max-width: 600px) { .rot-row { grid-template-columns: 70px 1fr 60px; } .rot-row .d:last-child { grid-column: 1 / -1; } .rank-row { grid-template-columns: 30px 44px 1fr auto; gap: 8px; padding: 8px 10px; } .rank-row .ava { width: 44px; height: 44px; } .rank-row .thumbs { display: none; } .rot-row { grid-template-columns: 90px 1fr 70px 70px; font-size: 12px; } }
+
+/* ===== перемикач сторінок: 3 кнопки у шапці, на телефоні — панель знизу ===== */
+.pageswitch { display: flex; gap: 6px; padding: 4px; border-radius: 14px; background: #1b1b20; border: 1px solid rgba(255,255,255,0.08); }
+.pageswitch a { font-family: var(--pixel); font-size: 8px; padding: 10px 12px; border-radius: 10px; color: var(--muted); white-space: nowrap; transition: 0.15s; }
+.pageswitch a:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.pageswitch a.on { background: linear-gradient(180deg, #ffd96a, var(--yellow)); color: #1b1b1f; box-shadow: 0 3px 0 #b8841a; }
+.pageswitch.bottom { display: none; }
+@media (max-width: 760px) {
+  .top .pageswitch { display: none; }
+  .pageswitch.bottom { display: grid; grid-template-columns: repeat(3, 1fr); position: fixed; left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 41; gap: 6px; background: rgba(18,18,22,0.96); backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+  .pageswitch.bottom a { text-align: center; padding: 12px 6px; font-size: 8px; }
+  body { padding-bottom: 76px; }
+  body.has-tabbar { padding-bottom: 136px; }
+  body.has-tabbar .tabbar { bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+  body.has-tabbar .compare { bottom: 140px; } body.has-tabbar .toast { bottom: 150px; }
+  .pagenav { display: none; }
+}
