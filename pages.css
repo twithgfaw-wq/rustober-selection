@@ -65,8 +65,8 @@ body.page .fog, body.page .bats, body.page .bg-moon { display: none; }
 .pageswitch.bottom { display: none; }
 @media (max-width: 760px) {
   .top .pageswitch { display: none; }
-  .pageswitch.bottom { display: grid; grid-template-columns: repeat(3, 1fr); position: fixed; left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 41; gap: 6px; background: rgba(18,18,22,0.96); backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
-  .pageswitch.bottom a { text-align: center; padding: 12px 6px; font-size: 8px; }
+  .pageswitch.bottom { display: grid; grid-template-columns: repeat(4, 1fr); position: fixed; left: 10px; right: 10px; bottom: calc(10px + env(safe-area-inset-bottom, 0px)); z-index: 41; gap: 6px; background: rgba(18,18,22,0.96); backdrop-filter: blur(12px); box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+  .pageswitch.bottom a { text-align: center; padding: 12px 2px; font-size: 7px; }
   body { padding-bottom: 76px; }
   body.has-tabbar { padding-bottom: 136px; }
   body.has-tabbar .tabbar { bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }

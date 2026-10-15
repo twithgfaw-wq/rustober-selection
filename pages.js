@@ -11,6 +11,9 @@
   const pct = (v) => v == null ? '—' : (v > 0 ? '+' : '') + (+v).toFixed(1) + '%';
   const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // однакова стартова позиція при кожному відкритті сторінки
+  try { history.scrollRestoration = 'manual'; } catch (e) {}
+  if (!location.hash) window.scrollTo(0, 0);
 
   // ---- спільне: тема, мова, паралакс, reveal, модалка, тост ----
   const root = document.documentElement;
