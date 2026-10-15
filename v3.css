@@ -137,3 +137,17 @@
 }
 .reveal .sec-head h2 { max-width: 0; } .reveal.in .sec-head h2 { max-width: 900px; }
 .fog { filter: blur(20px); }
+
+/* оцінки micro522 */
+.card .score { position: absolute; right: 10px; top: 46px; z-index: 2; font-family: var(--pixel); font-size: 8px; padding: 5px 7px; border-radius: 6px; background: rgba(0,0,0,0.7); color: var(--yellow); border: 1px solid rgba(255,198,58,0.5); }
+.card .star { top: 80px; }
+.card .votes { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; font-size: 12px; font-weight: 700; color: var(--plastic-muted); }
+.card .votes span:first-child { color: var(--plastic-ink); }
+.m-votes { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: 14px; font-weight: 600; color: var(--plastic-muted); }
+.m-votes b { color: var(--plastic-ink); } .m-votes a { color: var(--plastic-ink); text-decoration: underline; }
+/* виправлення накладань */
+.block, .wrap[id] { scroll-margin-top: 150px; }
+@media (max-width: 760px) { .block, .wrap[id] { scroll-margin-top: 70px; } }
+.grid.small .tagchip, .grid.small .votes { display: none; }
+.grid.small .author { white-space: nowrap; overflow: hidden; }
+.mini .mini-close { position: absolute; top: -8px; right: -8px; width: 22px; height: 22px; border-radius: 50%; border: 0; background: #1b1b1f; color: #fff; font-size: 11px; cursor: pointer; }

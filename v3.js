@@ -50,7 +50,9 @@
     const so = new IntersectionObserver((ents) => { for (const en of ents) if (en.isIntersecting) { paintMini(en.target.id); document.querySelectorAll('.tabbar a').forEach((a) => a.classList.toggle('on', a.getAttribute('href') === '#' + en.target.id)); } }, { rootMargin: '-40% 0px -50% 0px' });
     sections.forEach((id) => { const el = $(id); if (el) so.observe(el); });
   }
-  window.addEventListener('scroll', () => { const past = window.scrollY > (document.querySelector('.hero')?.offsetHeight || 600); mini.hidden = false; mini.classList.toggle('on', past); }, { passive: true });
+  let miniOff = false; try { miniOff = sessionStorage.getItem('rstbr-mini') === 'off'; } catch (e) {}
+  $('miniClose').addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); miniOff = true; mini.classList.remove('on'); try { sessionStorage.setItem('rstbr-mini', 'off'); } catch (e2) {} });
+  window.addEventListener('scroll', () => { const past = window.scrollY > (document.querySelector('.hero')?.offsetHeight || 600); mini.hidden = false; mini.classList.toggle('on', past && !miniOff); }, { passive: true });
   paintMini('top');
 
   // ---- гонка лідерів (bar chart race по знімках) ----

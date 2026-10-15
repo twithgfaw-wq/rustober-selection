@@ -293,7 +293,8 @@
   }
   const matches = (x) => (!ui.tag || x.tags.includes(ui.tag)) && (!ui.author || x.author === ui.author) && (!ui.onlyNew || x.delta !== 0 || x.eliminatedNow)
     && (!ui.q || `${x.title} ${x.author || ''} ${x.tags.join(' ')} ${x.id}`.toLowerCase().includes(ui.q.toLowerCase()));
-  const sorter = (a, b) => ({ delta: (b.delta - a.delta) || ((b.hidden ?? -1) - (a.hidden ?? -1)), total: ((b.total ?? 0) - (a.total ?? 0)) || ((b.hidden ?? -1) - (a.hidden ?? -1)), title: a.title.localeCompare(b.title), author: (a.author || '').localeCompare(b.author || '') || a.title.localeCompare(b.title) }[ui.sort] ?? 0);
+  const sc = (x) => x.votes?.score ?? -1;
+  const sorter = (a, b) => ({ delta: (b.delta - a.delta) || ((b.hidden ?? -1) - (a.hidden ?? -1)), total: ((b.total ?? 0) - (a.total ?? 0)) || ((b.hidden ?? -1) - (a.hidden ?? -1)), score: (sc(b) - sc(a)) || ((b.hidden ?? -1) - (a.hidden ?? -1)), title: a.title.localeCompare(b.title), author: (a.author || '').localeCompare(b.author || '') || a.title.localeCompare(b.title) }[ui.sort] ?? 0);
   const tier = (x) => Math.min(4, Math.max(1, x.stagesPassed + (S.currentLevel != null && x.hidden > S.currentLevel ? 1 : 0)));
   const compareSel = new Set();
 
@@ -313,6 +314,7 @@
       <div class="img lq" ${lq}><img loading="lazy" src="${thumb(x.preview)}" alt="" onload="this.classList.add('ld')">
         <div class="rank">#${rank}</div>${delta}${stamp}
         <div class="tier ${tr}">${t('tier.' + tr)}</div>
+        ${x.votes && x.votes.score != null ? `<div class="score" title="${t('votes.title')}">${x.votes.score}</div>` : ''}
         <button class="star ${watch.has(x.id) ? 'on' : ''}" data-star="${x.id}" title="watchlist">★</button>
         <div class="pips">${pips}</div>
         <button class="vs ${compareSel.has(x.id) ? 'on' : ''}" data-vs="${x.id}" title="VS">VS</button>
@@ -325,6 +327,7 @@
           <div class="counter pub"><b>${x.pub ?? '?'}</b><span>${t('c.pub')}</span></div>
           <div class="counter hid"><b>${x.hidden ?? '?'}</b><span>${t('c.hid')}</span></div>
         </div>
+        ${x.votes ? `<div class="votes"><span title="Score">★ ${x.votes.score ?? '—'}</span><span>👍 ${x.votes.up ?? 0}</span><span>👎 ${x.votes.down ?? 0}</span><span>♥ ${x.votes.favs ?? 0}</span></div>` : ''}
         ${spark}
         ${canPred || picked ? `<button class="pred ${picked ? 'on' : ''}" data-pred="${x.id}">${picked ? t('pred.picked1') : t('pred.pick')}</button>` : ''}
       </div>
@@ -411,7 +414,7 @@
     const link = (S.siteUrl || location.href.split('#')[0]) + '#skin/' + id; const tr = tierOf(x);
     $('modalContent').innerHTML = `
       <div class="m-grid">
-        <div class="m-img tier-${tr} ${rank <= 3 && x.status === 'ok' ? 'holo' : ''}"><img src="${thumb(x.preview, 512)}" alt="" crossorigin="anonymous" id="mImg"><div class="rank">#${rank}</div><div class="tier ${tr}">${t('tier.' + tr)}</div>${x.status === 'dead' ? '<div class="stamp">GAME OVER</div>' : x.status === 'risk' ? '<div class="stamp warn">LOW SIGNAL</div>' : ''}</div>
+        <div class="m-img tier-${tr} ${rank <= 3 && x.status === 'ok' ? 'holo' : ''}"><img src="${thumb(x.preview, 512)}" alt="" id="mImg"><div class="rank">#${rank}</div><div class="tier ${tr}">${t('tier.' + tr)}</div>${x.status === 'dead' ? '<div class="stamp">GAME OVER</div>' : x.status === 'risk' ? '<div class="stamp warn">LOW SIGNAL</div>' : ''}</div>
         <div class="m-info">
           <div class="m-status ${x.status}">${x.status === 'ok' ? t('m.player') : x.status === 'risk' ? t('m.risk') : t('m.dead')}</div>
           <h3>${esc(x.title)}</h3>
@@ -422,6 +425,7 @@
             <div class="counter hid"><b>${x.hidden ?? '?'}</b><span>${t('c.hid')}</span></div>
             <div class="counter"><b>${x.stagesPassed}</b><span>${t('c.levels')}</span></div>
           </div>
+          ${x.votes ? `<div class="m-votes"><b>${t('votes.title')}</b> <span>★ ${x.votes.score ?? '—'}</span><span>👍 ${x.votes.up ?? 0}</span><span>👎 ${x.votes.down ?? 0}</span><span>♥ ${x.votes.favs ?? 0}</span><span>👁 ${x.votes.views ?? 0}</span> <a href="${esc(S.votesSource || '#')}" target="_blank" rel="noopener">micro522 ↗</a></div>` : ''}
           <div class="m-chart">${seriesChart(x)}<div class="hint">${t('m.chart')}</div></div>
           <div class="m-pub"><b>${t('m.pub')}</b> ${x.pubTitles?.length ? x.pubTitles.map(esc).join('; ') : t('m.pubNone')}</div>
           ${evs.length ? `<div class="m-ev">${evs.map(evLine).join('')}</div>` : ''}
@@ -458,11 +462,12 @@
   }
   function shareImage(x) {
     const cv = $('shareCanvas'), ctx = cv.getContext('2d');
+    const shareImg = new Image(); shareImg.crossOrigin = 'anonymous';
     const draw = (withImg) => {
       shareBase(ctx);
       rr(ctx, 60, 60, 480, 510, 36, '#e8e5de'); rr(ctx, 90, 90, 420, 420, 20, '#213553');
       let drew = false;
-      if (withImg) { try { const img = $('mImg'); if (img.complete && img.naturalWidth) { ctx.drawImage(img, 100, 100, 400, 400); drew = true; } } catch (e) {} }
+      if (withImg) { try { if (shareImg.complete && shareImg.naturalWidth) { ctx.drawImage(shareImg, 100, 100, 400, 400); drew = true; } } catch (e) {} }
       if (!drew) { ctx.fillStyle = '#ffc63a'; ctx.font = '22px "Press Start 2P", monospace'; ctx.textAlign = 'center'; ctx.fillText('RUSTOBER', 300, 290); ctx.fillText('SELECTION', 300, 330); ctx.textAlign = 'left'; }
       ['#2f7bff', '#ffc63a', '#ff5a3c'].forEach((c, i) => { ctx.fillStyle = c; ctx.beginPath(); ctx.arc(130 + i * 50, 540, 16, 0, 7); ctx.fill(); });
       ctx.fillStyle = '#ffc63a'; ctx.beginPath(); ctx.arc(470, 540, 26, 0, 7); ctx.fill();
@@ -475,7 +480,9 @@
       ctx.fillStyle = '#f2f0ea'; ctx.font = '700 26px Rubik, sans-serif'; ctx.fillText(`#${S.items.indexOf(x) + 1} · ${x.hidden ?? '?'} hidden · ${x.total ?? '?'} collections`, 600, y0 + 160);
       ctx.fillStyle = '#9a97a0'; ctx.font = '500 20px Rubik, sans-serif'; ctx.fillText((S.siteUrl || '').replace(/^https?:\/\//, '') || 'rustober selection', 600, 580);
     };
-    draw(true); if (!shareOutput(cv, true)) { draw(false); shareOutput(cv, false); }
+    const go = () => { draw(true); if (!shareOutput(cv, true)) { draw(false); shareOutput(cv, false); } };
+    shareImg.onload = go; shareImg.onerror = () => { draw(false); shareOutput(cv, false); };
+    shareImg.src = thumb(x.preview, 512);
   }
   function shareAuthor(a, skins) {
     const cv = $('shareCanvas'), ctx = cv.getContext('2d');
