@@ -58,11 +58,14 @@
     if (reduced || seen || !S) { el.remove(); document.body.classList.add('ready'); return; }
     const lines = ['INSERT CARTRIDGE... OK', `LOADING ${S.stats.total} SKINS`, `LEVEL ${stageNo(S.currentLevel)}  SNAPSHOTS ${S.snapshots.length}`, 'PRESS START'];
     const box = $('bootLines');
-    lines.forEach((t, i) => { const d = document.createElement('div'); d.textContent = '> ' + t; d.style.animationDelay = (0.9 + i * 0.3) + 's'; box.appendChild(d); });
-    el.classList.add('power');
+    lines.forEach((t, i) => { const d = document.createElement('div'); d.textContent = '> ' + t; d.style.setProperty('animation-delay', (0.85 + i * 0.22) + 's', 'important'); box.appendChild(d); });
+    const pct = $('bootPct'); const t0 = performance.now();
+    const tickPct = () => { const p = Math.min(100, Math.round(Math.max(0, (performance.now() - t0 - 900) / 1300) * 100)); if (pct) pct.textContent = p + '%'; if (p < 100 && !done) requestAnimationFrame(tickPct); };
+    requestAnimationFrame(tickPct);
     let done = false;
+    el.classList.add('power');
     const finish = () => { if (done) return; done = true; el.classList.add('off'); document.body.classList.add('ready'); try { sessionStorage.setItem('rstbr-boot', '1'); } catch (e) {} setTimeout(() => el.remove(), 700); };
-    setTimeout(finish, 3200);
+    setTimeout(finish, 2600);
     el.addEventListener('click', finish);
   })();
 
