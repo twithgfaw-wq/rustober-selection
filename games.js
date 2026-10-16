@@ -168,7 +168,7 @@
     if (G.queue.length) G.dir = G.queue.shift();
     const h = G.snake[0]; const n = { x: h.x + G.dir.x, y: h.y + G.dir.y };
     if (n.x < 0 || n.y < 0 || n.x >= COLS || n.y >= ROWS || G.snake.some((s, i) => i < G.snake.length - 1 && same(s, n)) || G.barrels.some((b) => same(b, n))) return die();
-    const old = G.snake; G.snake = [n, ...old];
+    const old = G.snake; G.snake = [n, ...old]; G.stepCount = (G.stepCount || 0) + 1;
     let grew = false;
     if (G.food && same(n, G.food)) {
       G.score++; G.eaten++; grew = true; sound.eat(); burst(n, ['#fff2a0', '#d4d4d8', '#b5562a'], 14); G.food = freeCell(true);
@@ -236,45 +236,46 @@
   // ---- рендер (60 FPS, рух інтерпольований між клітинками) ----
   const lerp = (a, b, t) => a + (b - a) * t;
 
-  // ---- дизайн 2: БРОНЯ — квадратні металеві пластини на шарнірах ----
-  function drawPlates(pts, sk) {
-    const n = pts.length; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-    const spine = () => { ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); for (let i = 1; i < n; i++) ctx.lineTo(pts[i].x, pts[i].y); };
-    spine(); ctx.strokeStyle = '#17171b'; ctx.lineWidth = 12; ctx.stroke(); spine(); ctx.strokeStyle = sk.lo; ctx.lineWidth = 7; ctx.stroke();
-    for (let i = n - 1; i >= 1; i--) {
-      const p = pts[i], fr = i / (n - 1), sz = Math.round(26 - 9 * fr), h = sz / 2, x = Math.round(p.x - h), y = Math.round(p.y - h);
-      ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(x + 3, y + 4, sz, sz);
-      ctx.fillStyle = '#17171b'; ctx.fillRect(x - 2, y - 2, sz + 4, sz + 4);
-      ctx.fillStyle = sk.plates[i % 2]; ctx.fillRect(x, y, sz, sz);
-      ctx.fillStyle = sk.hi; ctx.fillRect(x, y, sz, 3); ctx.fillRect(x, y, 3, sz);
-      ctx.fillStyle = sk.lo; ctx.fillRect(x, y + sz - 3, sz, 3); ctx.fillRect(x + sz - 3, y, 3, sz);
-      if (sz < 16) continue;
-      ctx.fillStyle = '#d4d4d8'; for (const [a, b] of [[4, 4], [sz - 7, 4], [4, sz - 7], [sz - 7, sz - 7]]) ctx.fillRect(x + a, y + b, 3, 3);
-      if (sk.mark === 'tape') { ctx.fillStyle = '#8c8c94'; ctx.fillRect(x + 3, y + h - 2, sz - 6, 4); ctx.fillStyle = '#c4c4cc'; ctx.fillRect(x + 3, y + h - 2, sz - 6, 1); }
-      else if (sk.mark === 'rope') { ctx.fillStyle = '#c8b070'; ctx.fillRect(x + 3, y + h - 4, sz - 6, 2); ctx.fillRect(x + 3, y + h + 2, sz - 6, 2); }
-      else { ctx.fillStyle = '#6a6a70'; ctx.fillRect(x + h - 3, y + h - 3, 6, 6); ctx.fillStyle = '#d4d4d8'; ctx.fillRect(x + h - 1, y + h - 1, 2, 2); }
+  // ---- дизайн 2: СКРАП-ЗМІЙ — іржаві шестерні різного розміру на ланцюгу, крутяться під час руху ----
+  const GEAR = { big: sprite(ART.gear, BASE), small: sprite(ART.gear, { ...BASE, b: '#5c5c62', c: '#8a8a92', d: '#c4c4cc', e: '#2a2a2e' }), nut: sprite(ART.nut, BASE) };
+  function drawGears(pts, now) {
+    const n = pts.length, spin = (G.stepCount || 0) + (G.alive && !G.paused ? Math.min(1, G.acc / stepMs()) : 0);
+    ctx.lineCap = 'round';
+    const chain = () => { ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); for (let k = 1; k < n; k++) ctx.lineTo(pts[k].x, pts[k].y); };
+    ctx.save(); ctx.translate(3, 4); chain(); ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = 10; ctx.stroke(); ctx.restore();
+    chain(); ctx.strokeStyle = '#17171b'; ctx.lineWidth = 9; ctx.stroke(); chain(); ctx.strokeStyle = '#4a4a50'; ctx.lineWidth = 5; ctx.stroke();
+    ctx.setLineDash([4, 4]); chain(); ctx.strokeStyle = '#9a9aa0'; ctx.lineWidth = 2; ctx.stroke(); ctx.setLineDash([]);   // ланки ланцюга
+    for (let k = n - 1; k >= 1; k--) {
+      const p = pts[k], big = k % 2 === 1, sz = k === n - 1 ? 16 : big ? 32 : 24, ang = spin * (big ? 0.5 : -0.65) + k * 0.4;
+      ctx.save(); ctx.translate(Math.round(p.x), Math.round(p.y));
+      ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.beginPath(); ctx.arc(3, 4, sz / 2, 0, Math.PI * 2); ctx.fill();
+      ctx.rotate(ang); ctx.drawImage(k === n - 1 ? GEAR.nut : big ? GEAR.big : GEAR.small, -sz / 2, -sz / 2, sz, sz); ctx.restore();
     }
   }
-  // ---- дизайн 3: ТРУБОПРОВІД — іржаві труби з фланцями й болтами на стиках ----
-  function drawPipes(pts, sk) {
-    const n = pts.length, S = G.snake, R = 9;
-    const dirTo = (a, b) => ({ x: Math.sign(b.x - a.x), y: Math.sign(b.y - a.y) });
-    const seg = (p, d, len, w, color) => { ctx.strokeStyle = color; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x + d.x * len, p.y + d.y * len); ctx.stroke(); };
-    ctx.lineCap = 'butt';
-    const each = (fn) => { for (let i = 1; i < n; i++) { const p = pts[i]; fn(p, dirTo(S[i], S[i - 1]), i, false); if (i < n - 1) fn(p, dirTo(S[i], S[i + 1]), i, false); else fn(p, dirTo(S[i], S[i - 1]), i, true); } };
-    ctx.save(); ctx.translate(3, 4); each((p, d) => seg(p, d, 17, R * 2 + 2, 'rgba(0,0,0,0.3)')); ctx.restore();
-    each((p, d, i, cap) => { if (cap) { ctx.fillStyle = '#17171b'; ctx.beginPath(); ctx.arc(p.x, p.y, R + 3, 0, Math.PI * 2); ctx.fill(); } else seg(p, d, 17, R * 2 + 6, '#17171b'); });
-    each((p, d, i, cap) => { if (cap) { ctx.fillStyle = sk.tube; ctx.beginPath(); ctx.arc(p.x, p.y, R, 0, Math.PI * 2); ctx.fill(); } else seg(p, d, 17, R * 2, sk.tube); });
-    ctx.globalAlpha = 0.5; each((p, d, i, cap) => { if (cap) return; const o = d.x ? { x: 0, y: -4 } : { x: -4, y: 0 }; seg({ x: p.x + o.x, y: p.y + o.y }, d, 17, 3, sk.hi); }); ctx.globalAlpha = 1;
-    ctx.globalAlpha = 0.35; each((p, d, i, cap) => { if (cap) return; const o = d.x ? { x: 0, y: 5 } : { x: 5, y: 0 }; seg({ x: p.x + o.x, y: p.y + o.y }, d, 17, 3, sk.lo); }); ctx.globalAlpha = 1;
-    for (let i = 1; i < n; i++) {
-      const p = pts[i], fl = i % 2 === 0 || i === n - 1, r = fl ? R + 3 : R + 1;
-      ctx.fillStyle = '#17171b'; ctx.beginPath(); ctx.arc(p.x, p.y, r + 2, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = fl ? sk.plates[0] : sk.plates[1]; ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = sk.hi; ctx.beginPath(); ctx.arc(p.x - 2, p.y - 2, r - 3, 0, Math.PI * 2); ctx.fill();
-      ctx.fillStyle = fl ? sk.plates[0] : sk.plates[1]; ctx.beginPath(); ctx.arc(p.x, p.y, r - 4, 0, Math.PI * 2); ctx.fill();
-      if (fl) { ctx.fillStyle = '#d4d4d8'; for (const [a, b] of [[0, -r + 3], [r - 3, 0], [0, r - 3], [-r + 3, 0]]) ctx.fillRect(p.x + a - 1.5, p.y + b - 1.5, 3, 3); }
-      else { ctx.fillStyle = sk.lo; ctx.fillRect(p.x - 1, p.y - 1, 2, 2); }
+  // ---- дизайн 3: СТАЛЕВА БРОНЕМНОГОНІЖКА — темні сталеві пластини, попереджувальні смуги, заклепки, шипи з боків, шип на хвості ----
+  function drawArmor(pts) {
+    const n = pts.length; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    const spine = () => { ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); for (let k = 1; k < n; k++) ctx.lineTo(pts[k].x, pts[k].y); };
+    ctx.save(); ctx.translate(3, 4); spine(); ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = 14; ctx.stroke(); ctx.restore();
+    spine(); ctx.strokeStyle = '#17171b'; ctx.lineWidth = 14; ctx.stroke(); spine(); ctx.strokeStyle = '#2c2f34'; ctx.lineWidth = 9; ctx.stroke();
+    for (let k = n - 1; k >= 1; k--) {
+      const p = pts[k], a = pts[k - 1], c = pts[Math.min(n - 1, k + 1)]; let tx = c.x - a.x, ty = c.y - a.y; const L = Math.hypot(tx, ty) || 1; tx /= L; ty /= L; const nx = -ty, ny = tx;
+      const fr = k / (n - 1), sz = Math.round(26 - 8 * fr), h = sz / 2, x = Math.round(p.x - h), y = Math.round(p.y - h), tail = k === n - 1;
+      if (tail) { // хвостовий шип
+        ctx.fillStyle = '#17171b'; ctx.beginPath(); ctx.moveTo(p.x - nx * 7, p.y - ny * 7); ctx.lineTo(p.x + nx * 7, p.y + ny * 7); ctx.lineTo(p.x + tx * 22, p.y + ty * 22); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#8a9098'; ctx.beginPath(); ctx.moveTo(p.x - nx * 4, p.y - ny * 4); ctx.lineTo(p.x + nx * 4, p.y + ny * 4); ctx.lineTo(p.x + tx * 18, p.y + ty * 18); ctx.closePath(); ctx.fill(); continue;
+      }
+      // шипи з боків пластини
+      if (sz >= 18) for (const sgn of [1, -1]) { ctx.fillStyle = '#17171b'; ctx.beginPath(); ctx.moveTo(p.x + nx * sgn * (h - 2) - tx * 5, p.y + ny * sgn * (h - 2) - ty * 5); ctx.lineTo(p.x + nx * sgn * (h - 2) + tx * 5, p.y + ny * sgn * (h - 2) + ty * 5); ctx.lineTo(p.x + nx * sgn * (h + 9), p.y + ny * sgn * (h + 9)); ctx.closePath(); ctx.fill(); ctx.fillStyle = '#9aa0a8'; ctx.beginPath(); ctx.moveTo(p.x + nx * sgn * (h - 1) - tx * 3, p.y + ny * sgn * (h - 1) - ty * 3); ctx.lineTo(p.x + nx * sgn * (h - 1) + tx * 3, p.y + ny * sgn * (h - 1) + ty * 3); ctx.lineTo(p.x + nx * sgn * (h + 7), p.y + ny * sgn * (h + 7)); ctx.closePath(); ctx.fill(); }
+      ctx.fillStyle = '#17171b'; ctx.fillRect(x - 2, y - 2, sz + 4, sz + 4);
+      ctx.fillStyle = k % 2 ? '#4a4f55' : '#3d4147'; ctx.fillRect(x, y, sz, sz);
+      ctx.fillStyle = '#8a9098'; ctx.fillRect(x, y, sz, 3); ctx.fillRect(x, y, 3, sz);
+      ctx.fillStyle = '#1f2226'; ctx.fillRect(x, y + sz - 3, sz, 3); ctx.fillRect(x + sz - 3, y, 3, sz);
+      if (sz < 16) continue;
+      if (k % 3 === 0) { // попереджувальна смуга
+        ctx.save(); ctx.beginPath(); ctx.rect(x + 3, y + 3, sz - 6, sz - 6); ctx.clip(); ctx.fillStyle = '#e0b030'; ctx.fillRect(x + 3, y + h - 4, sz - 6, 8); ctx.fillStyle = '#17171b'; for (let q = -sz; q < sz * 2; q += 8) { ctx.beginPath(); ctx.moveTo(x + q, y + h + 4); ctx.lineTo(x + q + 4, y + h + 4); ctx.lineTo(x + q + 8, y + h - 4); ctx.lineTo(x + q + 4, y + h - 4); ctx.closePath(); ctx.fill(); } ctx.restore(); }
+      else { ctx.fillStyle = '#8a4a26'; ctx.fillRect(x + 5, y + 5, 4, 3); ctx.fillRect(x + sz - 9, y + sz - 8, 3, 3); } // плями іржі
+      ctx.fillStyle = '#c9cdd3'; for (const [a2, b2] of [[4, 4], [sz - 7, 4], [4, sz - 7], [sz - 7, sz - 7]]) ctx.fillRect(x + a2, y + b2, 3, 3);
     }
   }
   let last = performance.now();
@@ -295,7 +296,7 @@
     const pts = G.snake.map((s, i) => { const p = G.prev[i] || s; return { x: lerp(p.x, s.x, t) * CELL + CELL / 2, y: lerp(p.y, s.y, t) * CELL + CELL / 2 }; });
     if (pts.length > 1) {
       const sk = G.skin, n = pts.length; let hb = pts[1];
-      if (bodyStyle === 'plates') drawPlates(pts, sk); else if (bodyStyle === 'pipes') drawPipes(pts, sk); else {
+      if (bodyStyle === 'gears') drawGears(pts, now); else if (bodyStyle === 'armor') drawArmor(pts); else {
       // плавна крива Catmull-Rom через центри сегментів, 3 підточки на сегмент; f = 0 біля шиї, 1 на кінчику хвоста
       const sm = [];
       for (let i = 0; i < n - 1; i++) {
@@ -333,7 +334,8 @@
       const hp = pts[0]; const ang = Math.atan2(hp.y - hb.y, hp.x - hb.x);
       ctx.save(); ctx.translate(Math.round(hp.x), Math.round(hp.y)); ctx.rotate(ang);
       ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(-14, 13, 30, 5);
-      ctx.drawImage(sk.sprite, -17, -17, 34, 34); ctx.restore();
+      const headSpr = bodyStyle === 'gears' ? SKINS[2].sprite : bodyStyle === 'armor' ? SKINS[3].sprite : sk.sprite;
+      ctx.drawImage(headSpr, -17, -17, 34, 34); ctx.restore();
     }
     for (const p of G.particles) { p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.life--; ctx.globalAlpha = Math.max(0, Math.min(1, p.life / 14)); ctx.fillStyle = p.color; ctx.fillRect(Math.round(p.x), Math.round(p.y), p.s, p.s); }
     ctx.globalAlpha = 1; if (G.particles.length) G.particles = G.particles.filter((p) => p.life > 0);
