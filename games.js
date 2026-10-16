@@ -2,6 +2,7 @@
 (function () {
   'use strict';
   const $ = (id) => document.getElementById(id);
+  const tr = (k) => (window.t ? window.t(k) : k);
   const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} } };
   try { history.scrollRestoration = 'manual'; } catch (e) {}
 
@@ -203,7 +204,7 @@
   }
   $('nameSave').addEventListener('click', () => saveName(false)); $('nameSkip').addEventListener('click', () => saveName(true));
   $('nameInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') saveName(false); e.stopPropagation(); });
-  function paintBoard() { const b = board(); $('boardList').innerHTML = b.length ? b.map((r, i) => `<li><span>${i + 1}.</span><span>${String(r.name).replace(/[<>&]/g, '')}</span><span>${r.score}</span></li>`).join('') : '<li><span>—</span><span>поки порожньо</span><span></span></li>'; }
+  function paintBoard() { const b = board(); $('boardList').innerHTML = b.length ? b.map((r, i) => `<li><span>${i + 1}.</span><span>${String(r.name).replace(/[<>&]/g, '')}</span><span>${r.score}</span></li>`).join('') : `<li><span>—</span><span>${tr('g.board.empty')}</span><span></span></li>`; }
   function start() { reset(); }
   $('startBtn').addEventListener('click', start);
   $('btnRestart').addEventListener('click', start);
@@ -403,6 +404,7 @@
   G.mode = 'rust';
   G.snake = [{ x: 7, y: 7 }, { x: 6, y: 7 }, { x: 5, y: 7 }, { x: 4, y: 7 }]; G.prev = G.snake.map((s) => ({ ...s })); G.food = { x: 13, y: 7 }; G.barrels = [{ x: 15, y: 4 }, { x: 4, y: 11 }];
   window.__G = G; // для налагодження
+  if ($('langBtn') && window.setLang) $('langBtn').addEventListener('click', () => { window.setLang(window.LANG === 'ua' ? 'en' : 'ua'); paintBoard(); if (G.started) $('ovText').innerHTML = `SCRAP ${G.score} · BEST ${G.best}`; });
   hud(); paintBoard(); requestAnimationFrame(draw);
   document.addEventListener('visibilitychange', () => { if (document.hidden && G.alive) G.paused = true; });
 })();

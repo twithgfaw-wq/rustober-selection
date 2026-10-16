@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
 <title>Rust Mini Games</title>
-<meta name="description" content="Міні-ігри в стилі Rust: змійка, що збирає скрап.">
+<meta name="description" content="Rust-style mini games: a snake that eats scrap. Міні-ігри в стилі Rust.">
 <meta name="theme-color" content="#0b0b0d">
 <link rel="manifest" href="manifest.webmanifest">
 <meta property="og:title" content="Rust Mini Games"><meta property="og:description" content="Змійка в стилі Rust: збирай скрап, бий рекорд."><meta property="og:image" content="https://twithgfaw-wq.github.io/rustober-selection/og.png">
-<link rel="stylesheet" href="fonts.css?v=mva8q639">
+<link rel="stylesheet" href="fonts.css?v=mva92ssc">
 <link rel="icon" href="icon-192.png">
-<link rel="stylesheet" href="style.css?v=mva8q639"><link rel="stylesheet" href="v2.css?v=mva8q639"><link rel="stylesheet" href="v3.css?v=mva8q639"><link rel="stylesheet" href="pages.css?v=mva8q639"><link rel="stylesheet" href="games.css?v=mva8q639">
+<link rel="stylesheet" href="style.css?v=mva92ssc"><link rel="stylesheet" href="v2.css?v=mva92ssc"><link rel="stylesheet" href="v3.css?v=mva92ssc"><link rel="stylesheet" href="pages.css?v=mva92ssc"><link rel="stylesheet" href="games.css?v=mva92ssc">
 </head>
 <body class="page ready games-page">
 <div class="bg" aria-hidden="true"><div class="bg-grid"></div><div class="bg-mark">GAMES</div><div class="bg-noise"></div></div>
@@ -19,12 +19,13 @@
   <a class="logo" href="index.html">RSTBR<span>26</span></a>
   <div class="pageswitch"><a href="index.html">SELECTION</a><a href="authors.html">AUTHORS</a><a href="market.html">MARKET</a><a href="games.html" class="on">GAMES</a></div>
   <div class="nav-links">
-    <button class="iconbtn" id="soundBtn" title="Звук">🔇</button>
-    <button class="iconbtn" id="themeBtn" title="Колір консолі">◐</button>
+    <button class="iconbtn" id="langBtn" data-i18n-title="g.lang" title="UA / EN">EN</button>
+    <button class="iconbtn" id="soundBtn" data-i18n-title="nav.sound" title="Звук">🔇</button>
+    <button class="iconbtn" id="themeBtn" data-i18n-title="nav.theme" title="Колір консолі">◐</button>
   </div>
 </nav>
 <div class="theme-pop" id="themePop" hidden>
-  <div class="theme-title">Видання консолі</div>
+  <div class="theme-title" data-i18n="theme.title">Видання консолі</div>
   <div class="theme-grid">
     <button data-theme="grey"><i style="--c1:#f4f2ec;--c2:#d7d3ca"></i>Classic</button><button data-theme="purple"><i style="--c1:#c9a8ff;--c2:#8a5cff"></i>Atomic</button><button data-theme="yellow"><i style="--c1:#ffe08a;--c2:#ffb000"></i>Dandelion</button>
     <button data-theme="black"><i style="--c1:#4a4a52;--c2:#1f1f24"></i>Carbon</button><button data-theme="pumpkin"><i style="--c1:#ffb06b;--c2:#ff7a1f"></i>Pumpkin</button><button data-theme="mint"><i style="--c1:#c9f7dc;--c2:#6bd39a"></i>Mint</button>
@@ -35,8 +36,8 @@
   <div class="eyebrow">RUST ARCADE · INSERT CARTRIDGE</div>
   <h1 class="title"><span class="t1">MINI</span><span class="t2">GAMES</span></h1>
   <div class="cartridges" id="cartridges">
-    <button class="cart on" data-game="snake"><i class="cart-art snake"></i><div><b>SCRAP SNAKE</b><span>змійка збирає скрап</span></div></button>
-    <button class="cart soon" disabled><i class="cart-art soon"></i><div><b>COMING SOON</b><span>наступна гра</span></div></button>
+    <button class="cart on" data-game="snake"><i class="cart-art snake"></i><div><b>SCRAP SNAKE</b><span data-i18n="g.cart.snake">змійка збирає скрап</span></div></button>
+    <button class="cart soon" disabled><i class="cart-art soon"></i><div><b>COMING SOON</b><span data-i18n="g.cart.soon">наступна гра</span></div></button>
   </div>
 </section>
 
@@ -49,7 +50,7 @@
       <div class="hud"><span id="hudScore">SCRAP 0</span><span id="hudBest">BEST 0</span><span id="hudSpeed">SPD 1</span></div>
       <div class="overlay" id="overlay">
         <div class="ov-title" id="ovTitle">SCRAP SNAKE</div>
-        <div class="ov-text" id="ovText">Збирай скрап, не вріжся в стіни і в себе.<br>Стрілки / WASD · свайп · D-pad</div>
+        <div class="ov-text" id="ovText" data-i18n-html="g.ov.text">Збирай скрап, не вріжся в стіни, бочки і в себе.<br>Стрілки / WASD · свайп · D-pad</div>
         <button class="btn3d yellow pxbtn" id="startBtn">START ▶</button>
         <button class="btn3d grey small" id="skinBtn">SKIN: RANDOM</button>
         <div class="ov-sub" id="ovSub"></div>
@@ -65,9 +66,9 @@
         <button data-dir="down" aria-label="down">▼</button>
       </div>
       <div class="ab">
-        <i class="rb blue" id="btnPause" title="Пауза"></i>
-        <i class="rb yellow" id="btnSound" title="Звук"></i>
-        <i class="rb red" id="btnRestart" title="Заново"></i>
+        <i class="rb blue" id="btnPause" data-i18n-title="g.btn.pause" title="Пауза"></i>
+        <i class="rb yellow" id="btnSound" data-i18n-title="nav.sound" title="Звук"></i>
+        <i class="rb red" id="btnRestart" data-i18n-title="g.btn.restart" title="Заново"></i>
       </div>
     </div>
     <div class="led-strip"><i class="led on"></i><i class="led" id="ledAlive"></i></div>
@@ -77,15 +78,16 @@
     <div class="board">
       <div class="board-title">HIGH SCORES</div>
       <ol class="board-list" id="boardList"></ol>
-      <div class="hint" id="boardHint">локально, у твоєму браузері</div>
+      <div class="hint" id="boardHint" data-i18n="g.board.hint">локально, у твоєму браузері</div>
     </div>
     <div class="board">
       <div class="board-title">HOW TO PLAY</div>
       <ul class="howto-list">
-        <li><b>Стрілки</b> / <b>WASD</b>, на телефоні свайп по екрану або D-pad.</li>
-        <li>Кожен скрап = +1, кожні 5 — швидкість росте.</li>
-        <li>Золотий скрап зникає швидко і дає +5.</li>
-        <li><b>Space</b> або синя кнопка — пауза, червона — заново.</li>
+        <li data-i18n-html="g.howto.1"><b>Стрілки</b> / <b>WASD</b>, на телефоні свайп по екрану або D-pad.</li>
+        <li data-i18n-html="g.howto.2">Кожен скрап = +1, кожні 5 — швидкість росте.</li>
+        <li data-i18n-html="g.howto.3">Золотий скрап зникає швидко і дає +5.</li>
+        <li data-i18n-html="g.howto.4">Червоні бочки, стіни і власний хвіст — кінець гри.</li>
+        <li data-i18n-html="g.howto.5"><b>Space</b> або синя кнопка — пауза, червона — заново.</li>
       </ul>
     </div>
   </div>
@@ -95,14 +97,15 @@
   <div class="name-box">
     <div class="ov-title">NEW HIGH SCORE</div>
     <div class="ov-text" id="nameText"></div>
-    <input id="nameInput" maxlength="12" placeholder="ТВОЄ ІМ'Я" autocomplete="off">
-    <div class="m-actions"><button class="btn3d yellow pxbtn" id="nameSave">SAVE</button><button class="btn3d grey small" id="nameSkip">Пропустити</button></div>
+    <input id="nameInput" maxlength="12" data-i18n-ph="g.name.ph" placeholder="ТВОЄ ІМ'Я" autocomplete="off">
+    <div class="m-actions"><button class="btn3d yellow pxbtn" id="nameSave">SAVE</button><button class="btn3d grey small" id="nameSkip" data-i18n="g.name.skip">Пропустити</button></div>
   </div>
 </div>
 
 <div class="pageswitch bottom"><a href="index.html">SELECTION</a><a href="authors.html">AUTHORS</a><a href="market.html">MARKET</a><a href="games.html" class="on">GAMES</a></div>
 <div class="toast" id="toast" hidden></div>
-<footer class="foot"><span>Rust Arcade · рахунки зберігаються локально</span><span></span></footer>
-<script src="games.js?v=mva8q639"></script>
+<footer class="foot"><span data-i18n="g.foot">Rust Arcade · рахунки зберігаються локально</span><span></span></footer>
+<script src="i18n.js?v=mva92ssc"></script>
+<script src="games.js?v=mva92ssc"></script>
 </body>
 </html>

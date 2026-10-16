@@ -260,9 +260,40 @@ window.I18N = {
     document.documentElement.lang = window.LANG === 'ua' ? 'uk' : 'en';
     document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = window.t(el.dataset.i18n); });
     document.querySelectorAll('[data-i18n-title]').forEach((el) => { el.title = window.t(el.dataset.i18nTitle); });
+    document.querySelectorAll('[data-i18n-html]').forEach((el) => { el.innerHTML = window.t(el.dataset.i18nHtml); });
     document.querySelectorAll('[data-i18n-ph]').forEach((el) => { el.placeholder = window.t(el.dataset.i18nPh); });
     const b = document.getElementById('langBtn'); if (b) b.textContent = window.LANG === 'ua' ? 'EN' : 'UA';
   };
   window.setLang = (l) => { window.LANG = l; try { localStorage.setItem('rstbr-lang', l); } catch (e) {} window.applyI18n(); };
   document.addEventListener('DOMContentLoaded', window.applyI18n);
 })();
+
+// ---- сторінка GAMES ----
+Object.assign(window.I18N.ua, {
+  'g.cart.snake': 'змійка збирає скрап', 'g.cart.soon': 'наступна гра',
+  'g.ov.text': 'Збирай скрап, не вріжся в стіни, бочки і в себе.<br>Стрілки / WASD · свайп · D-pad',
+  'g.btn.pause': 'Пауза', 'g.btn.restart': 'Заново',
+  'g.board.hint': 'локально, у твоєму браузері', 'g.board.empty': 'поки порожньо',
+  'g.howto.1': '<b>Стрілки</b> / <b>WASD</b>, на телефоні свайп по екрану або D-pad.',
+  'g.howto.2': 'Кожен скрап = +1, кожні 5 — швидкість росте.',
+  'g.howto.3': 'Золотий скрап зникає швидко і дає +5.',
+  'g.howto.4': 'Червоні бочки, стіни і власний хвіст — кінець гри.',
+  'g.howto.5': '<b>Space</b> або синя кнопка — пауза, червона — заново.',
+  'g.name.ph': "ТВОЄ ІМ'Я", 'g.name.skip': 'Пропустити',
+  'g.foot': 'Rust Arcade · рахунки зберігаються локально',
+  'g.lang': 'Мова: UA / EN',
+});
+Object.assign(window.I18N.en, {
+  'g.cart.snake': 'a snake that eats scrap', 'g.cart.soon': 'next game',
+  'g.ov.text': "Collect scrap, don't hit the walls, barrels or yourself.<br>Arrows / WASD · swipe · D-pad",
+  'g.btn.pause': 'Pause', 'g.btn.restart': 'Restart',
+  'g.board.hint': 'stored locally in your browser', 'g.board.empty': 'no scores yet',
+  'g.howto.1': '<b>Arrows</b> / <b>WASD</b>, on a phone swipe the screen or use the D-pad.',
+  'g.howto.2': 'Each scrap = +1, every 5 the speed goes up.',
+  'g.howto.3': 'Golden scrap vanishes fast and gives +5.',
+  'g.howto.4': 'Red barrels, walls and your own tail end the run.',
+  'g.howto.5': '<b>Space</b> or the blue button pauses, the red one restarts.',
+  'g.name.ph': 'YOUR NAME', 'g.name.skip': 'Skip',
+  'g.foot': 'Rust Arcade · scores are stored locally',
+  'g.lang': 'Language: UA / EN',
+});
