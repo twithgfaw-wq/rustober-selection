@@ -91,15 +91,21 @@
     }));
     return c;
   }
-  // купка скрапу 44×44: діагональна труба позаду, шестерня ×2, дві гайки спереду (референс: іконка Scrap)
+  // купка скрапу 48×48 (референс: іконка Scrap): гофрований лист позаду, діагональна труба, велика шестерня, дві гайки спереду
   function scrapPile(pal) {
-    const c = document.createElement('canvas'); c.width = 44; c.height = 44; const x = c.getContext('2d'); x.imageSmoothingEnabled = false;
+    const c = document.createElement('canvas'); c.width = 48; c.height = 48; const x = c.getContext('2d'); x.imageSmoothingEnabled = false;
     const gear = sprite(ART.gear, pal), nut = sprite(ART.nut, pal);
-    x.save(); x.translate(22, 22); x.rotate(-0.7);
-    x.fillStyle = pal.o; x.fillRect(-27, -6, 54, 12); x.fillStyle = pal.b; x.fillRect(-26, -5, 52, 10); x.fillStyle = pal.c; x.fillRect(-26, -5, 52, 4); x.fillStyle = pal.d; x.fillRect(-26, -5, 52, 1);
-    x.fillStyle = pal.e; x.fillRect(-26, 3, 52, 2); x.fillStyle = pal.o; x.fillRect(-20, -6, 2, 12); x.fillRect(18, -6, 2, 12); x.fillStyle = pal.a; x.fillRect(-27, -5, 2, 10); x.fillRect(25, -5, 2, 10); x.restore();
-    x.drawImage(gear, 4, 2, 32, 32);
-    x.drawImage(nut, 28, 28, 16, 16); x.drawImage(nut, 0, 30, 14, 14);
+    // гофрований лист (зигзаг) — нахилений прямокутник із хвилястими смугами
+    x.save(); x.translate(30, 30); x.rotate(0.35);
+    x.fillStyle = pal.o; x.fillRect(-15, -11, 30, 22); x.fillStyle = pal.b; x.fillRect(-14, -10, 28, 20);
+    for (let q = -14; q < 14; q += 4) { x.fillStyle = pal.c; x.fillRect(q, -10, 2, 20); x.fillStyle = pal.e; x.fillRect(q + 2, -10, 1, 20); }
+    x.fillStyle = pal.d; x.fillRect(-14, -10, 28, 1); x.restore();
+    // труба
+    x.save(); x.translate(20, 26); x.rotate(-0.75);
+    x.fillStyle = pal.o; x.fillRect(-25, -6, 50, 12); x.fillStyle = pal.b; x.fillRect(-24, -5, 48, 10); x.fillStyle = pal.c; x.fillRect(-24, -5, 48, 4); x.fillStyle = pal.d; x.fillRect(-24, -5, 48, 1); x.fillStyle = pal.e; x.fillRect(-24, 3, 48, 2);
+    x.fillStyle = pal.o; x.fillRect(-18, -6, 2, 12); x.fillRect(16, -6, 2, 12); x.fillStyle = pal.a; x.fillRect(-25, -5, 2, 10); x.fillRect(23, -5, 2, 10); x.restore();
+    x.drawImage(gear, 2, 2, 32, 32);
+    x.drawImage(nut, 30, 30, 16, 16); x.drawImage(nut, 2, 32, 14, 14);
     return c;
   }
   const SPR = { scrap: scrapPile(BASE), gold: scrapPile(GOLDPAL), barrel: sprite(ART.barrel, { ...BASE, b: '#a8301f' }) };
@@ -278,30 +284,46 @@
       ctx.fillStyle = '#c9cdd3'; for (const [a2, b2] of [[4, 4], [sz - 7, 4], [4, sz - 7], [sz - 7, sz - 7]]) ctx.fillRect(x + a2, y + b2, 3, 3);
     }
   }
-  // ---- дизайн NEON ARCADE: чорний CRT-екран із сяючою зеленою сіткою, червона цегляна змійка з мультяшною головою ----
+  // ---- основний дизайн: RUST ARCADE — темна металева підлога, агресивна червона змія з іклами й шипами, бочки, скрап ----
   const glowSprite = (size, glow, blur, paint) => { const c = document.createElement('canvas'); c.width = size; c.height = size; const x = c.getContext('2d'); x.shadowColor = glow; x.shadowBlur = blur; paint(x, size); x.shadowBlur = 0; paint(x, size); return c; };
   const NEON = {
-    bg: (() => { const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d'); x.fillStyle = '#04070a'; x.fillRect(0, 0, W, H);
-      let seed = 777; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-      for (let k = 0; k < 90; k++) { x.fillStyle = 'rgba(180,220,255,' + (0.15 + rnd() * 0.5) + ')'; x.fillRect(rnd() * W | 0, rnd() * H | 0, 1 + (rnd() < 0.2 ? 1 : 0), 1); }   // зоряний пил
-      x.shadowColor = '#2dff6a'; x.shadowBlur = 6; x.strokeStyle = 'rgba(45,255,106,0.55)'; x.lineWidth = 1;
-      for (let i = 0; i <= COLS; i++) { x.beginPath(); x.moveTo(i * CELL + 0.5, 0); x.lineTo(i * CELL + 0.5, H); x.stroke(); } for (let j = 0; j <= ROWS; j++) { x.beginPath(); x.moveTo(0, j * CELL + 0.5); x.lineTo(W, j * CELL + 0.5); x.stroke(); }
-      x.shadowBlur = 0; const v = x.createRadialGradient(W / 2, H / 2, H / 3, W / 2, H / 2, H * 0.9); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.55)'); x.fillStyle = v; x.fillRect(0, 0, W, H); return c; })(),
-    // цегляний блок тіла 28×28 (+6 px світіння з кожного боку)
-    brick: glowSprite(40, '#ff3b2f', 9, (x) => { x.fillStyle = '#5a0e08'; x.fillRect(6, 6, 28, 28); x.fillStyle = '#e03227'; x.fillRect(8, 8, 24, 24);
-      x.fillStyle = '#8a1810'; x.fillRect(8, 15, 24, 2); x.fillRect(8, 23, 24, 2); x.fillRect(19, 8, 2, 7); x.fillRect(13, 17, 2, 6); x.fillRect(25, 17, 2, 6); x.fillRect(19, 25, 2, 7);
-      x.fillStyle = '#ff6a5c'; x.fillRect(8, 8, 11, 1); x.fillRect(21, 8, 11, 1); x.fillRect(8, 17, 5, 1); x.fillRect(15, 17, 10, 1); x.fillRect(27, 17, 5, 1); x.fillRect(8, 25, 11, 1); x.fillRect(21, 25, 11, 1); }),
-    // голова 36×36 (дивиться вправо): очі зверху, темна паща спереду
-    head: glowSprite(48, '#ff3b2f', 10, (x) => { x.fillStyle = '#5a0e08'; x.beginPath(); x.roundRect(6, 6, 36, 36, 9); x.fill(); x.fillStyle = '#e8392b'; x.beginPath(); x.roundRect(8, 8, 32, 32, 8); x.fill();
-      x.fillStyle = '#ff6a5c'; x.fillRect(12, 9, 22, 2); x.fillStyle = '#8a1810'; x.fillRect(34, 16, 5, 16);           // блік і паща
-      x.fillStyle = '#fff'; x.fillRect(24, 11, 9, 9); x.fillRect(24, 28, 9, 9); x.fillStyle = '#111'; x.fillRect(29, 13, 4, 4); x.fillRect(29, 30, 4, 4); }),
-    crate: glowSprite(40, '#2dff6a', 8, (x) => { x.fillStyle = '#06200c'; x.fillRect(6, 6, 28, 28); x.strokeStyle = '#2dff6a'; x.lineWidth = 3; x.strokeRect(7.5, 7.5, 25, 25); x.lineWidth = 2; x.beginPath(); x.moveTo(10, 10); x.lineTo(30, 30); x.moveTo(30, 10); x.lineTo(10, 30); x.stroke(); x.fillStyle = '#2dff6a'; x.fillRect(16, 16, 8, 8); }),
-    halo: (color) => glowSprite(56, color, 14, (x) => { x.fillStyle = color; x.globalAlpha = 0.35; x.beginPath(); x.arc(28, 28, 14, 0, Math.PI * 2); x.fill(); x.globalAlpha = 1; }),
+    // підлога: сталеві плити з заклепками, швами й плямами іржі, тьмяне іржаве світіння швів
+    bg: (() => { const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d'); let seed = 4242; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+      x.fillStyle = '#121416'; x.fillRect(0, 0, W, H);
+      for (let gy = 0; gy < ROWS; gy++) for (let gx = 0; gx < COLS; gx++) { x.fillStyle = (gx + gy) % 2 ? '#15181b' : '#131619'; x.fillRect(gx * CELL, gy * CELL, CELL, CELL); if (rnd() < 0.08) { x.fillStyle = 'rgba(150,70,25,' + (0.1 + rnd() * 0.12) + ')'; x.beginPath(); x.ellipse(gx * CELL + rnd() * CELL, gy * CELL + rnd() * CELL, 4 + rnd() * 7, 3 + rnd() * 5, rnd() * 3, 0, Math.PI * 2); x.fill(); } if (rnd() < 0.05) { x.fillStyle = '#0c0d0f'; x.fillRect(gx * CELL + 6 + rnd() * 14, gy * CELL + 6 + rnd() * 14, 2 + rnd() * 6, 1); } }
+      x.shadowColor = '#ff7a2a'; x.shadowBlur = 5; x.strokeStyle = 'rgba(214,110,40,0.35)'; x.lineWidth = 1;
+      for (let gx = 0; gx <= COLS; gx++) { x.beginPath(); x.moveTo(gx * CELL + 0.5, 0); x.lineTo(gx * CELL + 0.5, H); x.stroke(); } for (let gy = 0; gy <= ROWS; gy++) { x.beginPath(); x.moveTo(0, gy * CELL + 0.5); x.lineTo(W, gy * CELL + 0.5); x.stroke(); }
+      x.shadowBlur = 0; x.fillStyle = '#2b2f34'; for (let gx = 0; gx <= COLS; gx++) for (let gy = 0; gy <= ROWS; gy++) { x.fillRect(gx * CELL - 1, gy * CELL - 1, 3, 3); x.fillStyle = '#4a5058'; x.fillRect(gx * CELL - 1, gy * CELL - 1, 1, 1); x.fillStyle = '#2b2f34'; }
+      x.fillStyle = '#e0b030'; for (let k = 0; k < W; k += 24) { x.beginPath(); x.moveTo(k, 0); x.lineTo(k + 12, 0); x.lineTo(k + 6, 5); x.lineTo(k - 6, 5); x.closePath(); x.fill(); x.beginPath(); x.moveTo(k, H); x.lineTo(k + 12, H); x.lineTo(k + 18, H - 5); x.lineTo(k + 6, H - 5); x.closePath(); x.fill(); }  // попереджувальна смуга по краю
+      const v = x.createRadialGradient(W / 2, H / 2, H / 3, W / 2, H / 2, H * 0.9); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.6)'); x.fillStyle = v; x.fillRect(0, 0, W, H); return c; })(),
+    // сегмент тіла 28×28: темно-червона луска з тріщинами, світіння
+    brick: glowSprite(40, '#ff2a1f', 9, (x) => { x.fillStyle = '#3a0806'; x.fillRect(6, 6, 28, 28); x.fillStyle = '#b8231a'; x.fillRect(8, 8, 24, 24);
+      x.fillStyle = '#7a1410'; x.fillRect(8, 15, 24, 2); x.fillRect(8, 23, 24, 2); x.fillRect(19, 8, 2, 7); x.fillRect(13, 17, 2, 6); x.fillRect(25, 17, 2, 6); x.fillRect(19, 25, 2, 7);
+      x.fillStyle = '#e04a3a'; x.fillRect(8, 8, 11, 1); x.fillRect(21, 8, 11, 1); x.fillRect(8, 17, 5, 1); x.fillRect(15, 17, 10, 1); x.fillRect(27, 17, 5, 1); x.fillRect(8, 25, 11, 1); x.fillRect(21, 25, 11, 1);
+      x.fillStyle = '#2a0604'; x.fillRect(10, 11, 1, 3); x.fillRect(11, 13, 2, 1); x.fillRect(28, 27, 1, 3); x.fillRect(26, 29, 2, 1); }),   // тріщини
+    // голова 36×36 (дивиться вправо): зла морда, роги, зміїні очі, відкрита паща з іклами
+    head: glowSprite(52, '#ff2a1f', 10, (x) => {
+      x.fillStyle = '#3a0806'; x.beginPath(); x.moveTo(6, 10); x.lineTo(2, 2); x.lineTo(13, 8); x.closePath(); x.fill(); x.beginPath(); x.moveTo(6, 42); x.lineTo(2, 50); x.lineTo(13, 44); x.closePath(); x.fill();           // роги (контур)
+      x.fillStyle = '#e8e0c8'; x.beginPath(); x.moveTo(8, 11); x.lineTo(5, 5); x.lineTo(13, 10); x.closePath(); x.fill(); x.beginPath(); x.moveTo(8, 41); x.lineTo(5, 47); x.lineTo(13, 42); x.closePath(); x.fill();
+      x.fillStyle = '#3a0806'; x.beginPath(); x.roundRect(8, 8, 38, 36, 10); x.fill(); x.fillStyle = '#b8231a'; x.beginPath(); x.roundRect(10, 10, 34, 32, 9); x.fill();
+      x.fillStyle = '#e04a3a'; x.fillRect(14, 11, 20, 2);
+      x.fillStyle = '#2a0604'; x.beginPath(); x.moveTo(44, 18); x.lineTo(30, 22); x.lineTo(30, 30); x.lineTo(44, 34); x.closePath(); x.fill();                                   // відкрита паща
+      x.fillStyle = '#fff'; x.beginPath(); x.moveTo(32, 22); x.lineTo(35, 27); x.lineTo(38, 22); x.closePath(); x.fill(); x.beginPath(); x.moveTo(38, 30); x.lineTo(41, 25); x.lineTo(44, 30); x.closePath(); x.fill(); x.beginPath(); x.moveTo(32, 30); x.lineTo(34, 26); x.lineTo(36, 30); x.closePath(); x.fill();   // ікла
+      x.fillStyle = '#ffd23a'; x.fillRect(22, 13, 10, 8); x.fillRect(22, 31, 10, 8); x.fillStyle = '#111'; x.fillRect(28, 14, 2, 6); x.fillRect(28, 32, 2, 6);                     // жовті очі зі щілинами
+      x.fillStyle = '#3a0806'; x.beginPath(); x.moveTo(20, 12); x.lineTo(34, 16); x.lineTo(34, 13); x.closePath(); x.fill(); x.beginPath(); x.moveTo(20, 40); x.lineTo(34, 36); x.lineTo(34, 39); x.closePath(); x.fill();   // злі брови
+    }),
+    halo: (color) => glowSprite(56, color, 14, (x) => { x.fillStyle = color; x.globalAlpha = 0.33; x.beginPath(); x.arc(28, 28, 14, 0, Math.PI * 2); x.fill(); x.globalAlpha = 1; }),
   };
-  NEON.haloCyan = NEON.halo('#39d9ff'); NEON.haloGold = NEON.halo('#ffd93a');
+  NEON.haloScrap = NEON.halo('#ff8a2a'); NEON.haloGold = NEON.halo('#ffd93a'); NEON.haloBarrel = NEON.halo('#ff3b2f');
   function drawNeon(pts, now) {
     const n = pts.length;
-    for (let k = n - 1; k >= 1; k--) ctx.drawImage(NEON.brick, Math.round(pts[k].x) - 20, Math.round(pts[k].y) - 20);
+    for (let k = n - 1; k >= 1; k--) {
+      const p = pts[k]; ctx.drawImage(NEON.brick, Math.round(p.x) - 20, Math.round(p.y) - 20);
+      if (k % 2 === 0 && k < n - 1) { // кістяні шипи по боках
+        const a = pts[k - 1], c = pts[k + 1]; let tx = c.x - a.x, ty = c.y - a.y; const L = Math.hypot(tx, ty) || 1; tx /= L; ty /= L; const nx = -ty, ny = tx;
+        for (const sg of [1, -1]) { ctx.fillStyle = '#3a0806'; ctx.beginPath(); ctx.moveTo(p.x + nx * sg * 12 - tx * 5, p.y + ny * sg * 12 - ty * 5); ctx.lineTo(p.x + nx * sg * 12 + tx * 5, p.y + ny * sg * 12 + ty * 5); ctx.lineTo(p.x + nx * sg * 22, p.y + ny * sg * 22); ctx.closePath(); ctx.fill(); ctx.fillStyle = '#e8e0c8'; ctx.beginPath(); ctx.moveTo(p.x + nx * sg * 13 - tx * 3, p.y + ny * sg * 13 - ty * 3); ctx.lineTo(p.x + nx * sg * 13 + tx * 3, p.y + ny * sg * 13 + ty * 3); ctx.lineTo(p.x + nx * sg * 20, p.y + ny * sg * 20); ctx.closePath(); ctx.fill(); }
+      }
+    }
   }
   let last = performance.now();
   function draw(now) {
@@ -314,11 +336,11 @@
     if (G.flash > 0) { ctx.fillStyle = 'rgba(255,220,120,0.25)'; ctx.fillRect(-20, -20, W + 40, H + 40); G.flash--; }
     const put = (spr, p, scale = 1, dy = 0) => { const s = CELL * scale, o = (CELL - s) / 2; ctx.drawImage(spr, Math.round(p.x * CELL + o), Math.round(p.y * CELL + o + dy), s, s); };
     const shadow = (px, py, w) => { ctx.fillStyle = 'rgba(0,0,0,0.28)'; ctx.fillRect(px - w / 2 + 2, py + w / 2 - 2, w, 4); };
-    for (const b of G.barrels) { if (bodyStyle === 'neon') ctx.drawImage(NEON.crate, b.x * CELL - 4, b.y * CELL - 4); else { shadow(b.x * CELL + CELL / 2, b.y * CELL + CELL / 2, 26); put(SPR.barrel, b); } }
-    if (G.food && bodyStyle === 'neon') { ctx.globalAlpha = 0.6 + Math.sin(now / 150) * 0.3; ctx.drawImage(NEON.haloCyan, G.food.x * CELL - 12, G.food.y * CELL - 12); ctx.globalAlpha = 1; }
+    for (const b of G.barrels) { if (bodyStyle === 'neon') { ctx.drawImage(NEON.haloBarrel, b.x * CELL - 12, b.y * CELL - 12); put(SPR.barrel, b); } else { shadow(b.x * CELL + CELL / 2, b.y * CELL + CELL / 2, 26); put(SPR.barrel, b); } }
+    if (G.food && bodyStyle === 'neon') { ctx.globalAlpha = 0.6 + Math.sin(now / 150) * 0.3; ctx.drawImage(NEON.haloScrap, G.food.x * CELL - 12, G.food.y * CELL - 12); ctx.globalAlpha = 1; }
     if (G.gold && bodyStyle === 'neon') { ctx.globalAlpha = 0.6 + Math.sin(now / 80) * 0.4; ctx.drawImage(NEON.haloGold, G.gold.x * CELL - 12, G.gold.y * CELL - 12); ctx.globalAlpha = 1; }
-    if (G.food) { const bob = Math.sin(now / 200) * 2; if (bodyStyle !== 'neon') shadow(G.food.x * CELL + CELL / 2, G.food.y * CELL + CELL / 2, 22); ctx.drawImage(SPR.scrap, G.food.x * CELL - 6, Math.round(G.food.y * CELL - 6 + bob), 44, 44); }
-    if (G.gold) { const bob = Math.sin(now / 100) * 3; ctx.fillStyle = `rgba(255,212,90,${0.18 + Math.sin(now / 120) * 0.08})`; ctx.beginPath(); ctx.arc(G.gold.x * CELL + CELL / 2, G.gold.y * CELL + CELL / 2, 20, 0, Math.PI * 2); ctx.fill(); ctx.drawImage(SPR.gold, G.gold.x * CELL - 6, Math.round(G.gold.y * CELL - 6 + bob), 44, 44); ctx.fillStyle = '#17171b'; ctx.fillRect(G.gold.x * CELL + 4, G.gold.y * CELL + CELL - 4, CELL - 8, 3); ctx.fillStyle = '#ffd45a'; ctx.fillRect(G.gold.x * CELL + 4, G.gold.y * CELL + CELL - 4, (CELL - 8) * (G.goldTtl / 50), 3); }
+    if (G.food) { const bob = Math.sin(now / 200) * 2; if (bodyStyle !== 'neon') shadow(G.food.x * CELL + CELL / 2, G.food.y * CELL + CELL / 2, 22); ctx.drawImage(SPR.scrap, G.food.x * CELL - 8, Math.round(G.food.y * CELL - 8 + bob), 48, 48); }
+    if (G.gold) { const bob = Math.sin(now / 100) * 3; ctx.fillStyle = `rgba(255,212,90,${0.18 + Math.sin(now / 120) * 0.08})`; ctx.beginPath(); ctx.arc(G.gold.x * CELL + CELL / 2, G.gold.y * CELL + CELL / 2, 20, 0, Math.PI * 2); ctx.fill(); ctx.drawImage(SPR.gold, G.gold.x * CELL - 8, Math.round(G.gold.y * CELL - 8 + bob), 48, 48); ctx.fillStyle = '#17171b'; ctx.fillRect(G.gold.x * CELL + 4, G.gold.y * CELL + CELL - 4, CELL - 8, 3); ctx.fillStyle = '#ffd45a'; ctx.fillRect(G.gold.x * CELL + 4, G.gold.y * CELL + CELL - 4, (CELL - 8) * (G.goldTtl / 50), 3); }
     // змійка: інтерпольовані центри сегментів
     const pts = G.snake.map((s, i) => { const p = G.prev[i] || s; return { x: lerp(p.x, s.x, t) * CELL + CELL / 2, y: lerp(p.y, s.y, t) * CELL + CELL / 2 }; });
     if (pts.length > 1) {
@@ -364,7 +386,7 @@
         // язичок: роздвоєний, висовується на мить
         const tg = (now % 900) < 260 ? Math.min(1, ((now % 900) / 130)) * (1 - Math.max(0, ((now % 900) - 130) / 130)) * 2 : 0;
         if (tg > 0) { const L = 6 + tg * 8; ctx.strokeStyle = '#ff5fa0'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(14, 0); ctx.lineTo(14 + L, 0); ctx.lineTo(14 + L + 4, -4); ctx.moveTo(14 + L, 0); ctx.lineTo(14 + L + 4, 4); ctx.stroke(); }
-        ctx.drawImage(NEON.head, -24, -24); ctx.restore();
+        ctx.drawImage(NEON.head, -26, -26); ctx.restore();
       } else {
         ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(-14, 13, 30, 5);
         const headSpr = bodyStyle === 'gears' ? SKINS[2].sprite : bodyStyle === 'armor' ? SKINS[3].sprite : sk.sprite;
