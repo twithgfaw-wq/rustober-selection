@@ -147,6 +147,8 @@
   const chooseSkin = () => { G.skin = skinPick === 'random' ? SKINS[Math.floor(Math.random() * SKINS.length)] : (SKINS.find((s) => s.id === skinPick) || SKINS[0]); };
   if ($('skinBtn')) $('skinBtn').addEventListener('click', () => { const order = ['random', ...SKINS.map((s) => s.id)]; skinPick = order[(order.indexOf(skinPick) + 1) % order.length]; store.set('rstbr-snake-skin', skinPick); paintSkinBtn(); chooseSkin(); });
   paintSkinBtn(); chooseSkin();
+  let bodyStyle = store.get('rstbr-snake-body', 'worm');
+  window.__setBody = (b) => { bodyStyle = b; store.set('rstbr-snake-body', b); };
   function reset() {
     chooseSkin();
     G.snake = [{ x: 7, y: 7 }, { x: 6, y: 7 }, { x: 5, y: 7 }, { x: 4, y: 7 }]; G.prev = G.snake.map((s) => ({ ...s })); G.dir = { x: 1, y: 0 }; G.queue = [];
@@ -169,7 +171,7 @@
     const old = G.snake; G.snake = [n, ...old];
     let grew = false;
     if (G.food && same(n, G.food)) {
-      G.score++; G.eaten++; grew = true; sound.eat(); if (G.mode === 'lcd') G.flash = 2; burst(n, ['#fff2a0', '#d4d4d8', '#b5562a'], 14); G.food = freeCell(true);
+      G.score++; G.eaten++; grew = true; sound.eat(); burst(n, ['#fff2a0', '#d4d4d8', '#b5562a'], 14); G.food = freeCell(true);
       if (G.eaten % 5 === 0) { G.speed++; sound.level(); G.flash = 5; if (G.speed >= 3 && G.barrels.length < 7) { const b = freeCell(true); if (b) G.barrels.push(b); } }
       if (!G.gold && Math.random() < 0.2) { G.gold = freeCell(true); G.goldTtl = 50; }
     } else if (G.gold && same(n, G.gold)) { G.score += 5; grew = true; sound.gold(); burst(n, ['#ffd45a', '#fff0a0', '#e0b030'], 24); G.gold = null; }
@@ -181,10 +183,10 @@
   }
   function burst(p, colors, n) { for (let i = 0; i < n; i++) { const a = Math.random() * Math.PI * 2, v = 1 + Math.random() * 3; G.particles.push({ x: p.x * CELL + CELL / 2, y: p.y * CELL + CELL / 2, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 1, life: 20 + Math.random() * 12, color: colors[i % colors.length], s: 2 + (Math.random() * 3 | 0) }); } }
   function die() {
-    G.alive = false; G.diedAt = performance.now(); G.shake = G.mode === 'lcd' ? 4 : 14; G.flash = 3; sound.over(); $('ledAlive').classList.remove('on');
+    G.alive = false; G.diedAt = performance.now(); G.shake = 14; G.flash = 3; sound.over(); $('ledAlive').classList.remove('on');
     burst(G.snake[0], ['#ff8a3c', '#ffd45a', '#d94a3a', '#2a2a2e'], 40);
     const b = board(); const qualifies = G.score > 0 && (b.length < 5 || G.score > b[b.length - 1].score);
-    $('ovTitle').textContent = 'GAME OVER · ' + MODES[G.mode].title; $('ovText').innerHTML = `SCRAP ${G.score} · BEST ${G.best}`; $('startBtn').textContent = 'RETRY ▶'; $('ovSub').textContent = qualifies ? 'NEW HIGH SCORE!' : 'PRESS START';
+    $('ovTitle').textContent = 'GAME OVER'; $('ovText').innerHTML = `SCRAP ${G.score} · BEST ${G.best}`; $('startBtn').textContent = 'RETRY ▶'; $('ovSub').textContent = qualifies ? 'NEW HIGH SCORE!' : 'PRESS START';
     setTimeout(() => { $('overlay').hidden = false; if (qualifies) askName(); }, 600);
   }
   function askName() { $('nameText').textContent = `SCRAP ${G.score}`; $('nameInput').value = store.get('rstbr-name', ''); $('nameModal').hidden = false; setTimeout(() => $('nameInput').focus(), 50); }
@@ -233,12 +235,53 @@
 
   // ---- рендер (60 FPS, рух інтерпольований між клітинками) ----
   const lerp = (a, b, t) => a + (b - a) * t;
+
+  // ---- дизайн 2: БРОНЯ — квадратні металеві пластини на шарнірах ----
+  function drawPlates(pts, sk) {
+    const n = pts.length; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    const spine = () => { ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); for (let i = 1; i < n; i++) ctx.lineTo(pts[i].x, pts[i].y); };
+    spine(); ctx.strokeStyle = '#17171b'; ctx.lineWidth = 12; ctx.stroke(); spine(); ctx.strokeStyle = sk.lo; ctx.lineWidth = 7; ctx.stroke();
+    for (let i = n - 1; i >= 1; i--) {
+      const p = pts[i], fr = i / (n - 1), sz = Math.round(26 - 9 * fr), h = sz / 2, x = Math.round(p.x - h), y = Math.round(p.y - h);
+      ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(x + 3, y + 4, sz, sz);
+      ctx.fillStyle = '#17171b'; ctx.fillRect(x - 2, y - 2, sz + 4, sz + 4);
+      ctx.fillStyle = sk.plates[i % 2]; ctx.fillRect(x, y, sz, sz);
+      ctx.fillStyle = sk.hi; ctx.fillRect(x, y, sz, 3); ctx.fillRect(x, y, 3, sz);
+      ctx.fillStyle = sk.lo; ctx.fillRect(x, y + sz - 3, sz, 3); ctx.fillRect(x + sz - 3, y, 3, sz);
+      if (sz < 16) continue;
+      ctx.fillStyle = '#d4d4d8'; for (const [a, b] of [[4, 4], [sz - 7, 4], [4, sz - 7], [sz - 7, sz - 7]]) ctx.fillRect(x + a, y + b, 3, 3);
+      if (sk.mark === 'tape') { ctx.fillStyle = '#8c8c94'; ctx.fillRect(x + 3, y + h - 2, sz - 6, 4); ctx.fillStyle = '#c4c4cc'; ctx.fillRect(x + 3, y + h - 2, sz - 6, 1); }
+      else if (sk.mark === 'rope') { ctx.fillStyle = '#c8b070'; ctx.fillRect(x + 3, y + h - 4, sz - 6, 2); ctx.fillRect(x + 3, y + h + 2, sz - 6, 2); }
+      else { ctx.fillStyle = '#6a6a70'; ctx.fillRect(x + h - 3, y + h - 3, 6, 6); ctx.fillStyle = '#d4d4d8'; ctx.fillRect(x + h - 1, y + h - 1, 2, 2); }
+    }
+  }
+  // ---- дизайн 3: ТРУБОПРОВІД — іржаві труби з фланцями й болтами на стиках ----
+  function drawPipes(pts, sk) {
+    const n = pts.length, S = G.snake, R = 9;
+    const dirTo = (a, b) => ({ x: Math.sign(b.x - a.x), y: Math.sign(b.y - a.y) });
+    const seg = (p, d, len, w, color) => { ctx.strokeStyle = color; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x + d.x * len, p.y + d.y * len); ctx.stroke(); };
+    ctx.lineCap = 'butt';
+    const each = (fn) => { for (let i = 1; i < n; i++) { const p = pts[i]; fn(p, dirTo(S[i], S[i - 1]), i, false); if (i < n - 1) fn(p, dirTo(S[i], S[i + 1]), i, false); else fn(p, dirTo(S[i], S[i - 1]), i, true); } };
+    ctx.save(); ctx.translate(3, 4); each((p, d) => seg(p, d, 17, R * 2 + 2, 'rgba(0,0,0,0.3)')); ctx.restore();
+    each((p, d, i, cap) => { if (cap) { ctx.fillStyle = '#17171b'; ctx.beginPath(); ctx.arc(p.x, p.y, R + 3, 0, Math.PI * 2); ctx.fill(); } else seg(p, d, 17, R * 2 + 6, '#17171b'); });
+    each((p, d, i, cap) => { if (cap) { ctx.fillStyle = sk.tube; ctx.beginPath(); ctx.arc(p.x, p.y, R, 0, Math.PI * 2); ctx.fill(); } else seg(p, d, 17, R * 2, sk.tube); });
+    ctx.globalAlpha = 0.5; each((p, d, i, cap) => { if (cap) return; const o = d.x ? { x: 0, y: -4 } : { x: -4, y: 0 }; seg({ x: p.x + o.x, y: p.y + o.y }, d, 17, 3, sk.hi); }); ctx.globalAlpha = 1;
+    ctx.globalAlpha = 0.35; each((p, d, i, cap) => { if (cap) return; const o = d.x ? { x: 0, y: 5 } : { x: 5, y: 0 }; seg({ x: p.x + o.x, y: p.y + o.y }, d, 17, 3, sk.lo); }); ctx.globalAlpha = 1;
+    for (let i = 1; i < n; i++) {
+      const p = pts[i], fl = i % 2 === 0 || i === n - 1, r = fl ? R + 3 : R + 1;
+      ctx.fillStyle = '#17171b'; ctx.beginPath(); ctx.arc(p.x, p.y, r + 2, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = fl ? sk.plates[0] : sk.plates[1]; ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = sk.hi; ctx.beginPath(); ctx.arc(p.x - 2, p.y - 2, r - 3, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = fl ? sk.plates[0] : sk.plates[1]; ctx.beginPath(); ctx.arc(p.x, p.y, r - 4, 0, Math.PI * 2); ctx.fill();
+      if (fl) { ctx.fillStyle = '#d4d4d8'; for (const [a, b] of [[0, -r + 3], [r - 3, 0], [0, r - 3], [-r + 3, 0]]) ctx.fillRect(p.x + a - 1.5, p.y + b - 1.5, 3, 3); }
+      else { ctx.fillStyle = sk.lo; ctx.fillRect(p.x - 1, p.y - 1, 2, 2); }
+    }
+  }
   let last = performance.now();
   function draw(now) {
     const dt = Math.min(100, now - last); last = now;
     if (G.alive && !G.paused) { G.acc += dt; while (G.acc >= stepMs()) { G.acc -= stepMs(); step(); if (!G.alive) { G.acc = 0; break; } } }
     const t = G.alive && !G.paused ? Math.min(1, G.acc / stepMs()) : 1;
-    if (G.mode === 'lcd') { drawLcd(now); requestAnimationFrame(draw); return; }
     ctx.save(); ctx.imageSmoothingEnabled = false;
     if (G.shake > 0) { ctx.translate((Math.random() - 0.5) * G.shake, (Math.random() - 0.5) * G.shake); G.shake--; }
     ctx.drawImage(ground, 0, 0);
@@ -251,7 +294,8 @@
     // змійка: інтерпольовані центри сегментів
     const pts = G.snake.map((s, i) => { const p = G.prev[i] || s; return { x: lerp(p.x, s.x, t) * CELL + CELL / 2, y: lerp(p.y, s.y, t) * CELL + CELL / 2 }; });
     if (pts.length > 1) {
-      const sk = G.skin, n = pts.length;
+      const sk = G.skin, n = pts.length; let hb = pts[1];
+      if (bodyStyle === 'plates') drawPlates(pts, sk); else if (bodyStyle === 'pipes') drawPipes(pts, sk); else {
       // плавна крива Catmull-Rom через центри сегментів, 3 підточки на сегмент; f = 0 біля шиї, 1 на кінчику хвоста
       const sm = [];
       for (let i = 0; i < n - 1; i++) {
@@ -284,8 +328,9 @@
         else if (sk.mark === 'rope') { line(tx * 3, ty * 3, 2, '#c8b070'); line(-tx * 3, -ty * 3, 2, '#c8b070'); }
         ctx.lineCap = 'round';
       }
+      hb = sm[1] || pts[1]; }
       // голова: більша за шию, плавно повертається за напрямком руху
-      const hp = pts[0], hb = sm[1] || pts[1]; const ang = Math.atan2(hp.y - hb.y, hp.x - hb.x);
+      const hp = pts[0]; const ang = Math.atan2(hp.y - hb.y, hp.x - hb.x);
       ctx.save(); ctx.translate(Math.round(hp.x), Math.round(hp.y)); ctx.rotate(ang);
       ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(-14, 13, 30, 5);
       ctx.drawImage(sk.sprite, -17, -17, 34, 34); ctx.restore();
@@ -297,67 +342,8 @@
     requestAnimationFrame(draw);
   }
 
-  // ---- картридж RUST 3310: монохромний LCD у бурштиново-іржавих тонах ----
-  const LCD = { bg: '#b9a24a', fg: '#2a1d0e', px: 7, ox: 40, oy: 44 };          // поле 80×60 LCD-пікселів = 20×15 клітинок по 4
-  const lcdGhost = document.createElement('canvas'); lcdGhost.width = W; lcdGhost.height = H; const gctx = lcdGhost.getContext('2d');
-  const lcdGrid = (() => { const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d'); x.fillStyle = 'rgba(42,29,14,0.08)'; for (let i = 0; i < 80; i++) for (let j = 0; j < 60; j++) x.fillRect(LCD.ox + i * LCD.px, LCD.oy + j * LCD.px, LCD.px - 1, LCD.px - 1); const v = x.createRadialGradient(W / 2, H / 2, H / 3, W / 2, H / 2, H); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.18)'); x.fillStyle = v; x.fillRect(0, 0, W, H); return c; })();
-  const PAT = {
-    scrap: ['.##.', '#..#', '#..#', '.##.'], scrap2: ['#.#.', '.##.', '.##.', '.#.#'],   // шестерня, що крутиться
-    drop: ['.####.', '#....#', '######', '.#..#.', '.####.', '.####.'],                 // аірдроп: парашут + ящик
-    rock: ['.##.', '####', '####', '.##.'],
-  };
-  function drawLcd(now) {
-    const inv = G.flash > 0; if (G.flash > 0) G.flash--;
-    const bg = inv ? LCD.fg : LCD.bg, fg = inv ? LCD.bg : LCD.fg;
-    ctx.save(); ctx.imageSmoothingEnabled = false;
-    if (G.shake > 0) { ctx.translate(((G.shake % 2) * 2 - 1) * 3, 0); G.shake--; }
-    ctx.fillStyle = bg; ctx.fillRect(-20, -20, W + 40, H + 40);
-    ctx.globalAlpha = 0.55; ctx.drawImage(lcdGhost, 0, 0); ctx.globalAlpha = 1;   // післясвічення LCD
-    ctx.fillStyle = fg;
-    const P = (ix, iy) => ctx.fillRect(LCD.ox + ix * LCD.px, LCD.oy + iy * LCD.px, LCD.px - 1, LCD.px - 1);
-    const pat = (rows, cx, cy) => rows.forEach((r, j) => [...r].forEach((ch, i) => { if (ch === '#') P(cx + i, cy + j); }));
-    // рамка поля
-    for (let i = -1; i <= 80; i++) { P(i, -1); P(i, 60); } for (let j = 0; j < 60; j++) { P(-1, j); P(80, j); }
-    // рахунок як на Nokia + таймер бонуса
-    ctx.font = '16px "Press Start 2P", monospace'; ctx.textBaseline = 'alphabetic'; ctx.fillText(String(G.score).padStart(4, '0'), LCD.ox, 30);
-    if (G.gold) { const n = Math.ceil(16 * G.goldTtl / 50); for (let i = 0; i < n; i++) { P(63 + i, -3); P(63 + i, -4); } }
-    const blinkDead = !G.alive && G.started && Math.floor((now - G.diedAt) / 150) % 2 === 1;
-    for (const b of G.barrels) pat(PAT.rock, b.x * 4, b.y * 4);
-    if (G.food && Math.floor(now / 350) % 4 !== 3) pat(Math.floor(now / 350) % 2 ? PAT.scrap : PAT.scrap2, G.food.x * 4, G.food.y * 4);
-    if (G.gold && Math.floor(now / 120) % 5 !== 4) pat(PAT.drop, G.gold.x * 4 - 1, G.gold.y * 4 - 1);
-    if (!blinkDead) {
-      const n = G.snake.length;
-      for (let i = n - 1; i >= 1; i--) {
-        const c = G.snake[i], cx = c.x * 4, cy = c.y * 4;
-        if (i === n - 1 && n > 2) { const p = G.snake[i - 1]; const dx = p.x - c.x, dy = p.y - c.y; // хвіст: половина блоку в бік тіла
-          for (let a = 0; a < 4; a++) for (let b = 0; b < 4; b++) { if ((dx === 1 && a < 2) || (dx === -1 && a > 1) || (dy === 1 && b < 2) || (dy === -1 && b > 1)) continue; P(cx + a, cy + b); } continue; }
-        for (let a = 0; a < 4; a++) for (let b = 0; b < 4; b++) { const hole = i % 2 ? (a === 1 && b === 1) || (a === 2 && b === 2) : (a === 1 && b === 2) || (a === 2 && b === 1); if (!hole) P(cx + a, cy + b); }
-      }
-      const h = G.snake[0], hx = h.x * 4, hy = h.y * 4, d = G.dir;
-      const eye = d.x === 1 ? [2, 1] : d.x === -1 ? [1, 1] : d.y === -1 ? [1, 1] : [1, 2];
-      for (let a = 0; a < 4; a++) for (let b = 0; b < 4; b++) if (!(a === eye[0] && b === eye[1])) P(hx + a, hy + b);
-      if (G.alive && Math.floor(now / 400) % 2) { P(hx + 1.5 + d.x * 3.5, hy + 1.5 + d.y * 3.5); P(hx + 1.5 + d.x * 4.5, hy + 1.5 + d.y * 4.5); } // язичок
-    }
-    if (G.paused && G.alive) { ctx.fillStyle = bg; ctx.fillRect(W / 2 - 70, H / 2 - 22, 140, 40); ctx.fillStyle = fg; ctx.fillRect(W / 2 - 66, H / 2 - 18, 132, 32); ctx.fillStyle = bg; ctx.font = '14px "Press Start 2P", monospace'; ctx.textAlign = 'center'; ctx.fillText('PAUSE', W / 2, H / 2 + 6); ctx.textAlign = 'left'; }
-    ctx.restore();
-    // запам'ятати кадр для післясвічення, потім сітка пікселів зверху
-    gctx.clearRect(0, 0, W, H); gctx.drawImage(cv, 0, 0);
-    ctx.drawImage(lcdGrid, 0, 0);
-  }
-  // перемикання картриджів
-  const MODES = { rust: { title: 'SCRAP SNAKE', text: 'Збирай скрап, не вріжся в стіни і в себе.<br>Стрілки / WASD · свайп · D-pad' }, lcd: { title: 'RUST 3310', text: 'Класична змійка на LCD.<br>Скрап = +1, аірдроп = +5, поки не полетів.' } };
-  function setMode(m, silent) {
-    G.mode = m; store.set('rstbr-cart', m); G.started = false; G.alive = false; G.paused = false; G.queue = []; G.dir = { x: 1, y: 0 };
-    G.best = store.get(kBest(), 0); G.score = 0; G.speed = 1; G.particles = []; G.flash = 0; G.shake = 0;
-    $('screen').classList.toggle('lcd', m === 'lcd'); $('ledAlive').classList.remove('on');
-    document.querySelectorAll('.cart[data-game]').forEach((b) => b.classList.toggle('on', b.dataset.game === (m === 'lcd' ? 'lcd' : 'snake')));
-    if ($('skinBtn')) $('skinBtn').hidden = m === 'lcd';
-    $('ovTitle').textContent = MODES[m].title; $('ovText').innerHTML = MODES[m].text; $('startBtn').textContent = 'START ▶'; $('ovSub').textContent = ''; $('overlay').hidden = false; $('nameModal').hidden = true;
-    G.snake = [{ x: 7, y: 7 }, { x: 6, y: 7 }, { x: 5, y: 7 }, { x: 4, y: 7 }]; G.prev = G.snake.map((s) => ({ ...s })); G.food = { x: 13, y: 7 }; G.gold = null; G.barrels = m === 'lcd' ? [] : [{ x: 15, y: 4 }, { x: 4, y: 11 }];
-    hud(); paintBoard(); if (!silent) sound.start();
-  }
-  document.querySelectorAll('.cart[data-game]').forEach((b) => b.addEventListener('click', () => setMode(b.dataset.game === 'lcd' ? 'lcd' : 'rust')));
-  setMode(store.get('rstbr-cart', 'rust') === 'lcd' ? 'lcd' : 'rust', true);
+  G.mode = 'rust';
+  G.snake = [{ x: 7, y: 7 }, { x: 6, y: 7 }, { x: 5, y: 7 }, { x: 4, y: 7 }]; G.prev = G.snake.map((s) => ({ ...s })); G.food = { x: 13, y: 7 }; G.barrels = [{ x: 15, y: 4 }, { x: 4, y: 11 }];
   window.__G = G; // для налагодження
   hud(); paintBoard(); requestAnimationFrame(draw);
   document.addEventListener('visibilitychange', () => { if (document.hidden && G.alive) G.paused = true; });
