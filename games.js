@@ -147,7 +147,7 @@
   const chooseSkin = () => { G.skin = skinPick === 'random' ? SKINS[Math.floor(Math.random() * SKINS.length)] : (SKINS.find((s) => s.id === skinPick) || SKINS[0]); };
   if ($('skinBtn')) $('skinBtn').addEventListener('click', () => { const order = ['random', ...SKINS.map((s) => s.id)]; skinPick = order[(order.indexOf(skinPick) + 1) % order.length]; store.set('rstbr-snake-skin', skinPick); paintSkinBtn(); chooseSkin(); });
   paintSkinBtn(); chooseSkin();
-  let bodyStyle = store.get('rstbr-snake-body', 'worm');
+  let bodyStyle = store.get('rstbr-snake-body', 'neon');
   window.__setBody = (b) => { bodyStyle = b; store.set('rstbr-snake-body', b); };
   function reset() {
     chooseSkin();
@@ -278,6 +278,31 @@
       ctx.fillStyle = '#c9cdd3'; for (const [a2, b2] of [[4, 4], [sz - 7, 4], [4, sz - 7], [sz - 7, sz - 7]]) ctx.fillRect(x + a2, y + b2, 3, 3);
     }
   }
+  // ---- дизайн NEON ARCADE: чорний CRT-екран із сяючою зеленою сіткою, червона цегляна змійка з мультяшною головою ----
+  const glowSprite = (size, glow, blur, paint) => { const c = document.createElement('canvas'); c.width = size; c.height = size; const x = c.getContext('2d'); x.shadowColor = glow; x.shadowBlur = blur; paint(x, size); x.shadowBlur = 0; paint(x, size); return c; };
+  const NEON = {
+    bg: (() => { const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d'); x.fillStyle = '#04070a'; x.fillRect(0, 0, W, H);
+      let seed = 777; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+      for (let k = 0; k < 90; k++) { x.fillStyle = 'rgba(180,220,255,' + (0.15 + rnd() * 0.5) + ')'; x.fillRect(rnd() * W | 0, rnd() * H | 0, 1 + (rnd() < 0.2 ? 1 : 0), 1); }   // зоряний пил
+      x.shadowColor = '#2dff6a'; x.shadowBlur = 6; x.strokeStyle = 'rgba(45,255,106,0.55)'; x.lineWidth = 1;
+      for (let i = 0; i <= COLS; i++) { x.beginPath(); x.moveTo(i * CELL + 0.5, 0); x.lineTo(i * CELL + 0.5, H); x.stroke(); } for (let j = 0; j <= ROWS; j++) { x.beginPath(); x.moveTo(0, j * CELL + 0.5); x.lineTo(W, j * CELL + 0.5); x.stroke(); }
+      x.shadowBlur = 0; const v = x.createRadialGradient(W / 2, H / 2, H / 3, W / 2, H / 2, H * 0.9); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, 'rgba(0,0,0,0.55)'); x.fillStyle = v; x.fillRect(0, 0, W, H); return c; })(),
+    // цегляний блок тіла 28×28 (+6 px світіння з кожного боку)
+    brick: glowSprite(40, '#ff3b2f', 9, (x) => { x.fillStyle = '#5a0e08'; x.fillRect(6, 6, 28, 28); x.fillStyle = '#e03227'; x.fillRect(8, 8, 24, 24);
+      x.fillStyle = '#8a1810'; x.fillRect(8, 15, 24, 2); x.fillRect(8, 23, 24, 2); x.fillRect(19, 8, 2, 7); x.fillRect(13, 17, 2, 6); x.fillRect(25, 17, 2, 6); x.fillRect(19, 25, 2, 7);
+      x.fillStyle = '#ff6a5c'; x.fillRect(8, 8, 11, 1); x.fillRect(21, 8, 11, 1); x.fillRect(8, 17, 5, 1); x.fillRect(15, 17, 10, 1); x.fillRect(27, 17, 5, 1); x.fillRect(8, 25, 11, 1); x.fillRect(21, 25, 11, 1); }),
+    // голова 36×36 (дивиться вправо): очі зверху, темна паща спереду
+    head: glowSprite(48, '#ff3b2f', 10, (x) => { x.fillStyle = '#5a0e08'; x.beginPath(); x.roundRect(6, 6, 36, 36, 9); x.fill(); x.fillStyle = '#e8392b'; x.beginPath(); x.roundRect(8, 8, 32, 32, 8); x.fill();
+      x.fillStyle = '#ff6a5c'; x.fillRect(12, 9, 22, 2); x.fillStyle = '#8a1810'; x.fillRect(34, 16, 5, 16);           // блік і паща
+      x.fillStyle = '#fff'; x.fillRect(24, 11, 9, 9); x.fillRect(24, 28, 9, 9); x.fillStyle = '#111'; x.fillRect(29, 13, 4, 4); x.fillRect(29, 30, 4, 4); }),
+    crate: glowSprite(40, '#2dff6a', 8, (x) => { x.fillStyle = '#06200c'; x.fillRect(6, 6, 28, 28); x.strokeStyle = '#2dff6a'; x.lineWidth = 3; x.strokeRect(7.5, 7.5, 25, 25); x.lineWidth = 2; x.beginPath(); x.moveTo(10, 10); x.lineTo(30, 30); x.moveTo(30, 10); x.lineTo(10, 30); x.stroke(); x.fillStyle = '#2dff6a'; x.fillRect(16, 16, 8, 8); }),
+    halo: (color) => glowSprite(56, color, 14, (x) => { x.fillStyle = color; x.globalAlpha = 0.35; x.beginPath(); x.arc(28, 28, 14, 0, Math.PI * 2); x.fill(); x.globalAlpha = 1; }),
+  };
+  NEON.haloCyan = NEON.halo('#39d9ff'); NEON.haloGold = NEON.halo('#ffd93a');
+  function drawNeon(pts, now) {
+    const n = pts.length;
+    for (let k = n - 1; k >= 1; k--) ctx.drawImage(NEON.brick, Math.round(pts[k].x) - 20, Math.round(pts[k].y) - 20);
+  }
   let last = performance.now();
   function draw(now) {
     const dt = Math.min(100, now - last); last = now;
@@ -285,18 +310,20 @@
     const t = G.alive && !G.paused ? Math.min(1, G.acc / stepMs()) : 1;
     ctx.save(); ctx.imageSmoothingEnabled = false;
     if (G.shake > 0) { ctx.translate((Math.random() - 0.5) * G.shake, (Math.random() - 0.5) * G.shake); G.shake--; }
-    ctx.drawImage(ground, 0, 0);
+    ctx.drawImage(bodyStyle === 'neon' ? NEON.bg : ground, 0, 0);
     if (G.flash > 0) { ctx.fillStyle = 'rgba(255,220,120,0.25)'; ctx.fillRect(-20, -20, W + 40, H + 40); G.flash--; }
     const put = (spr, p, scale = 1, dy = 0) => { const s = CELL * scale, o = (CELL - s) / 2; ctx.drawImage(spr, Math.round(p.x * CELL + o), Math.round(p.y * CELL + o + dy), s, s); };
     const shadow = (px, py, w) => { ctx.fillStyle = 'rgba(0,0,0,0.28)'; ctx.fillRect(px - w / 2 + 2, py + w / 2 - 2, w, 4); };
-    for (const b of G.barrels) { shadow(b.x * CELL + CELL / 2, b.y * CELL + CELL / 2, 26); put(SPR.barrel, b); }
-    if (G.food) { const bob = Math.sin(now / 200) * 2; shadow(G.food.x * CELL + CELL / 2, G.food.y * CELL + CELL / 2, 22); ctx.drawImage(SPR.scrap, G.food.x * CELL - 6, Math.round(G.food.y * CELL - 6 + bob), 44, 44); }
+    for (const b of G.barrels) { if (bodyStyle === 'neon') ctx.drawImage(NEON.crate, b.x * CELL - 4, b.y * CELL - 4); else { shadow(b.x * CELL + CELL / 2, b.y * CELL + CELL / 2, 26); put(SPR.barrel, b); } }
+    if (G.food && bodyStyle === 'neon') { ctx.globalAlpha = 0.6 + Math.sin(now / 150) * 0.3; ctx.drawImage(NEON.haloCyan, G.food.x * CELL - 12, G.food.y * CELL - 12); ctx.globalAlpha = 1; }
+    if (G.gold && bodyStyle === 'neon') { ctx.globalAlpha = 0.6 + Math.sin(now / 80) * 0.4; ctx.drawImage(NEON.haloGold, G.gold.x * CELL - 12, G.gold.y * CELL - 12); ctx.globalAlpha = 1; }
+    if (G.food) { const bob = Math.sin(now / 200) * 2; if (bodyStyle !== 'neon') shadow(G.food.x * CELL + CELL / 2, G.food.y * CELL + CELL / 2, 22); ctx.drawImage(SPR.scrap, G.food.x * CELL - 6, Math.round(G.food.y * CELL - 6 + bob), 44, 44); }
     if (G.gold) { const bob = Math.sin(now / 100) * 3; ctx.fillStyle = `rgba(255,212,90,${0.18 + Math.sin(now / 120) * 0.08})`; ctx.beginPath(); ctx.arc(G.gold.x * CELL + CELL / 2, G.gold.y * CELL + CELL / 2, 20, 0, Math.PI * 2); ctx.fill(); ctx.drawImage(SPR.gold, G.gold.x * CELL - 6, Math.round(G.gold.y * CELL - 6 + bob), 44, 44); ctx.fillStyle = '#17171b'; ctx.fillRect(G.gold.x * CELL + 4, G.gold.y * CELL + CELL - 4, CELL - 8, 3); ctx.fillStyle = '#ffd45a'; ctx.fillRect(G.gold.x * CELL + 4, G.gold.y * CELL + CELL - 4, (CELL - 8) * (G.goldTtl / 50), 3); }
     // змійка: інтерпольовані центри сегментів
     const pts = G.snake.map((s, i) => { const p = G.prev[i] || s; return { x: lerp(p.x, s.x, t) * CELL + CELL / 2, y: lerp(p.y, s.y, t) * CELL + CELL / 2 }; });
     if (pts.length > 1) {
       const sk = G.skin, n = pts.length; let hb = pts[1];
-      if (bodyStyle === 'gears') drawGears(pts, now); else if (bodyStyle === 'armor') drawArmor(pts); else {
+      if (bodyStyle === 'neon') drawNeon(pts, now); else if (bodyStyle === 'gears') drawGears(pts, now); else if (bodyStyle === 'armor') drawArmor(pts); else {
       // плавна крива Catmull-Rom через центри сегментів, 3 підточки на сегмент; f = 0 біля шиї, 1 на кінчику хвоста
       const sm = [];
       for (let i = 0; i < n - 1; i++) {
@@ -333,9 +360,16 @@
       // голова: більша за шию, плавно повертається за напрямком руху
       const hp = pts[0]; const ang = Math.atan2(hp.y - hb.y, hp.x - hb.x);
       ctx.save(); ctx.translate(Math.round(hp.x), Math.round(hp.y)); ctx.rotate(ang);
-      ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(-14, 13, 30, 5);
-      const headSpr = bodyStyle === 'gears' ? SKINS[2].sprite : bodyStyle === 'armor' ? SKINS[3].sprite : sk.sprite;
-      ctx.drawImage(headSpr, -17, -17, 34, 34); ctx.restore();
+      if (bodyStyle === 'neon') {
+        // язичок: роздвоєний, висовується на мить
+        const tg = (now % 900) < 260 ? Math.min(1, ((now % 900) / 130)) * (1 - Math.max(0, ((now % 900) - 130) / 130)) * 2 : 0;
+        if (tg > 0) { const L = 6 + tg * 8; ctx.strokeStyle = '#ff5fa0'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(14, 0); ctx.lineTo(14 + L, 0); ctx.lineTo(14 + L + 4, -4); ctx.moveTo(14 + L, 0); ctx.lineTo(14 + L + 4, 4); ctx.stroke(); }
+        ctx.drawImage(NEON.head, -24, -24); ctx.restore();
+      } else {
+        ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(-14, 13, 30, 5);
+        const headSpr = bodyStyle === 'gears' ? SKINS[2].sprite : bodyStyle === 'armor' ? SKINS[3].sprite : sk.sprite;
+        ctx.drawImage(headSpr, -17, -17, 34, 34); ctx.restore();
+      }
     }
     for (const p of G.particles) { p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.life--; ctx.globalAlpha = Math.max(0, Math.min(1, p.life / 14)); ctx.fillStyle = p.color; ctx.fillRect(Math.round(p.x), Math.round(p.y), p.s, p.s); }
     ctx.globalAlpha = 1; if (G.particles.length) G.particles = G.particles.filter((p) => p.life > 0);
