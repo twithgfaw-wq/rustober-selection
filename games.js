@@ -246,31 +246,46 @@
     if (G.food) { const bob = Math.sin(now / 200) * 2; shadow(G.food.x * CELL + CELL / 2, G.food.y * CELL + CELL / 2, 22); ctx.drawImage(SPR.scrap, G.food.x * CELL - 6, Math.round(G.food.y * CELL - 6 + bob), 44, 44); }
     if (G.gold) { const bob = Math.sin(now / 100) * 3; ctx.fillStyle = `rgba(255,212,90,${0.18 + Math.sin(now / 120) * 0.08})`; ctx.beginPath(); ctx.arc(G.gold.x * CELL + CELL / 2, G.gold.y * CELL + CELL / 2, 20, 0, Math.PI * 2); ctx.fill(); ctx.drawImage(SPR.gold, G.gold.x * CELL - 6, Math.round(G.gold.y * CELL - 6 + bob), 44, 44); ctx.fillStyle = '#17171b'; ctx.fillRect(G.gold.x * CELL + 4, G.gold.y * CELL + CELL - 4, CELL - 8, 3); ctx.fillStyle = '#ffd45a'; ctx.fillRect(G.gold.x * CELL + 4, G.gold.y * CELL + CELL - 4, (CELL - 8) * (G.goldTtl / 50), 3); }
     // змійка: інтерпольовані центри сегментів
-    const pts = G.snake.map((s, i) => { const p = G.prev[i] || s; return { x: Math.round(lerp(p.x, s.x, t) * CELL + CELL / 2), y: Math.round(lerp(p.y, s.y, t) * CELL + CELL / 2) }; });
+    const pts = G.snake.map((s, i) => { const p = G.prev[i] || s; return { x: lerp(p.x, s.x, t) * CELL + CELL / 2, y: lerp(p.y, s.y, t) * CELL + CELL / 2 }; });
     if (pts.length > 1) {
-      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-      const path = () => { ctx.beginPath(); ctx.moveTo(pts[0].x, pts[0].y); for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i].x, pts[i].y); };
-      // тінь, контур, іржава труба
-      ctx.translate(3, 4); path(); ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = 24; ctx.stroke(); ctx.translate(-3, -4);
-      path(); ctx.strokeStyle = '#17171b'; ctx.lineWidth = 26; ctx.stroke();
-      const sk = G.skin;
-      path(); ctx.strokeStyle = sk.tube; ctx.lineWidth = 20; ctx.stroke();
-      // пластини/сегменти костюма на кожному сегменті
-      for (let i = 1; i < pts.length; i++) {
-        const p = pts[i], tail = i === pts.length - 1, sz = tail ? 12 : 16, h = sz / 2;
-        ctx.fillStyle = sk.plates[i % 2]; ctx.fillRect(p.x - h, p.y - h, sz, sz);
-        ctx.fillStyle = sk.hi; ctx.fillRect(p.x - h, p.y - h, sz, 2); ctx.fillRect(p.x - h, p.y - h, 2, sz);
-        ctx.fillStyle = sk.lo; ctx.fillRect(p.x - h, p.y + h - 2, sz, 2); ctx.fillRect(p.x + h - 2, p.y - h, 2, sz);
-        if (tail) continue;
-        if (sk.mark === 'rivet') { ctx.fillStyle = sk.lo; ctx.fillRect(p.x - h + 3, p.y - h + 3, 2, 2); ctx.fillRect(p.x + h - 5, p.y - h + 3, 2, 2); ctx.fillRect(p.x - h + 3, p.y + h - 5, 2, 2); ctx.fillRect(p.x + h - 5, p.y + h - 5, 2, 2); if (i % 3 === 0) { ctx.fillStyle = '#d4d4d8'; ctx.fillRect(p.x - 2, p.y - 2, 4, 4); ctx.fillStyle = '#6a6a70'; ctx.fillRect(p.x - 1, p.y - 1, 2, 2); } }
-        else if (sk.mark === 'tape') { if (i % 2 === 0) { ctx.fillStyle = '#8c8c94'; ctx.fillRect(p.x - h, p.y - 2, sz, 4); ctx.fillStyle = '#c4c4cc'; ctx.fillRect(p.x - h, p.y - 2, sz, 1); } else { ctx.fillStyle = sk.lo; ctx.fillRect(p.x - 1, p.y - h + 3, 2, sz - 6); } }
-        else if (sk.mark === 'rope') { ctx.fillStyle = '#c8b070'; ctx.fillRect(p.x - h, p.y - 3, sz, 2); ctx.fillRect(p.x - h, p.y + 2, sz, 2); ctx.fillStyle = '#8a7440'; ctx.fillRect(p.x - h + 2, p.y - 3, 2, 2); ctx.fillRect(p.x + 2, p.y + 2, 2, 2); }
+      const sk = G.skin, n = pts.length;
+      // плавна крива Catmull-Rom через центри сегментів, 3 підточки на сегмент; f = 0 біля шиї, 1 на кінчику хвоста
+      const sm = [];
+      for (let i = 0; i < n - 1; i++) {
+        const p0 = pts[Math.max(0, i - 1)], p1 = pts[i], p2 = pts[i + 1], p3 = pts[Math.min(n - 1, i + 2)];
+        for (let k = 0; k < 3; k++) {
+          const u = k / 3, u2 = u * u, u3 = u2 * u;
+          sm.push({ x: 0.5 * (2 * p1.x + (-p0.x + p2.x) * u + (2 * p0.x - 5 * p1.x + 4 * p2.x - p3.x) * u2 + (-p0.x + 3 * p1.x - 3 * p2.x + p3.x) * u3), y: 0.5 * (2 * p1.y + (-p0.y + p2.y) * u + (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * u2 + (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * u3), f: (i + u) / (n - 1), seg: i });
+        }
       }
-      // голова (костюм з Rust), повернута за напрямком руху
-      const hp = pts[0]; ctx.save(); ctx.translate(hp.x, hp.y);
-      ctx.rotate(G.dir.x === 1 ? 0 : G.dir.x === -1 ? Math.PI : G.dir.y === -1 ? -Math.PI / 2 : Math.PI / 2);
-      ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(-13, 12, 28, 5);
-      ctx.drawImage(sk.sprite, -16, -16, 32, 32); ctx.restore();
+      sm.push({ x: pts[n - 1].x, y: pts[n - 1].y, f: 1, seg: n - 1 });
+      // радіус: товста шия → тонкий хвіст; легке «дихання» тіла
+      const R = (f) => Math.max(2.5, 10.5 - 8 * f * f - 1.5 * f) + Math.sin(now / 260 + f * 6) * 0.4;
+      ctx.lineCap = 'round';
+      const pass = (width, color, dx = 0, dy = 0) => { ctx.strokeStyle = color; for (let i = 0; i < sm.length - 1; i++) { const q = sm[i], r = sm[i + 1]; ctx.lineWidth = width(q.f, i); ctx.beginPath(); ctx.moveTo(q.x + dx, q.y + dy); ctx.lineTo(r.x + dx, r.y + dy); ctx.stroke(); } };
+      pass((f) => 2 * R(f) + 2, 'rgba(0,0,0,0.3)', 3, 4);          // тінь
+      pass((f) => 2 * R(f) + 4, '#17171b');                        // контур
+      for (let i = 0; i < sm.length - 1; i++) {                    // тіло: смуги кольорів по сегментах
+        const q = sm[i], r = sm[i + 1]; ctx.strokeStyle = sk.plates[q.seg % 2]; ctx.lineWidth = 2 * R(q.f); ctx.beginPath(); ctx.moveTo(q.x, q.y); ctx.lineTo(r.x, r.y); ctx.stroke();
+      }
+      ctx.globalAlpha = 0.45; pass((f) => Math.max(1, R(f) * 0.9), sk.hi, -1, -3); ctx.globalAlpha = 0.35; pass((f) => Math.max(1, R(f) * 0.7), sk.lo, 1, 3); ctx.globalAlpha = 1; // блік зверху, тінь знизу
+      // стики сегментів і маркування костюма (перпендикулярно до тіла)
+      for (let i = 1; i < n - 1; i++) {
+        const p = pts[i], a = pts[i - 1], c = pts[i + 1]; let tx = c.x - a.x, ty = c.y - a.y; const L = Math.hypot(tx, ty) || 1; tx /= L; ty /= L; const nx = -ty, ny = tx;
+        const f = i / (n - 1), r = R(f) - 1; if (r < 2) continue;
+        const line = (ox, oy, w, color, len = r) => { ctx.strokeStyle = color; ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(p.x + ox - nx * len, p.y + oy - ny * len); ctx.lineTo(p.x + ox + nx * len, p.y + oy + ny * len); ctx.stroke(); };
+        ctx.lineCap = 'butt';
+        line(-tx * r, -ty * r, 2, sk.lo, r + 1);                                       // шов між сегментами
+        if (sk.mark === 'tape' && i % 2 === 0) { line(0, 0, 5, '#8c8c94'); line(0, -1, 1, '#c4c4cc'); }
+        else if (sk.mark === 'rivet') { ctx.fillStyle = '#d4d4d8'; ctx.fillRect(p.x + nx * r * 0.5 - 1.5, p.y + ny * r * 0.5 - 1.5, 3, 3); ctx.fillRect(p.x - nx * r * 0.5 - 1.5, p.y - ny * r * 0.5 - 1.5, 3, 3); if (i % 3 === 0) { ctx.fillStyle = '#6a6a70'; ctx.fillRect(p.x - 2, p.y - 2, 4, 4); } }
+        else if (sk.mark === 'rope') { line(tx * 3, ty * 3, 2, '#c8b070'); line(-tx * 3, -ty * 3, 2, '#c8b070'); }
+        ctx.lineCap = 'round';
+      }
+      // голова: більша за шию, плавно повертається за напрямком руху
+      const hp = pts[0], hb = sm[1] || pts[1]; const ang = Math.atan2(hp.y - hb.y, hp.x - hb.x);
+      ctx.save(); ctx.translate(Math.round(hp.x), Math.round(hp.y)); ctx.rotate(ang);
+      ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.fillRect(-14, 13, 30, 5);
+      ctx.drawImage(sk.sprite, -17, -17, 34, 34); ctx.restore();
     }
     for (const p of G.particles) { p.x += p.vx; p.y += p.vy; p.vy += 0.12; p.life--; ctx.globalAlpha = Math.max(0, Math.min(1, p.life / 14)); ctx.fillStyle = p.color; ctx.fillRect(Math.round(p.x), Math.round(p.y), p.s, p.s); }
     ctx.globalAlpha = 1; if (G.particles.length) G.particles = G.particles.filter((p) => p.life > 0);
