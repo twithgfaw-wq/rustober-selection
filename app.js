@@ -308,7 +308,7 @@
     const maxSeries = Math.max(1, ...x.series.map((v) => v ?? 0), S.currentLevel ?? 1);
     const spark = x.series.length > 1 ? `<div class="spark">${x.series.map((v, k) => `<i class="${k === x.series.length - 1 ? 'last' : ''}" style="height:${Math.max(12, Math.round(((v ?? 0) / maxSeries) * 100))}%"></i>`).join('')}</div>` : '';
     const delta = x.delta ? `<div class="delta ${x.delta < 0 ? 'neg' : ''}">${x.delta > 0 ? '+' : ''}${x.delta}</div>` : '';
-    const stamp = deadC ? `<div class="stamp">GAME OVER · LVL ${stageNo(x.eliminatedLevel ?? S.currentLevel)}</div>${x.caughtUp ? `<div class="caught-badge" title="${esc(t('c.caughtTip'))}">↑ ${t('c.caught')}</div>` : isNear(x) ? `<div class="near-badge" title="${esc(t('c.nearTip'))}">${t('c.near')}</div>` : ''}` : riskC ? `<div class="stamp warn">LOW SIGNAL · LVL ${stageNo(x.riskLevel)}</div>` : '';
+    const stamp = deadC ? `${x.caughtUp || isNear(x) ? '' : `<div class="stamp">GAME OVER · LVL ${stageNo(x.eliminatedLevel ?? S.currentLevel)}</div>`}${x.caughtUp ? `<div class="caught-badge" title="${esc(t('c.caughtTip'))}">↑ ${t('c.caught')}</div>` : isNear(x) ? `<div class="near-badge" title="${esc(t('c.nearTip'))}">${t('c.near')}</div>` : ''}` : riskC ? `<div class="stamp warn">LOW SIGNAL · LVL ${stageNo(x.riskLevel)}</div>` : '';
     const lq = LQIP[x.id] ? `style="background-image:url(${LQIP[x.id]})"` : '';
     const canPred = x.status === 'ok' && (x.hidden ?? 0) < nextLevel() && pred.level === nextLevel();
     const picked = pred.picks.includes(x.id);
