@@ -307,3 +307,13 @@ Object.assign(window.I18N.en, {
   'c.caught': 'CAUGHT UP', 'c.caughtTip': 'Eliminated earlier, but now has as many hidden collections as the current level requires',
   'ev.catchup': 'caught up after elimination: {h} hidden', 'm.caught': 'Caught up: {h} hidden, same as survivors. By the rules it stays eliminated',
 });
+
+// ---- «за крок» і лічильник ----
+Object.assign(window.I18N.ua, {
+  'c.near': 'ЗА КРОК', 'c.nearTip': 'Бракує однієї прихованої колекції до поточного рівня',
+  'cs.caught': 'Наздогнали живих', 'cs.near': 'За крок, {h} прихованих', 'cs.note': 'Бейдж «НАЗДОГНАВ» з\'явиться на картці, щойно вибулий скін набере стільки ж прихованих, як живі. Такі скіни перевіряються щогодини.',
+});
+Object.assign(window.I18N.en, {
+  'c.near': 'ONE SHORT', 'c.nearTip': 'One hidden collection short of the current level',
+  'cs.caught': 'Caught up', 'cs.near': 'One short, {h} hidden', 'cs.note': 'A CAUGHT UP badge appears on the card as soon as an eliminated skin matches the survivors. These skins are rechecked every hour.',
+});
