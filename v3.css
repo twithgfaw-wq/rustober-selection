@@ -152,18 +152,26 @@
 .grid.small .author { white-space: nowrap; overflow: hidden; }
 .mini .mini-close { position: absolute; top: -8px; right: -8px; width: 22px; height: 22px; border-radius: 50%; border: 0; background: #1b1b1f; color: #fff; font-size: 11px; cursor: pointer; }
 
-/* ---- «наздогнав»: вибулий скін, який набрав стільки ж прихованих, скільки потрібно живим ---- */
-.card.dead.caught { box-shadow: inset 0 2px 0 #d8d5ce, inset 0 -6px 0 #7f7b72, 0 0 0 3px #39d9ff, 0 12px 30px rgba(0,0,0,0.5); }
-.card.dead.caught .img img { filter: grayscale(0.6) brightness(0.55) contrast(1.1); }
-.caught-badge { position: absolute; z-index: 4; left: 8px; bottom: 30px; font-family: var(--pixel); font-size: 7px; letter-spacing: 0.5px; padding: 5px 7px; border-radius: 6px; background: #39d9ff; color: #0b0b0d; box-shadow: 0 3px 0 #1a6a85, 0 0 12px rgba(57,217,255,0.6); animation: caughtPulse 1.6s ease-in-out infinite; }
-@keyframes caughtPulse { 50% { box-shadow: 0 3px 0 #1a6a85, 0 0 20px rgba(57,217,255,0.95); } }
-@media (prefers-reduced-motion: reduce) { .caught-badge { animation: none; } }
-.ev.catchup i { background: #39d9ff; color: #0b0b0d; }
-.m-caught { font-family: var(--pixel); font-size: 8px; line-height: 1.8; padding: 8px 10px; border-radius: 8px; background: #39d9ff; color: #0b0b0d; width: fit-content; max-width: 100%; }
-
-.near-badge { position: absolute; z-index: 4; left: 8px; bottom: 30px; font-family: var(--pixel); font-size: 7px; letter-spacing: 0.5px; padding: 5px 7px; border-radius: 6px; background: rgba(11,11,13,0.85); color: #39d9ff; box-shadow: inset 0 0 0 1px #39d9ff; }
-.catch-strip { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; margin: -4px 0 16px; padding: 12px 14px; border-radius: 14px; background: #1b1b20; border: 1px solid #2b2b33; }
+/* ---- «ЗА КРОК»: майже вибули / доганяють / наздогнали — окремо від GAME OVER ---- */
+#chasing .sec-head h2.chase { color: #39d9ff; }
+.card.chase { box-shadow: inset 0 2px 0 rgba(255,255,255,0.7), inset 0 -6px 0 rgba(0,0,0,0.18), 0 0 0 3px #39d9ff, 0 12px 30px rgba(0,0,0,0.45); }
+.card.chase .img img { filter: saturate(0.75) brightness(0.85); }
+.card.chase-gaining { box-shadow: inset 0 2px 0 rgba(255,255,255,0.7), inset 0 -6px 0 rgba(0,0,0,0.18), 0 0 0 3px #5fe08a, 0 0 18px rgba(95,224,138,0.35), 0 12px 30px rgba(0,0,0,0.45); }
+.card.chase-caught { box-shadow: inset 0 2px 0 rgba(255,255,255,0.7), inset 0 -6px 0 rgba(0,0,0,0.18), 0 0 0 3px #ffd36a, 0 0 22px rgba(255,211,106,0.5), 0 12px 30px rgba(0,0,0,0.45); }
+.card.chase .card-chase-dim { display: none; }
+.chase-badge { position: absolute; z-index: 4; left: 8px; bottom: 30px; font-family: var(--pixel); font-size: 7px; letter-spacing: 0.5px; padding: 5px 7px; border-radius: 6px; background: #39d9ff; color: #0b0b0d; box-shadow: 0 3px 0 #1a6a85; }
+.chase-badge.gaining { background: #5fe08a; box-shadow: 0 3px 0 #23804a, 0 0 12px rgba(95,224,138,0.6); animation: chasePulse 1.6s ease-in-out infinite; }
+.chase-badge.caught { background: #ffd36a; box-shadow: 0 3px 0 #9a6a10, 0 0 14px rgba(255,211,106,0.7); animation: chasePulse 1.2s ease-in-out infinite; }
+@keyframes chasePulse { 50% { filter: brightness(1.2); transform: translateY(-1px); } }
+@media (prefers-reduced-motion: reduce) { .chase-badge { animation: none; } }
+.stat.cy .ico { background: #39d9ff; color: #0b0b0d; }
+.catch-strip { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin: -4px 0 16px; padding: 12px 14px; border-radius: 14px; background: #1b1b20; border: 1px solid #2b2b33; }
 .catch-strip .cs { font-family: var(--pixel); font-size: 8px; padding: 7px 9px; border-radius: 8px; color: #cfe3ff; box-shadow: inset 0 0 0 1px #39d9ff; white-space: nowrap; }
 .catch-strip .cs b { color: #fff; }
-.catch-strip .cs.caught.on { background: #39d9ff; color: #0b0b0d; } .catch-strip .cs.caught.on b { color: #0b0b0d; }
+.catch-strip .cs.gaining { box-shadow: inset 0 0 0 1px #5fe08a; } .catch-strip .cs.gaining.on { background: #5fe08a; color: #0b0b0d; }
+.catch-strip .cs.caught { box-shadow: inset 0 0 0 1px #ffd36a; } .catch-strip .cs.caught.on { background: #ffd36a; color: #0b0b0d; }
+.catch-strip .cs.on b { color: #0b0b0d; }
 .catch-strip .cs-note { font-size: 12px; color: var(--muted); flex: 1 1 220px; min-width: 0; }
+.m-status.chase { background: #39d9ff; color: #0b0b0d; } .m-status.chase.gaining { background: #5fe08a; } .m-status.chase.caught { background: #ffd36a; }
+.m-caught { font-family: var(--pixel); font-size: 8px; line-height: 1.8; padding: 8px 10px; border-radius: 8px; background: #1b1b20; color: #cfe3ff; box-shadow: inset 0 0 0 1px #39d9ff; width: fit-content; max-width: 100%; }
+.ev.catchup i { background: #ffd36a; color: #0b0b0d; }

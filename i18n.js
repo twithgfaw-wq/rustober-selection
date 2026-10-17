@@ -317,3 +317,19 @@ Object.assign(window.I18N.en, {
   'c.near': 'ONE SHORT', 'c.nearTip': 'One hidden collection short of the current level',
   'cs.caught': 'Caught up', 'cs.near': 'One short, {h} hidden', 'cs.note': 'A CAUGHT UP badge appears on the card as soon as an eliminated skin matches the survivors. These skins are rechecked every hour.',
 });
+
+// ---- категорія «ЗА КРОК» ----
+Object.assign(window.I18N.ua, {
+  'chase.sub': '// за крок: майже вибули або доганяють', 'stat.chase': 'за крок',
+  'c.near': 'ЗА КРОК', 'c.gaining': '↗ ДОГАНЯЄ', 'c.caught': '↑ НАЗДОГНАВ',
+  'c.nearTip': 'Бракує однієї прихованої колекції до поточного рівня', 'c.gainingTip': 'Після вибуття отримав нові приховані колекції', 'c.caughtTip': 'Має стільки ж прихованих колекцій, скільки живі',
+  'cs.note': 'Скіни з {h} прихованими: живим потрібно {l}. Не рахуються як GAME OVER і перевіряються щогодини.',
+  'm.chase.near': 'Майже вибув: {h} прихованих, до рівня бракує однієї', 'm.chase.gaining': 'Доганяє: після вибуття додались приховані, зараз {h}', 'm.chase.caught': 'Наздогнав: {h} прихованих, як у живих',
+});
+Object.assign(window.I18N.en, {
+  'chase.sub': '// one step: nearly out or catching up', 'stat.chase': 'one step',
+  'c.near': 'ONE STEP', 'c.gaining': '↗ CATCHING UP', 'c.caught': '↑ CAUGHT UP',
+  'c.nearTip': 'One hidden collection short of the current level', 'c.gainingTip': 'Gained hidden collections after being eliminated', 'c.caughtTip': 'Has as many hidden collections as the survivors',
+  'cs.note': 'Skins with {h} hidden: survivors need {l}. Not counted as GAME OVER and rechecked every hour.',
+  'm.chase.near': 'Nearly out: {h} hidden, one short of the level', 'm.chase.gaining': 'Catching up: gained hidden collections after elimination, now {h}', 'm.chase.caught': 'Caught up: {h} hidden, same as survivors',
+});

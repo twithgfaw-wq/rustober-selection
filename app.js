@@ -107,10 +107,11 @@
   }
 
   // ============ дані ============
-  let alive, dead, risk, dyingNow, gained, byId;
+  let alive, dead, chase, risk, dyingNow, gained, byId;
   function derive() {
     alive = S.items.filter((x) => x.alive);
-    dead = S.items.filter((x) => !x.alive);
+    dead = S.items.filter((x) => !x.alive && !x.chase);
+    chase = S.items.filter((x) => !x.alive && x.chase);
     risk = S.items.filter((x) => x.status === 'risk');
     dyingNow = dead.filter((x) => x.eliminatedNow && Date.now() - Date.parse(x.eliminatedTime) < 6 * 3600 * 1000).slice(0, 12);
     gained = S.items.filter((x) => x.delta > 0).length;
@@ -132,7 +133,7 @@
   function paintHeader() {
     $('collLink').href = S.collectionUrl;
     $('stats').innerHTML = [
-      ['', '#', S.stats.total, t('stat.total')], ['c', '▶', S.stats.ok, t('stat.ok')], ['y', '!', risk.length, t('stat.risk')], ['m', '✕', dead.length, t('stat.dead')], ['g', '+', gained, t('stat.gain')],
+      ['', '#', S.stats.total, t('stat.total')], ['c', '▶', S.stats.ok, t('stat.ok')], ['y', '!', risk.length, t('stat.risk')], ['cy', '↗', chase.length, t('stat.chase')], ['m', '✕', dead.length, t('stat.dead')], ['g', '+', gained, t('stat.gain')],
     ].map(([c, i, v, l]) => `<div class="stat ${c}"><i class="ico">${i}</i><b class="odo" data-n="${v}">0</b><span>${l}</span></div>`).join('');
     $('updated').textContent = `SNAPSHOT ${fmtDate(S.snapshots.at(-1))} · N=${S.snapshots.length} · LEVEL ${S.currentLevel == null ? '-' : '>=' + S.currentLevel} HIDDEN`;
     $('status').innerHTML = `<i class="led on"></i><span>LIVE · ${fmtTime(S.snapshots.at(-1))}</span>`;
@@ -140,7 +141,7 @@
     $('screenSub').textContent = `LEVEL ${stageNo(S.currentLevel)} · ${S.stats.ok} PLAYERS LEFT`;
     const top = alive.filter((x) => x.status === 'ok').slice(0, 10);
     $('arcadeList').innerHTML = top.map((x, i) => `<li><span>${String(i + 1).padStart(2, '0')}</span><span class="nm">${esc(x.title.toUpperCase().slice(0, 18))}</span><span class="sc">${x.hidden}</span></li>`).join('');
-    $('arcadeStats').innerHTML = [['PLAYERS', S.stats.ok], ['LOW SIGNAL', risk.length], ['GAME OVER', dead.length], ['SNAPSHOTS', S.snapshots.length]].map(([k, v]) => `<div><span>${k}</span><b>${v}</b></div>`).join('');
+    $('arcadeStats').innerHTML = [['PLAYERS', S.stats.ok], ['LOW SIGNAL', risk.length], ['ONE STEP', chase.length], ['GAME OVER', dead.length], ['SNAPSHOTS', S.snapshots.length]].map(([k, v]) => `<div><span>${k}</span><b>${v}</b></div>`).join('');
     const nextL = nextLevel(); const have = S.items.filter((x) => (x.hidden ?? -1) >= nextL).length;
     $('arcadeNext').innerHTML = `<div>LEVEL ${stageNo(nextL)} · ${nextL}+ HIDDEN</div><div class="bar"><i style="width:${Math.min(100, Math.round(have / S.nextNeed * 100))}%"></i></div><div>${have} / ${S.nextNeed} SKINS</div>`;
     const ev = S.events.slice(0, 12).map((e) => e.type === 'gain' ? `+${e.to - e.from} ${e.title.toUpperCase()} [${e.to}]` : e.type === 'loss' ? `-${e.from - e.to} ${e.title.toUpperCase()}` : e.type === 'stage' ? `LEVEL ${stageNo(e.level)} UNLOCKED (${e.passed} PASSED)` : `GAME OVER: ${e.title.toUpperCase()}`);
@@ -299,16 +300,15 @@
   const tier = (x) => Math.min(4, Math.max(1, x.stagesPassed + (S.currentLevel != null && x.hidden > S.currentLevel ? 1 : 0)));
   const compareSel = new Set();
 
-  const isNear = (x) => !x.alive && !x.caughtUp && x.hidden != null && S.currentLevel != null && x.hidden === S.currentLevel - 1;
   function card(x, i, opts = {}) {
-    const deadC = !x.alive, riskC = x.status === 'risk'; const rank = i + 1; const tr = tierOf(x);
-    const cls = ['card', deadC ? 'dead' : 't' + tier(x), deadC && x.caughtUp ? 'caught' : '', 'tier-' + tr, rank <= 3 && x.status === 'ok' ? 'holo' : '', rank === 1 && x.status === 'ok' ? 'gold' : '', riskC ? 'risk' : '', opts.dying ? 'dying' : '', x.manual ? 'manual' : '', compareSel.has(x.id) ? 'selected' : '', watch.has(x.id) ? 'watched' : ''].filter(Boolean).join(' ');
+    const deadC = !x.alive && !x.chase, riskC = x.status === 'risk'; const rank = i + 1; const tr = tierOf(x);
+    const cls = ['card', deadC ? 'dead' : 't' + tier(x), x.chase ? 'chase chase-' + x.chase : '', 'tier-' + tr, rank <= 3 && x.status === 'ok' ? 'holo' : '', rank === 1 && x.status === 'ok' ? 'gold' : '', riskC ? 'risk' : '', opts.dying ? 'dying' : '', x.manual ? 'manual' : '', compareSel.has(x.id) ? 'selected' : '', watch.has(x.id) ? 'watched' : ''].filter(Boolean).join(' ');
     const totalStages = S.stages.length + 1;
     let pips = ''; for (let k = 0; k < totalStages; k++) pips += `<i class="pip ${k < x.stagesPassed ? 'on' : ''}"></i>`;
     const maxSeries = Math.max(1, ...x.series.map((v) => v ?? 0), S.currentLevel ?? 1);
     const spark = x.series.length > 1 ? `<div class="spark">${x.series.map((v, k) => `<i class="${k === x.series.length - 1 ? 'last' : ''}" style="height:${Math.max(12, Math.round(((v ?? 0) / maxSeries) * 100))}%"></i>`).join('')}</div>` : '';
     const delta = x.delta ? `<div class="delta ${x.delta < 0 ? 'neg' : ''}">${x.delta > 0 ? '+' : ''}${x.delta}</div>` : '';
-    const stamp = deadC ? `${x.caughtUp || isNear(x) ? '' : `<div class="stamp">GAME OVER · LVL ${stageNo(x.eliminatedLevel ?? S.currentLevel)}</div>`}${x.caughtUp ? `<div class="caught-badge" title="${esc(t('c.caughtTip'))}">↑ ${t('c.caught')}</div>` : isNear(x) ? `<div class="near-badge" title="${esc(t('c.nearTip'))}">${t('c.near')}</div>` : ''}` : riskC ? `<div class="stamp warn">LOW SIGNAL · LVL ${stageNo(x.riskLevel)}</div>` : '';
+    const stamp = x.chase ? `<div class="chase-badge ${x.chase}" title="${esc(t('c.' + x.chase + 'Tip'))}">${t('c.' + x.chase)}</div>` : deadC ? `<div class="stamp">GAME OVER · LVL ${stageNo(x.eliminatedLevel ?? S.currentLevel)}</div>` : riskC ? `<div class="stamp warn">LOW SIGNAL · LVL ${stageNo(x.riskLevel)}</div>` : '';
     const lq = LQIP[x.id] ? `style="background-image:url(${LQIP[x.id]})"` : '';
     const canPred = x.status === 'ok' && (x.hidden ?? 0) < nextLevel() && pred.level === nextLevel();
     const picked = pred.picks.includes(x.id);
@@ -353,7 +353,7 @@
     sent.hidden = p.shown >= p.list.length;
   }
   const io = 'IntersectionObserver' in window ? new IntersectionObserver((ents) => { for (const en of ents) if (en.isIntersecting) appendPage(en.target.dataset.grid, en.target.id); }, { rootMargin: '600px' }) : null;
-  for (const [sid, gid] of [['aliveMore', 'aliveGrid'], ['deadMore', 'deadGrid']]) { $(sid).dataset.grid = gid; io && io.observe($(sid)); }
+  for (const [sid, gid] of [['aliveMore', 'aliveGrid'], ['chaseMore', 'chaseGrid'], ['deadMore', 'deadGrid']]) { $(sid).dataset.grid = gid; io && io.observe($(sid)); }
 
   let firstRender = true;
   function render(opts = {}) {
@@ -367,7 +367,12 @@
     $('terminated').hidden = !ui.showDead;
     if (ui.showDead) paintGrid('deadGrid', 'deadMore', d); else { $('deadGrid').innerHTML = ''; $('deadMore').hidden = true; }
     $('deadCount').textContent = `${d.length} / ${dead.length}`;
-    if ($('catchStrip')) { const nC = dead.filter((x) => x.caughtUp).length, nN = dead.filter(isNear).length; $('catchStrip').innerHTML = `<span class="cs caught ${nC ? 'on' : ''}">↑ ${t('cs.caught')}: <b>${nC}</b></span><span class="cs near">${t('cs.near', { h: (S.currentLevel ?? 1) - 1 })}: <b>${nN}</b></span><span class="cs-note">${t('cs.note')}</span>`; }
+    const ch = chase.filter(matches).sort(sorter);
+    $('chasing').hidden = chase.length === 0;
+    if (chase.length) paintGrid('chaseGrid', 'chaseMore', ch, a.length);
+    $('chaseCount').textContent = `${ch.length} / ${chase.length}`;
+    const nCa = chase.filter((x) => x.chase === 'caught').length, nGa = chase.filter((x) => x.chase === 'gaining').length, nNe = chase.filter((x) => x.chase === 'near').length;
+    $('catchStrip').innerHTML = `<span class="cs caught ${nCa ? 'on' : ''}">${t('c.caught')}: <b>${nCa}</b></span><span class="cs gaining ${nGa ? 'on' : ''}">${t('c.gaining')}: <b>${nGa}</b></span><span class="cs near">${t('c.near')}: <b>${nNe}</b></span><span class="cs-note">${t('cs.note', { h: (S.currentLevel ?? 1) - 1, l: S.currentLevel ?? 1 })}</span>`;
     paintWatch(); paintPredict();
     if (dyingIds.size) { sound.over(); setTimeout(() => { document.querySelectorAll('.card.dying').forEach((el) => el.remove()); toast(t('toast.dying', { n: dyingIds.size })); }, 3200); }
     firstRender = false;
@@ -417,10 +422,10 @@
     const link = (S.siteUrl || location.href.split('#')[0]) + '#skin/' + id; const tr = tierOf(x);
     $('modalContent').innerHTML = `
       <div class="m-grid">
-        <div class="m-img tier-${tr} ${rank <= 3 && x.status === 'ok' ? 'holo' : ''}"><img src="${thumb(x.preview, 512)}" alt="" id="mImg"><div class="rank">#${rank}</div><div class="tier ${tr}">${t('tier.' + tr)}</div>${x.status === 'dead' ? '<div class="stamp">GAME OVER</div>' : x.status === 'risk' ? '<div class="stamp warn">LOW SIGNAL</div>' : ''}</div>
+        <div class="m-img tier-${tr} ${rank <= 3 && x.status === 'ok' ? 'holo' : ''}"><img src="${thumb(x.preview, 512)}" alt="" id="mImg"><div class="rank">#${rank}</div><div class="tier ${tr}">${t('tier.' + tr)}</div>${x.status === 'dead' && !x.chase ? '<div class="stamp">GAME OVER</div>' : x.status === 'risk' ? '<div class="stamp warn">LOW SIGNAL</div>' : ''}</div>
         <div class="m-info">
-          <div class="m-status ${x.status}">${x.status === 'ok' ? t('m.player') : x.status === 'risk' ? t('m.risk') : t('m.dead')}</div>
-          ${x.caughtUp ? `<div class="m-caught">↑ ${t('m.caught', { h: x.hidden })}</div>` : ''}
+          <div class="m-status ${x.chase ? 'chase ' + x.chase : x.status}">${x.chase ? t('c.' + x.chase) : x.status === 'ok' ? t('m.player') : x.status === 'risk' ? t('m.risk') : t('m.dead')}</div>
+          ${x.chase ? `<div class="m-caught">${t('m.chase.' + x.chase, { h: x.hidden, l: S.currentLevel })}</div>` : ''}
           <h3>${esc(x.title)}</h3>
           <div class="who big">${x.avatar ? `<img class="ava" src="${esc(x.avatar)}" alt="">` : ''}<a href="#author/${encodeURIComponent(x.author || '')}" data-author="${esc(x.author || '')}">${esc(x.author || '—')}</a> · ${esc(x.tags.join(', '))}</div>
           <div class="counters">

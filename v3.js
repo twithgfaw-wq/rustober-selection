@@ -37,7 +37,7 @@
     switch (id) {
       case 'highscore': case 'survivors': case 'watch': return ['HIGH SCORE', alive.slice(0, 4).map((x, i) => `${i + 1}. ${x.title.toUpperCase().slice(0, 14)} ${x.hidden}`).join('\n')];
       case 'levels': { const nl = S.currentLevel == null ? S.baseHidden : S.currentLevel + 1; const have = S.items.filter((x) => (x.hidden ?? -1) >= nl).length; return ['NEXT WAVE', `LEVEL ${R.stageNo(nl)}\n${have} / ${S.nextNeed} SKINS\n${'█'.repeat(Math.round(Math.min(1, have / S.nextNeed) * 12)).padEnd(12, '░')}`]; }
-      case 'charts': case 'predict': return ['STATUS', `PLAYERS ${S.stats.ok}\nLOW SIG ${S.stats.risk}\nGAME OVER ${S.stats.eliminated}\nSNAPS ${S.snapshots.length}`];
+      case 'charts': case 'predict': return ['STATUS', `PLAYERS ${S.stats.ok}\nLOW SIG ${S.stats.risk}\nONE STEP ${S.stats.chasing ?? 0}\nGAME OVER ${S.stats.eliminated}`];
       case 'authors': return ['TOP AUTHORS', S.authors.slice(0, 4).map((a, i) => `${i + 1}. ${a.name.toUpperCase().slice(0, 12)} ${a.ok}`).join('\n')];
       case 'log': { const e = S.events[0]; return ['LAST EVENT', e ? (e.type === 'gain' ? `+1 ${e.title.toUpperCase().slice(0, 24)}` : e.type === 'out' ? `OUT ${e.title.toUpperCase().slice(0, 22)}` : e.type === 'stage' ? `LEVEL ${R.stageNo(e.level)} UNLOCKED` : `-1 ${e.title.toUpperCase().slice(0, 24)}`) : 'QUIET']; }
       case 'terminated': return ['GAME OVER', `${S.stats.eliminated} SKINS OUT\nLEVEL ${R.stageNo(S.currentLevel)}`];
