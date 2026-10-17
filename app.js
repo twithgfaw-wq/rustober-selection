@@ -197,6 +197,7 @@
     if (e.type === 'gain') return `<div class="ev gain" data-open="${e.id}">${tm}<i>+${e.to - e.from}</i><span><b>${esc(e.title)}</b> ${t('ev.gain')}: ${e.from} → ${e.to}</span></div>`;
     if (e.type === 'loss') return `<div class="ev loss" data-open="${e.id}">${tm}<i>−${e.from - e.to}</i><span><b>${esc(e.title)}</b> ${t('ev.loss')}: ${e.from} → ${e.to}</span></div>`;
     if (e.type === 'stage') return `<div class="ev stage">${tm}<i>LVL</i><span>${t('ev.stage')} <b>LEVEL ${stageNo(e.level)}</b> (${e.level}+ ${t('ev.hidden')}): ${t('ev.passed')} ${e.passed}</span></div>`;
+    if (e.type === 'catchup') return `<div class="ev catchup" data-open="${e.id}">${tm}<i>↑</i><span><b>${esc(e.title)}</b> ${t('ev.catchup', { h: e.hidden })}</span></div>`;
     return `<div class="ev out" data-open="${e.id}">${tm}<i>✕</i><span><b>${esc(e.title)}</b> ${t('ev.out')} ${stageNo(e.level)}</span></div>`;
   }
   function paintLog() {
@@ -300,13 +301,13 @@
 
   function card(x, i, opts = {}) {
     const deadC = !x.alive, riskC = x.status === 'risk'; const rank = i + 1; const tr = tierOf(x);
-    const cls = ['card', deadC ? 'dead' : 't' + tier(x), 'tier-' + tr, rank <= 3 && x.status === 'ok' ? 'holo' : '', rank === 1 && x.status === 'ok' ? 'gold' : '', riskC ? 'risk' : '', opts.dying ? 'dying' : '', x.manual ? 'manual' : '', compareSel.has(x.id) ? 'selected' : '', watch.has(x.id) ? 'watched' : ''].filter(Boolean).join(' ');
+    const cls = ['card', deadC ? 'dead' : 't' + tier(x), deadC && x.caughtUp ? 'caught' : '', 'tier-' + tr, rank <= 3 && x.status === 'ok' ? 'holo' : '', rank === 1 && x.status === 'ok' ? 'gold' : '', riskC ? 'risk' : '', opts.dying ? 'dying' : '', x.manual ? 'manual' : '', compareSel.has(x.id) ? 'selected' : '', watch.has(x.id) ? 'watched' : ''].filter(Boolean).join(' ');
     const totalStages = S.stages.length + 1;
     let pips = ''; for (let k = 0; k < totalStages; k++) pips += `<i class="pip ${k < x.stagesPassed ? 'on' : ''}"></i>`;
     const maxSeries = Math.max(1, ...x.series.map((v) => v ?? 0), S.currentLevel ?? 1);
     const spark = x.series.length > 1 ? `<div class="spark">${x.series.map((v, k) => `<i class="${k === x.series.length - 1 ? 'last' : ''}" style="height:${Math.max(12, Math.round(((v ?? 0) / maxSeries) * 100))}%"></i>`).join('')}</div>` : '';
     const delta = x.delta ? `<div class="delta ${x.delta < 0 ? 'neg' : ''}">${x.delta > 0 ? '+' : ''}${x.delta}</div>` : '';
-    const stamp = deadC ? `<div class="stamp">GAME OVER · LVL ${stageNo(x.eliminatedLevel ?? S.currentLevel)}</div>` : riskC ? `<div class="stamp warn">LOW SIGNAL · LVL ${stageNo(x.riskLevel)}</div>` : '';
+    const stamp = deadC ? `<div class="stamp">GAME OVER · LVL ${stageNo(x.eliminatedLevel ?? S.currentLevel)}</div>${x.caughtUp ? `<div class="caught-badge" title="${esc(t('c.caughtTip'))}">↑ ${t('c.caught')}</div>` : ''}` : riskC ? `<div class="stamp warn">LOW SIGNAL · LVL ${stageNo(x.riskLevel)}</div>` : '';
     const lq = LQIP[x.id] ? `style="background-image:url(${LQIP[x.id]})"` : '';
     const canPred = x.status === 'ok' && (x.hidden ?? 0) < nextLevel() && pred.level === nextLevel();
     const picked = pred.picks.includes(x.id);
@@ -417,6 +418,7 @@
         <div class="m-img tier-${tr} ${rank <= 3 && x.status === 'ok' ? 'holo' : ''}"><img src="${thumb(x.preview, 512)}" alt="" id="mImg"><div class="rank">#${rank}</div><div class="tier ${tr}">${t('tier.' + tr)}</div>${x.status === 'dead' ? '<div class="stamp">GAME OVER</div>' : x.status === 'risk' ? '<div class="stamp warn">LOW SIGNAL</div>' : ''}</div>
         <div class="m-info">
           <div class="m-status ${x.status}">${x.status === 'ok' ? t('m.player') : x.status === 'risk' ? t('m.risk') : t('m.dead')}</div>
+          ${x.caughtUp ? `<div class="m-caught">↑ ${t('m.caught', { h: x.hidden })}</div>` : ''}
           <h3>${esc(x.title)}</h3>
           <div class="who big">${x.avatar ? `<img class="ava" src="${esc(x.avatar)}" alt="">` : ''}<a href="#author/${encodeURIComponent(x.author || '')}" data-author="${esc(x.author || '')}">${esc(x.author || '—')}</a> · ${esc(x.tags.join(', '))}</div>
           <div class="counters">

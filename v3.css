@@ -151,3 +151,12 @@
 .grid.small .tagchip, .grid.small .votes { display: none; }
 .grid.small .author { white-space: nowrap; overflow: hidden; }
 .mini .mini-close { position: absolute; top: -8px; right: -8px; width: 22px; height: 22px; border-radius: 50%; border: 0; background: #1b1b1f; color: #fff; font-size: 11px; cursor: pointer; }
+
+/* ---- «наздогнав»: вибулий скін, який набрав стільки ж прихованих, скільки потрібно живим ---- */
+.card.dead.caught { box-shadow: inset 0 2px 0 #d8d5ce, inset 0 -6px 0 #7f7b72, 0 0 0 3px #39d9ff, 0 12px 30px rgba(0,0,0,0.5); }
+.card.dead.caught .img img { filter: grayscale(0.6) brightness(0.55) contrast(1.1); }
+.caught-badge { position: absolute; z-index: 4; left: 8px; bottom: 30px; font-family: var(--pixel); font-size: 7px; letter-spacing: 0.5px; padding: 5px 7px; border-radius: 6px; background: #39d9ff; color: #0b0b0d; box-shadow: 0 3px 0 #1a6a85, 0 0 12px rgba(57,217,255,0.6); animation: caughtPulse 1.6s ease-in-out infinite; }
+@keyframes caughtPulse { 50% { box-shadow: 0 3px 0 #1a6a85, 0 0 20px rgba(57,217,255,0.95); } }
+@media (prefers-reduced-motion: reduce) { .caught-badge { animation: none; } }
+.ev.catchup i { background: #39d9ff; color: #0b0b0d; }
+.m-caught { font-family: var(--pixel); font-size: 8px; line-height: 1.8; padding: 8px 10px; border-radius: 8px; background: #39d9ff; color: #0b0b0d; width: fit-content; max-width: 100%; }

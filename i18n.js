@@ -297,3 +297,13 @@ Object.assign(window.I18N.en, {
   'g.foot': 'Rust Arcade · scores are stored locally',
   'g.lang': 'Language: UA / EN',
 });
+
+// ---- «наздогнав» ----
+Object.assign(window.I18N.ua, {
+  'c.caught': 'НАЗДОГНАВ', 'c.caughtTip': 'Вибув раніше, але зараз має стільки ж прихованих колекцій, скільки потрібно на поточному рівні',
+  'ev.catchup': 'наздогнав живих після вибуття: {h} прихованих', 'm.caught': 'Наздогнав: {h} прихованих, як у живих. За правилами лишається вибулим',
+});
+Object.assign(window.I18N.en, {
+  'c.caught': 'CAUGHT UP', 'c.caughtTip': 'Eliminated earlier, but now has as many hidden collections as the current level requires',
+  'ev.catchup': 'caught up after elimination: {h} hidden', 'm.caught': 'Caught up: {h} hidden, same as survivors. By the rules it stays eliminated',
+});
