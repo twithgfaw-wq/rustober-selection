@@ -71,3 +71,13 @@
 .lf { position: absolute; width: 28px; height: 28px; background: #d84a1e; clip-path: polygon(50% 0, 60% 30%, 90% 20%, 75% 50%, 100% 60%, 65% 70%, 70% 100%, 50% 80%, 30% 100%, 35% 70%, 0 60%, 25% 50%, 10% 20%, 40% 30%); }
 .l1 { left: 104px; bottom: 96px; transform: rotate(-20deg); background: #f2a23a; } .l2 { left: 196px; bottom: 70px; transform: rotate(30deg); }
 @media (max-width: 520px) { .x-pumpkins { transform: scale(0.72); transform-origin: bottom right; height: 130px; } }
+
+/* осінь: паперова табличка (як титульна плашка «Over The Garden Wall») */
+.x-plaque { position: relative; display: grid; justify-items: center; gap: 4px; padding: 26px 46px 22px; border-radius: 14px; transform: rotate(-3deg);
+  background: linear-gradient(180deg, #f3dcb4, #e2bd8c); color: #5a2a16; box-shadow: inset 0 0 0 3px #e2bd8c, inset 0 0 0 5px #6a3822, inset 0 0 0 8px #f3dcb4, 0 18px 34px rgba(40, 15, 5, 0.55); }
+.x-plaque::before, .x-plaque::after { content: "❦"; position: absolute; top: 50%; transform: translateY(-50%); font-size: 26px; color: #8a4a2a; }
+.x-plaque::before { left: 14px; transform: translateY(-50%) scaleX(-1); } .x-plaque::after { right: 14px; }
+.x-plaque b { font-family: var(--script); font-weight: 400; font-size: clamp(54px, 7vw, 96px); line-height: 1; color: #b84a1e; text-shadow: 0 2px 0 #f9e6c8, 0 3px 0 rgba(90, 42, 22, 0.35); }
+.x-plaque .pl-top { font: 800 12px var(--pixel); letter-spacing: 0.2em; text-transform: uppercase; color: #8a4a2a; }
+.x-plaque .pl-sub { font-family: var(--script); font-size: 22px; color: #6a3822; }
+@media (max-width: 520px) { .x-plaque { padding: 20px 34px 16px; } .x-plaque b { font-size: 52px; } }

@@ -410,3 +410,6 @@ Object.assign(window.I18N.en, {
   'w.authorLine': '{n} items this year · {a} in game', 'w.allAuthors': 'All authors',
   'w.stItems': 'items this year', 'w.stAuthors': 'authors', 'w.stAcc': 'in game', 'w.stWeek': 'this week', 'w.window': 'items from the last 12 months + all accepted',
 });
+
+Object.assign(window.I18N.ua, { 'x.plaque': 'скоро новорічний відбір' });
+Object.assign(window.I18N.en, { 'x.plaque': 'Christmas selection soon' });

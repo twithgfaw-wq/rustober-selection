@@ -86,3 +86,12 @@ body.page .fog, body.page .bats, body.page .bg-moon { display: none; }
 .src-switch { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; margin-bottom: 4px; }
 .src-switch button { border: 0; cursor: pointer; font: 800 13px var(--body); padding: 10px 16px; border-radius: 999px; background: rgba(255, 255, 255, 0.08); color: #dbe3f7; box-shadow: inset 0 0 0 1px rgba(255, 210, 122, 0.25); }
 .src-switch button.on { background: linear-gradient(180deg, #ffe39a, #f2b53a); color: #2a1a00; box-shadow: 0 4px 0 #a8701a; }
+
+/* ринок: магазин двома блоками і позначка джерела */
+.sub-head { display: flex; align-items: baseline; gap: 10px; margin: 18px 0 10px; font-family: var(--script, inherit); font-size: 26px; color: #fff; }
+.sub-head span { font: 800 13px var(--body); color: var(--muted); }
+.sub-head.fp b { color: #ffd27a; } .sub-head.ws b { color: #fff; }
+.mcard { position: relative; }
+.srcb { position: absolute; top: -8px; left: 10px; z-index: 2; font: 800 9px var(--pixel); letter-spacing: 0.06em; padding: 3px 7px; border-radius: 6px; color: #fff; background: #5a6a8a; box-shadow: 0 2px 0 rgba(0, 0, 0, 0.25); }
+.srcb.fp { background: linear-gradient(180deg, #ffd27a, #e8a13a); color: #2a1a00; }
+.srcb.ws { background: linear-gradient(180deg, #7a5236, #4e3020); }

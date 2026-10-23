@@ -121,7 +121,7 @@
     const ch = x.c7 != null ? chg(x.c7) : (x.c30 != null ? chg(x.c30) : '');
     const roi = x.roi != null ? `<span class="chg roi ${x.roi > 0 ? 'up' : 'dn'}" title="ROI">ROI ${pct(x.roi)}</span>` : '';
     const sp = M && M.charts[x.id] ? `<div class="spk">${spark(M.charts[x.id].slice(-30), 120, 22, (x.c7 ?? x.c30 ?? 0) >= 0 ? '#5fd36b' : '#ff5a3c')}</div>` : '';
-    return `<div class="mcard" data-item="${x.id}"><img src="${esc(x.icon)}" alt="" loading="lazy"><div class="mn"><b title="${esc(x.name)}">${esc(x.name)}</b><small>${esc(x.type || '')}${x.creator ? ' · ' + esc(x.creator) : ''}</small><div class="mp"><b>${usd(x.low || x.last || null)}</b>${ch}</div>${sp}</div>${roi}</div>`;
+    return `<div class="mcard" data-item="${x.id}">${x.fp != null ? `<span class="srcb ${x.fp ? 'fp' : 'ws'}">${x.fp ? 'FACEPUNCH' : 'WORKSHOP'}</span>` : ''}<img src="${esc(x.icon)}" alt="" loading="lazy"><div class="mn"><b title="${esc(x.name)}">${esc(x.name)}</b><small>${esc(x.type || '')}${x.creator ? ' · ' + esc(x.creator) : ''}</small><div class="mp"><b>${usd(x.low || x.last || null)}</b>${ch}</div>${sp}</div>${roi}</div>`;
   }
   function openItemByEl(el) { const x = itemsById[el.dataset.item] || (window.__authorItem && window.__authorItem(el.dataset.item)); if (x) openItem(x); }
   function openItem(x) {
@@ -164,7 +164,8 @@
     })();
     // магазин
     const paintStore = () => { const sNow = (M.storeNow || []).filter((x) => src === 'all' || (src === 'fp' ? x.fp : !x.fp)); $('storeHint').textContent = `${sNow.length} ${t('m.items')} · ${M.store?.start ? fmtDate(M.store.start) : ''}`;
-    $('storeGrid').innerHTML = sNow.map(mcard).join('') || `<div class="empty">—</div>`; };
+    const group = (arr, title, cls) => arr.length ? `<div class="sub-head ${cls}"><b>${title}</b><span>${arr.length}</span></div><div class="mgrid">${arr.map(mcard).join('')}</div>` : '';
+    $('storeGrid').innerHTML = (group(sNow.filter((x) => !x.fp), t('m.src.ws'), 'ws') + group(sNow.filter((x) => x.fp), t('m.src.fp'), 'fp')) || `<div class="empty">—</div>`; };
     paintStore();
     // мувери
     const mnotes = { gainers7: t('m.note.7'), losers7: t('m.note.7'), gainers30: t('m.note.30'), losers30: t('m.note.30'), mostTraded: t('m.note.traded'), mostSold: t('m.note.sold'), expensive: t('m.note.exp'), nearAth: t('m.note.ath'), farAth: t('m.note.dip'), rare: t('m.note.rare'), storeRoiBest: t('m.note.roi') };

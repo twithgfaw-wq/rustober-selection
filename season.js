@@ -38,33 +38,52 @@
 
   // ==================== ОСІНЬ ====================
   const MAPLE = 'M0 -10 L2 -5 L6 -7 L5 -2 L10 -2 L6 2 L8 6 L3 5 L1 10 L0 6 L-1 10 L-3 5 L-8 6 L-6 2 L-10 -2 L-5 -2 L-6 -7 L-2 -5 Z';
-  const LEAF_COLORS = ['#d84a1e', '#f2a23a', '#b8361a', '#e8782a', '#ffc24a', '#c9501f'];
+  const LEAF_COLORS = ['#c96a2c', '#e08a3a', '#a8481f', '#eaa456', '#8a4a2a', '#d9772f'];
   function autumnScene() {
-    // хмари в небі
-    const clouds = el('a-clouds', `<svg viewBox="0 0 1600 300" preserveAspectRatio="none">${[[180, 200, 1.2], [640, 170, 0.9], [1120, 210, 1.3], [1480, 160, 0.8]].map(([cx, cy, s]) => `<g transform="translate(${cx} ${cy}) scale(${s} ${s * 0.7})" fill="#ffd9ae"><ellipse cx="0" cy="24" rx="170" ry="30"/><circle cx="-70" cy="6" r="40"/><circle cx="0" cy="-10" r="56"/><circle cx="78" cy="8" r="42"/><ellipse cx="0" cy="24" rx="150" ry="18" fill="#fff0d8"/></g>`).join('')}</svg>`);
-    // паперові шари: далекі пагорби з амбаром, середні з гарбузами, передній план
-    const W = 1600, H = 280; const shadow = `<filter id="ap" x="-5%" y="-30%" width="110%" height="160%"><feDropShadow dx="0" dy="-4" stdDeviation="5" flood-color="#3a140c" flood-opacity="0.35"/></filter>`;
-    let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMax slice"><defs>${shadow}</defs>`;
-    svg += `<path filter="url(#ap)" d="M0 120 C180 80 340 100 520 92 C720 82 860 118 1040 96 C1220 74 1420 104 1600 88 L1600 280 L0 280 Z" fill="#e39a5a"/>`;
-    // амбар на далекому пагорбі
-    const bx = 1080, by = 74;
-    svg += `<g transform="translate(${bx} ${by})"><path d="M0 40 V8 L30 -14 L60 8 V40 Z" fill="#b8402a"/><path d="M-6 10 L30 -18 L66 10 L60 12 L30 -10 L0 12 Z" fill="#3d8f8a"/><rect x="22" y="18" width="16" height="22" fill="#f6e6d0"/><path d="M22 18 L38 40 M38 18 L22 40" stroke="#b8402a" stroke-width="2"/><rect x="25" y="2" width="10" height="8" fill="#f6e6d0"/><path d="M30 -18 V-30 M24 -30 h14" stroke="#7a3a1a" stroke-width="2"/><path d="M26 -36 q4 -6 8 0 l4 -2 -2 4 q-4 4 -10 2z" fill="#7a3a1a"/></g>`;
-    svg += `<path d="M700 112 C780 108 860 112 940 104" stroke="#f2c27a" stroke-width="3" fill="none"/>` + Array.from({ length: 9 }, (_, i) => `<rect x="${700 + i * 30}" y="${100 - i * 0.6}" width="4" height="16" fill="#f2c27a"/>`).join('');
-    svg += `<path filter="url(#ap)" d="M0 170 C220 140 420 160 640 150 C860 140 1060 168 1280 152 C1420 142 1520 150 1600 146 L1600 280 L0 280 Z" fill="#c4643a"/>`;
-    for (let i = 0; i < 22; i++) { const px = rnd() * W, py = 160 + rnd() * 40, r = 6 + rnd() * 6; svg += `<g transform="translate(${px.toFixed(0)} ${py.toFixed(0)})"><ellipse rx="${r * 1.25}" ry="${r}" fill="#f0882a"/><path d="M${-r * 0.4} ${-r * 0.9} q${r * 0.4} ${r * 0.6} ${r * 0.8} 0" stroke="#c4561a" fill="none" stroke-width="1.5"/><rect x="-1.5" y="${-r - 5}" width="3" height="6" fill="#4a6a2a"/></g>`; }
-    svg += `<path filter="url(#ap)" d="M0 218 C260 196 520 222 800 208 C1080 194 1340 222 1600 204 L1600 280 L0 280 Z" fill="#7a3420"/>`;
-    for (let i = 0; i < 40; i++) { const gx = rnd() * W, gy = 214 + rnd() * 30; svg += `<path d="M${gx.toFixed(0)} ${gy.toFixed(0)} l3 -12 l3 12 l3 -9 l2 9" fill="#5a2616"/>`; }
-    // великі гарбузи на передньому плані
-    for (const [px, s] of [[120, 1.4], [1460, 1.2], [1530, 0.8]]) svg += `<g transform="translate(${px} 236) scale(${s})"><ellipse cx="-14" rx="16" ry="20" fill="#e8742a"/><ellipse cx="14" rx="16" ry="20" fill="#e8742a"/><ellipse rx="18" ry="22" fill="#f58a34"/><path d="M-2 -22 q0 -8 6 -12" stroke="#4a6a2a" stroke-width="4" fill="none" stroke-linecap="round"/></g>`;
-    svg += `</svg>`;
-    // кленова крона в лівому верхньому куті, як рамка
-    let can = `<svg viewBox="0 0 520 360" preserveAspectRatio="xMinYMin meet"><path d="M-10 -10 C60 60 70 140 40 360 L80 360 C110 160 100 70 30 -10 Z" fill="#5a2a1a"/>`;
-    for (let i = 0; i < 70; i++) { const cx = rnd() * 500, cy = rnd() * (240 - cx * 0.35) - 10; if (cy < -20) continue; const s = 1.6 + rnd() * 2.6; can += `<path d="${MAPLE}" transform="translate(${cx.toFixed(0)} ${cy.toFixed(0)}) rotate(${(rnd() * 360).toFixed(0)}) scale(${s.toFixed(2)})" fill="${LEAF_COLORS[Math.floor(rnd() * LEAF_COLORS.length)]}"/>`; }
-    can += `</svg>`;
-    const canopy = el('a-canopy', can);
-    const sun = el('a-sun');
-    const flies = el('s-layer'); for (let i = 0; i < 18; i++) { const f = document.createElement('i'); f.className = 'a-fly'; f.style.left = (rnd() * 100).toFixed(1) + '%'; f.style.top = (55 + rnd() * 40).toFixed(1) + '%'; f.style.animationDelay = (rnd() * 6).toFixed(1) + 's'; flies.appendChild(f); }
-    bg.append(clouds, sun, el('s-ground a-ground', svg), canopy, flies, particles);
+    // Паперовий осінній ліс (у дусі «Over The Garden Wall»): шари вирізаних дерев від блідих дальніх до темних
+    // дерев-арок по краях, листяна крона зверху, купи листя й папороті внизу, паперова рамка по краю.
+    const W = 1600, H = 1000;
+    const shadow = (id, d, b, o) => `<filter id="${id}" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="${d}" dy="${d + 2}" stdDeviation="${b}" flood-color="#2a1208" flood-opacity="${o}"/></filter>`;
+    // дерево: стовбур + розгалуження (обведені лінії з округлими кінцями), опційно листя на кінцях гілок
+    const tree = (x, base, h, w, color, leafy, lean = 0) => {
+      let out = '';
+      const branch = (x0, y0, len, ang, wd, depth) => {
+        const x1 = x0 + Math.sin(ang) * len, y1 = y0 - Math.cos(ang) * len;
+        const mx = (x0 + x1) / 2 + (rnd() - 0.5) * len * 0.25, my = (y0 + y1) / 2;
+        out += `<path d="M${x0.toFixed(0)} ${y0.toFixed(0)} Q${mx.toFixed(0)} ${my.toFixed(0)} ${x1.toFixed(0)} ${y1.toFixed(0)}" stroke="${color}" stroke-width="${wd.toFixed(1)}" stroke-linecap="round" fill="none"/>`;
+        if (depth >= 3 || wd < 2) { if (leafy) for (let k = 0; k < 3; k++) out += `<ellipse cx="${(x1 + (rnd() - 0.5) * 40).toFixed(0)}" cy="${(y1 + (rnd() - 0.5) * 26).toFixed(0)}" rx="${(16 + rnd() * 18).toFixed(0)}" ry="${(10 + rnd() * 10).toFixed(0)}" fill="${['#d9772f', '#e89a4a', '#b85a2a', '#f0b060'][Math.floor(rnd() * 4)]}"/>`; return; }
+        const n = depth === 0 ? 3 : 2;
+        for (let i = 0; i < n; i++) branch(x1, y1, len * (0.55 + rnd() * 0.2), ang + (i - (n - 1) / 2) * (0.5 + rnd() * 0.35) + (rnd() - 0.5) * 0.2, wd * 0.6, depth + 1);
+      };
+      // стовбур із прожилками
+      const top = base - h * 0.55;
+      out += `<path d="M${x - w / 2} ${base} C${x - w / 2 + lean * 0.3} ${base - h * 0.2} ${x - w * 0.3 + lean} ${top + 40} ${x + lean - w * 0.18} ${top} L${x + lean + w * 0.18} ${top} C${x + w * 0.3 + lean} ${top + 40} ${x + w / 2 + lean * 0.3} ${base - h * 0.2} ${x + w / 2} ${base} Z" fill="${color}"/>`;
+      for (let g = 0; g < 3; g++) { const gx = x + (g - 1) * w * 0.18; out += `<path d="M${gx} ${base - 10} C${gx + lean * 0.2} ${base - h * 0.2} ${gx + lean * 0.6} ${top + 60} ${gx + lean * 0.9} ${top + 20}" stroke="rgba(255,220,180,0.13)" stroke-width="2" fill="none"/>`; }
+      branch(x + lean, top + 4, h * 0.3, (rnd() - 0.5) * 0.3, w * 0.36, 0);
+      return out;
+    };
+    let svg = `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="xMidYMid slice"><defs>${shadow('pf', 2, 4, 0.25)}${shadow('pm', 3, 6, 0.32)}${shadow('pn', 5, 9, 0.4)}
+      <radialGradient id="glow" cx="50%" cy="46%" r="55%"><stop offset="0" stop-color="#ffd59a" stop-opacity="0.55"/><stop offset="0.6" stop-color="#e8a060" stop-opacity="0.15"/><stop offset="1" stop-color="#e8a060" stop-opacity="0"/></radialGradient></defs>`;
+    svg += `<rect width="${W}" height="${H}" fill="url(#glow)"/>`;
+    // дальні дерева
+    svg += `<g filter="url(#pf)" opacity="0.85">`; for (let i = 0; i < 13; i++) svg += tree(80 + i * 120 + (rnd() - 0.5) * 60, 1000, 760 + rnd() * 200, 22 + rnd() * 10, '#c99062', false, (rnd() - 0.5) * 40); svg += `</g>`;
+    // середні дерева з листям
+    svg += `<g filter="url(#pm)">`; for (let i = 0; i < 8; i++) svg += tree(140 + i * 190 + (rnd() - 0.5) * 70, 1000, 820 + rnd() * 160, 36 + rnd() * 14, '#9a5a33', rnd() < 0.6, (rnd() - 0.5) * 60); svg += `</g>`;
+    // листяна крона вздовж верху
+    svg += `<g filter="url(#pm)">`; for (let i = 0; i < 170; i++) { const cx = rnd() * W, edge = Math.min(cx, W - cx), cy = rnd() * (120 + (edge < 400 ? 180 * (1 - edge / 400) : 0)) - 30; const sc = 2.4 + rnd() * 3.4; svg += `<path d="${MAPLE}" transform="translate(${cx.toFixed(0)} ${cy.toFixed(0)}) rotate(${(rnd() * 360).toFixed(0)}) scale(${sc.toFixed(2)})" fill="${['#c96a2c', '#e08a3a', '#b0552a', '#eaa456', '#a8481f', '#d9772f'][Math.floor(rnd() * 6)]}"/>`; } svg += `</g>`;
+    // ближні дерева
+    svg += `<g filter="url(#pn)">`; for (const [x, lean] of [[250, 30], [560, -20], [1060, 25], [1360, -30]]) svg += tree(x, 1000, 900, 60, '#6a3822', true, lean); svg += `</g>`;
+    // дерева-арки по краях
+    const arch = (side) => { const s = side === 'l' ? 1 : -1, x0 = side === 'l' ? 0 : W; return `<path d="M${x0} 1000 L${x0} 0 L${x0 + s * 520} 0 C${x0 + s * 330} 60 ${x0 + s * 220} 150 ${x0 + s * 170} 300 C${x0 + s * 130} 420 ${x0 + s * 150} 600 ${x0 + s * 120} 760 C${x0 + s * 100} 880 ${x0 + s * 60} 960 ${x0 + s * 40} 1000 Z" fill="#4a2416"/>` + `<path d="M${x0 + s * 170} 300 C${x0 + s * 300} 220 ${x0 + s * 420} 210 ${x0 + s * 560} 150" stroke="#4a2416" stroke-width="26" stroke-linecap="round" fill="none"/><path d="M${x0 + s * 140} 520 C${x0 + s * 240} 470 ${x0 + s * 300} 420 ${x0 + s * 380} 400" stroke="#4a2416" stroke-width="18" stroke-linecap="round" fill="none"/>` + Array.from({ length: 6 }, (_, k) => `<path d="M${x0 + s * (40 + k * 18)} 1000 C${x0 + s * (60 + k * 18)} 700 ${x0 + s * (90 + k * 20)} 400 ${x0 + s * (200 + k * 40)} ${60 + k * 10}" stroke="rgba(255,210,160,0.1)" stroke-width="2" fill="none"/>`).join(''); };
+    svg += `<g filter="url(#pn)">${arch('l')}${arch('r')}</g>`;
+    // купи листя й папороті внизу
+    svg += `<g filter="url(#pm)"><path d="M0 1000 L0 900 C120 860 240 890 380 870 C520 850 640 900 800 880 C960 860 1080 905 1240 878 C1380 856 1500 890 1600 870 L1600 1000 Z" fill="#c8642a"/><path d="M0 1000 L0 950 C200 920 400 960 620 935 C840 912 1060 958 1280 930 C1420 914 1520 940 1600 925 L1600 1000 Z" fill="#a84a20"/></g>`;
+    const fern = (x, s, flip) => { let f = `<g transform="translate(${x} 1000) scale(${flip ? -s : s} ${s})" fill="#3e1f14">`; f += `<path d="M0 0 C10 -80 40 -160 90 -220" stroke="#3e1f14" stroke-width="5" fill="none"/>`; for (let k = 1; k < 10; k++) { const t = k / 10, px = 90 * t * t + 10 * t, py = -220 * t; f += `<ellipse cx="${px + 14}" cy="${py}" rx="${22 - k * 1.6}" ry="5" transform="rotate(-30 ${px + 14} ${py})"/><ellipse cx="${px - 10}" cy="${py + 6}" rx="${20 - k * 1.5}" ry="5" transform="rotate(30 ${px - 10} ${py + 6})"/>`; } return f + `</g>`; };
+    svg += `<g filter="url(#pn)">${fern(30, 1.3, false)}${fern(150, 0.9, false)}${fern(1570, 1.3, true)}${fern(1450, 0.9, true)}</g></svg>`;
+    const forest = el('a-forest', svg);
+    const frame = el('a-frame');
+    const flies = el('s-layer'); for (let i = 0; i < 16; i++) { const f = document.createElement('i'); f.className = 'a-fly'; f.style.left = (10 + rnd() * 80).toFixed(1) + '%'; f.style.top = (30 + rnd() * 60).toFixed(1) + '%'; f.style.animationDelay = (rnd() * 6).toFixed(1) + 's'; flies.appendChild(f); }
+    bg.append(forest, flies, particles, frame);
     return { kind: 'leaves' };
   }
 
@@ -112,9 +131,9 @@
         for (let i = 0; i * step < w + step; i++) { const x0 = i * step; path += ` Q${x0 + step / 2} ${2 + sag * 2} ${x0 + step} 2`; const bx = x0 + step / 2, by = 2 + sag, c = C[i % C.length];
           items += `<g class="x-bulb" style="animation-delay:${((i * 0.37) % 2.4).toFixed(2)}s"><circle cx="${bx}" cy="${by + 8}" r="9" fill="${c}" opacity="0.35" filter="url(#sgl)"/><rect x="${bx - 2.5}" y="${by}" width="5" height="4" rx="1" fill="#3a3f4a"/><ellipse cx="${bx}" cy="${by + 8}" rx="4" ry="5.5" fill="${c}"/><ellipse cx="${bx - 1.3}" cy="${by + 6}" rx="1.2" ry="1.8" fill="#fff" opacity="0.7"/></g>`; }
       } else {
-        const C = ['#e0552e', '#ffc24a', '#8a4a2a', '#f08a34', '#c9501f'];
-        for (let i = 0; i * step < w + step; i++) { const x0 = i * step; path += ` Q${x0 + step / 2} ${2 + sag * 2} ${x0 + step} 2`; const bx = x0 + step / 2, by = 2 + sag - 1, c = C[i % C.length];
-          items += `<g class="a-flag" style="animation-delay:${((i * 0.41) % 4).toFixed(2)}s;transform-box:fill-box"><path d="M${bx - 9} ${by} L${bx + 9} ${by} L${bx} ${by + 16} Z" fill="${c}"/><path d="M${bx - 9} ${by} L${bx + 9} ${by}" stroke="rgba(255,255,255,0.35)" stroke-width="1"/></g>`; }
+        const C = ['#c96a2c', '#e08a3a', '#a8481f', '#eaa456'];
+        for (let i = 0; i * step < w + step; i++) { const x0 = i * step; path += ` Q${x0 + step / 2} ${2 + sag * 2} ${x0 + step} 2`; const bx = x0 + step / 2, by = 2 + sag, c = C[i % C.length], r = i % 2 ? 25 : -25;
+          items += `<g class="a-flag" style="animation-delay:${((i * 0.41) % 4).toFixed(2)}s;transform-box:fill-box"><path d="${MAPLE}" transform="translate(${bx} ${by + 7}) rotate(${r + 180}) scale(0.9)" fill="${c}"/></g>`; }
       }
       g.innerHTML = `<svg viewBox="0 0 ${w} 24" preserveAspectRatio="none"><defs><filter id="sgl" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="3"/></filter></defs><path d="${path}" fill="none" stroke="${season === 'winter' ? '#1d2433' : '#5a2a1a'}" stroke-width="1.5"/>${items}</svg>`;
     };
