@@ -359,3 +359,54 @@ Object.assign(window.I18N.en, {
   'x.stTotal': 'in the contest', 'x.stFinal': 'in the final', 'x.stLevels': 'levels', 'x.hidden': 'hidden',
   'x.foot': 'Rustmas Selection · data from the Steam Workshop',
 });
+
+// ---- автори v2: дохід, співпраця ----
+Object.assign(window.I18N.ua, {
+  'a.tab.income': 'Дохід', 'a.tab.collab': 'Співпраця', 'a.tab.rate': 'Частка акцептів',
+  'a.note.income': 'Чистий дохід автора ≈ виручка магазину / 4. Спільні роботи діляться порівну між співавторами.',
+  'a.note.collab': 'Хто найчастіше робить скіни разом з іншими авторами.',
+  'a.note.rate': 'Яка частина робіт автора в майстерні потрапила в гру (від 10 робіт).',
+  'a.income': 'чистий дохід', 'a.incomeTip': 'Оцінка: виручка магазину (ціна × кількість проданих) / 4, для спільних робіт поділено між співавторами. Без урахування комісій ринку.',
+  'a.collabN': 'у співпраці', 'a.soloN': 'соло', 'a.rateN': 'прийнято', 'a.partners': 'Працював(ла) разом з', 'a.withN': '+{n} співавт.',
+  'a.wsLink': 'Роботи в майстерні', 'a.stat.collab': 'спільних робіт', 'a.stat.income': 'чистий дохід авторів',
+  'a.coverage': 'співавтори перевірено для {p}% робіт',
+});
+Object.assign(window.I18N.en, {
+  'a.tab.income': 'Income', 'a.tab.collab': 'Collabs', 'a.tab.rate': 'Accept rate',
+  'a.note.income': "Author's net income ≈ store revenue / 4. Collaborations are split evenly between co-authors.",
+  'a.note.collab': 'Who makes skins together with other authors most often.',
+  'a.note.rate': "Share of the author's workshop items that made it into the game (10+ items).",
+  'a.income': 'net income', 'a.incomeTip': 'Estimate: store revenue (price × units sold) / 4, split between co-authors for collaborations. Market fees not included.',
+  'a.collabN': 'collabs', 'a.soloN': 'solo', 'a.rateN': 'accepted', 'a.partners': 'Worked together with', 'a.withN': '+{n} co-authors',
+  'a.wsLink': 'Workshop items', 'a.stat.collab': 'collaborations', 'a.stat.income': 'authors net income',
+  'a.coverage': 'co-authors checked for {p}% of items',
+});
+
+Object.assign(window.I18N.ua, { 'm.src.all': 'Усі скіни', 'm.src.ws': 'Скіни майстерні', 'm.src.fp': 'Скіни Facepunch' });
+Object.assign(window.I18N.en, { 'm.src.all': 'All skins', 'm.src.ws': 'Workshop skins', 'm.src.fp': 'Facepunch skins' });
+
+// ---- WORKSHOP ----
+Object.assign(window.I18N.ua, {
+  'w.only': 'ЛИШЕ АВТОРИ З АКЦЕПТАМИ', 'w.lead': 'Як майстерня в Steam, але тут лише роботи авторів, чиї скіни вже прийняли в гру. Нові ідеї від тих, хто вміє проходити відбір.',
+  'w.search': 'Пошук: назва або автор', 'w.sort.new': 'Найновіші', 'w.sort.trend': 'У тренді', 'w.sort.pop': 'Найпопулярніші', 'w.sort.top': 'Найкращі за оцінками', 'w.sort.fav': 'Найбільше в обраному',
+  'w.p.7': 'За тиждень', 'w.p.30': 'За місяць', 'w.p.90': 'За 3 місяці', 'w.p.365': 'За рік', 'w.allTypes': 'Усі типи',
+  'w.st.all': 'Усі', 'w.st.new': 'Ще не в грі', 'w.st.acc': 'Вже в грі', 'w.loading': 'Завантажую майстерню…', 'w.more': 'Показати ще',
+  'w.foot': 'Дані: Steam Web API · оновлюється раз на добу', 'w.found': '{n} робіт', 'w.empty': 'Нічого не знайдено за цими фільтрами', 'w.fail': 'Не вдалося завантажити дані майстерні',
+  'w.today': 'сьогодні', 'w.daysAgo': '{n} дн. тому', 'w.monthsAgo': '{n} міс. тому', 'w.yearsAgo': '{n} р. тому',
+  'w.inGame': 'В ГРІ', 'w.subs': 'підписки', 'w.favs': 'в обраному', 'w.votes': 'оцінки «подобається»', 'w.profile': 'Профіль автора',
+  'w.rate': 'автор: {p}% робіт у грі', 'w.rateTip': 'Яка частина робіт цього автора вже потрапила в гру — грубий шанс на акцепт',
+  'w.authorLine': '{n} робіт за рік · {a} у грі', 'w.allAuthors': 'Усі автори',
+  'w.stItems': 'робіт за рік', 'w.stAuthors': 'авторів', 'w.stAcc': 'вже в грі', 'w.stWeek': 'за тиждень', 'w.window': 'роботи за останні 12 місяців + усі прийняті',
+});
+Object.assign(window.I18N.en, {
+  'w.only': 'ACCEPTED AUTHORS ONLY', 'w.lead': 'Like the Steam Workshop, but only items by authors whose skins are already in the game. New ideas from people who know how to get accepted.',
+  'w.search': 'Search: title or author', 'w.sort.new': 'Most recent', 'w.sort.trend': 'Trending', 'w.sort.pop': 'Most popular', 'w.sort.top': 'Top rated', 'w.sort.fav': 'Most favorited',
+  'w.p.7': 'Past week', 'w.p.30': 'Past month', 'w.p.90': 'Past 3 months', 'w.p.365': 'Past year', 'w.allTypes': 'All types',
+  'w.st.all': 'All', 'w.st.new': 'Not in game yet', 'w.st.acc': 'In game', 'w.loading': 'Loading the workshop…', 'w.more': 'Show more',
+  'w.foot': 'Data: Steam Web API · refreshed daily', 'w.found': '{n} items', 'w.empty': 'Nothing matches these filters', 'w.fail': 'Could not load workshop data',
+  'w.today': 'today', 'w.daysAgo': '{n}d ago', 'w.monthsAgo': '{n}mo ago', 'w.yearsAgo': '{n}y ago',
+  'w.inGame': 'IN GAME', 'w.subs': 'subscriptions', 'w.favs': 'favorites', 'w.votes': 'upvotes', 'w.profile': 'Author profile',
+  'w.rate': 'author: {p}% accepted', 'w.rateTip': "Share of this author's items already in the game — a rough acceptance chance",
+  'w.authorLine': '{n} items this year · {a} in game', 'w.allAuthors': 'All authors',
+  'w.stItems': 'items this year', 'w.stAuthors': 'authors', 'w.stAcc': 'in game', 'w.stWeek': 'this week', 'w.window': 'items from the last 12 months + all accepted',
+});

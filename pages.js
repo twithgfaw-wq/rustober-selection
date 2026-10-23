@@ -45,48 +45,68 @@
   // ==================== АВТОРИ ====================
   if (window.AUTHORS) {
     const A = window.AUTHORS;
+    const P = Object.fromEntries(A.people.map((a) => [a.id, a]));
+    // повний список предметів — окремим файлом, лише коли відкривають профіль
+    let IT = null, BY = null, itemsLoading = null;
+    const loadItems = () => itemsLoading || (itemsLoading = fetch('authors-items.json?v=' + ((document.querySelector('script[src^="authors.js"]')?.getAttribute('src') || '').split('?v=')[1] || Date.now())).then((r) => r.json()).then((D) => {
+      const ix = Object.fromEntries(D.cols.map((k, i) => [k, i])); IT = {};
+      for (const r of D.items) IT[r[ix.id]] = { id: r[ix.id], guid: r[ix.guid], name: r[ix.name], type: r[ix.type], icon: /^https?:/.test(r[ix.icon] || '') ? r[ix.icon] : D.iconBase + r[ix.icon], low: r[ix.low], store: r[ix.store], supply: r[ix.supply], accepted: r[ix.accepted], wsId: r[ix.wsId], cr: r[ix.cr] };
+      BY = D.byAuthor; return IT;
+    }));
     const yrs = Object.keys(A.totals.yearly).sort();
-    paintStats([['', '#', A.totals.items.toLocaleString(), t('a.stat.items')], ['c', '☺', A.totals.authors.toLocaleString(), t('a.stat.authors')], ['y', '▶', A.rising.length, t('a.stat.rising')], ['g', '⚡', A.streaks.length, t('a.stat.streaks')]]);
-    $('updated').textContent = `SCMM ${fmtDate(A.scmmAt)} · ${A.totals.rotations} STORE ROTATIONS · ${yrs[0]}–${yrs.at(-1)}`;
+    paintStats([['', '#', A.totals.items.toLocaleString(), t('a.stat.items')], ['c', '☺', A.totals.authors.toLocaleString(), t('a.stat.authors')], ['y', '⇄', A.totals.collabItems.toLocaleString(), t('a.stat.collab')], ['g', '$', usd0(A.totals.income / 100), t('a.stat.income')]]);
+    $('updated').textContent = `SCMM ${fmtDate(A.scmmAt)} · ${A.totals.rotations} STORE ROTATIONS · ${yrs[0]}–${yrs.at(-1)} · ${t('a.coverage', { p: A.totals.collabCoverage })}`;
     $('footSnap').textContent = `generated ${A.generated}`;
-    $('arcadeList').innerHTML = A.top.slice(0, 8).map((a, i) => `<li><span>${String(i + 1).padStart(2, '0')}</span><span class="nm">${esc(a.name.toUpperCase().slice(0, 16))}</span><span class="sc">${a.accepted}</span></li>`).join('');
-    $('ticker').textContent = A.streaks.slice(0, 8).map((a) => `${a.name.toUpperCase()} STREAK ${a.streak}`).join('   ///   ') || 'NO STREAKS';
-    const notes = { top: t('a.note.top'), rising: t('a.note.rising'), streaks: t('a.note.streaks'), bestStreaks: t('a.note.best'), active90: t('a.note.active'), submitters: t('a.note.sub') };
+    const top = A.lists.top.map((id) => P[id]);
+    $('arcadeList').innerHTML = top.slice(0, 8).map((a, i) => `<li><span>${String(i + 1).padStart(2, '0')}</span><span class="nm">${esc(a.name.toUpperCase().slice(0, 16))}</span><span class="sc">${a.accepted}</span></li>`).join('');
+    $('ticker').textContent = A.lists.streaks.slice(0, 8).map((id) => `${P[id].name.toUpperCase()} STREAK ${P[id].streak}`).join('   ///   ') || 'NO STREAKS';
+    const notes = { top: t('a.note.top'), rising: t('a.note.rising'), streaks: t('a.note.streaks'), bestStreaks: t('a.note.best'), active90: t('a.note.active'), income: t('a.note.income'), collab: t('a.note.collab'), rate: t('a.note.rate'), submitters: t('a.note.sub') };
     let tab = 'top', shown = 30, q = '';
     const list = () => {
-      if (tab === 'submitters') return A.submitters;
-      let arr = A[tab] || A.top;
-      if (q) arr = A.all.filter((a) => a.name.toLowerCase().includes(q));
-      return arr;
+      if (tab === 'submitters' && !q) return A.submitters;
+      if (q) return A.lists.top.map((id) => P[id]).filter((a) => a.name.toLowerCase().includes(q));
+      return (A.lists[tab] || A.lists.top).map((id) => P[id]);
     };
+    const income = (a) => a.income ? `<span class="inc" title="${esc(t('a.incomeTip'))}">${t('a.income')} ≈ ${usd0(a.income / 100)}</span>` : '';
     const row = (a, i) => {
-      if (tab === 'submitters') return `<div class="rank-row" data-author="${esc(a.id || '')}" data-name="${esc(a.name)}"><span class="pos">${i + 1}</span>${a.avatar ? `<img class="ava" src="${esc(a.avatar)}" alt="">` : '<i class="ava"></i>'}<div class="nm"><b>${esc(a.name)}</b><span>${a.weeks}/${A.votesWeeks.length} ${t('a.weeks')} · ${a.submissions} ${t('a.subs')} · ${t('a.avgScore')} ${a.avgScore ?? '—'} · ${t('a.best')} ${a.bestScore ?? '—'}</span></div><div class="num"><b>${a.accepted}</b><span>${t('a.accepted')}</span></div></div>`;
+      if (tab === 'submitters' && !q) return `<div class="rank-row" data-author="${esc(a.id || '')}" data-name="${esc(a.name)}"><span class="pos">${i + 1}</span>${a.avatar ? `<img class="ava" src="${esc(a.avatar)}" alt="">` : '<i class="ava"></i>'}<div class="nm"><b>${esc(a.name)}</b><span>${a.weeks}/${A.votesWeeks.length} ${t('a.weeks')} · ${a.submissions} ${t('a.subs')} · ${t('a.avgScore')} ${a.avgScore ?? '—'} · ${t('a.best')} ${a.bestScore ?? '—'}</span></div><div class="num"><b>${a.accepted}</b><span>${t('a.accepted')}</span></div></div>`;
       const streak = a.streak >= 2 ? `<span class="streak-bar" title="streak ${a.streak}">${'<i></i>'.repeat(Math.min(a.streak, 12))}</span>` : '';
-      const main = tab === 'rising' ? [a.last365, t('a.last365')] : tab === 'streaks' ? [a.streak, t('a.streakNow')] : tab === 'bestStreaks' ? [a.bestStreak, t('a.streakBest')] : tab === 'active90' ? [a.last90, t('a.last90')] : [a.accepted, t('a.accepted')];
-      const full = A.top.find((x) => x.id === a.id) || A.rising.find((x) => x.id === a.id) || A.streaks.find((x) => x.id === a.id) || A.active90.find((x) => x.id === a.id) || A.bestStreaks.find((x) => x.id === a.id);
-      const thumbs = full?.items ? `<div class="thumbs">${full.items.slice(0, 8).map((it) => `<img src="${esc(it.icon)}" alt="" title="${esc(it.name)}" loading="lazy">`).join('')}</div>` : '';
-      return `<div class="rank-row" data-author="${esc(a.id)}"><span class="pos">${i + 1}</span>${a.avatar ? `<img class="ava" src="${esc(a.avatar)}" alt="" loading="lazy">` : '<i class="ava"></i>'}<div class="nm"><b>${esc(a.name)}${streak}</b><span>${a.accepted} ${t('a.accepted')} · ${t('a.since')} ${fmtDate(a.first)} · ${t('a.last90')}: ${a.last90} · ${t('a.streakBest')}: ${a.bestStreak}${a.revenue ? ` · ${t('a.revenue')} ~${usd0(a.revenue / 100)}` : ''}</span></div><div class="num"><b>${main[0]}</b><span>${main[1]}</span></div>${thumbs}</div>`;
+      const main = tab === 'rising' ? [a.last365, t('a.last365')] : tab === 'streaks' ? [a.streak, t('a.streakNow')] : tab === 'bestStreaks' ? [a.bestStreak, t('a.streakBest')] : tab === 'active90' ? [a.last90, t('a.last90')] : tab === 'income' ? [usd0(a.income / 100), t('a.income')] : tab === 'collab' ? [a.collab, t('a.collabN')] : tab === 'rate' ? [`${a.rate}%`, t('a.rateN')] : [a.accepted, t('a.accepted')];
+      const thumbs = `<div class="thumbs">${(a.th || []).map(([, icon, nm]) => `<img src="${esc(/^https?:/.test(icon || '') ? icon : A.iconBase + icon)}" alt="" title="${esc(nm)}" loading="lazy">`).join('')}</div>`;
+      const bits = [`${a.accepted} ${t('a.accepted')}`, a.collab ? `${a.collab} ${t('a.collabN')}` : '', `${t('a.since')} ${fmtDate(a.first)}`, `${t('a.last90')}: ${a.last90}`, a.subs ? `${t('a.rateN')} ${a.rate}% (${a.accepted}/${a.subs})` : ''].filter(Boolean).join(' · ');
+      return `<div class="rank-row" data-author="${esc(a.id)}"><span class="pos">${i + 1}</span>${a.avatar ? `<img class="ava" src="${esc(a.avatar)}" alt="" loading="lazy">` : '<i class="ava"></i>'}<div class="nm"><b>${esc(a.name)}${streak}</b><span>${bits}</span>${income(a)}</div><div class="num"><b>${main[0]}</b><span>${main[1]}</span></div>${thumbs}</div>`;
     };
     function render() {
       const arr = list(); $('rankList').innerHTML = arr.slice(0, shown).map(row).join('') || `<div class="empty">—</div>`;
-      $('more').hidden = arr.length <= shown; $('listHint').textContent = `${arr.length}`; $('modeNote').textContent = notes[tab] || '';
+      $('more').hidden = arr.length <= shown; $('listHint').textContent = `${arr.length}`; $('modeNote').textContent = q ? '' : notes[tab] || '';
     }
     $('tabs').addEventListener('click', (e) => { const b = e.target.closest('button[data-tab]'); if (!b) return; tab = b.dataset.tab; shown = 30; document.querySelectorAll('#tabs button').forEach((x) => x.classList.toggle('on', x === b)); render(); });
     $('more').addEventListener('click', () => { shown += 30; render(); });
-    $('search').addEventListener('input', (e) => { q = e.target.value.trim().toLowerCase(); shown = 30; if (q && tab === 'submitters') tab = 'top'; render(); });
-    function openAuthor(id, name) {
-      const a = A.top.find((x) => x.id === id) || A.rising.find((x) => x.id === id) || A.streaks.find((x) => x.id === id) || A.bestStreaks.find((x) => x.id === id) || A.active90.find((x) => x.id === id) || A.all.find((x) => x.id === id);
+    $('search').addEventListener('input', (e) => { q = e.target.value.trim().toLowerCase(); shown = 30; render(); });
+    async function openAuthor(id, name) {
+      const a = P[id] || (name && A.people.find((x) => x.name === name));
       if (!a) { toast(name ? `${name}: ${t('a.noAccepts')}` : '—'); return; }
+      try { await loadItems(); } catch (e) { /* без повного списку покажемо мініатюри */ }
+      const its = BY && IT ? (BY[a.id] || []).map((iid) => IT[iid]).filter(Boolean) : [];
       const yearsAll = yrs.map((y) => a.years?.[y] || 0); const maxY = Math.max(1, ...yearsAll);
       const sub = A.submitters.find((s) => s.name === a.name);
+      const partners = (a.partners || []).filter(([pid]) => P[pid]).map(([pid, n]) => `<button class="chip" data-author-open="${esc(pid)}">${P[pid].avatar ? `<img src="${esc(P[pid].avatar)}" alt="">` : ''}${esc(P[pid].name)} <b>${n}</b></button>`).join('');
       openModal(`<div class="a-head">${a.avatar ? `<img class="ava big" src="${esc(a.avatar)}" alt="">` : ''}<div><h3>${esc(a.name)}</h3><div class="hint">${a.accepted} ${t('a.accepted')} · ${t('a.since')} ${fmtDate(a.first)} · ${t('a.lastAccept')} ${fmtDate(a.last)}${a.topType ? ` · ${esc(a.topType)}` : ''}</div></div>
-        <div class="m-actions"><a class="btn3d yellow small" href="https://steamcommunity.com/profiles/${esc(a.id)}/myworkshopfiles/?appid=252490" target="_blank" rel="noopener">Steam Workshop ↗</a><a class="btn3d grey small" href="https://rust.scmm.app/items?creatorId=${esc(a.id)}" target="_blank" rel="noopener">SCMM ↗</a></div></div>
-        <div class="counters" style="margin:12px 0"><div class="counter"><b>${a.last90 ?? 0}</b><span>${t('a.last90')}</span></div><div class="counter"><b>${a.last365 ?? 0}</b><span>${t('a.last365')}</span></div><div class="counter pub"><b>${a.streak ?? 0}</b><span>${t('a.streakNow')}</span></div><div class="counter hid"><b>${a.bestStreak ?? 0}</b><span>${t('a.streakBest')}</span></div>${a.revenue ? `<div class="counter"><b>${usd0(a.revenue / 100)}</b><span>${t('a.revenue')}</span></div>` : ''}</div>
+        <div class="m-actions"><a class="btn3d yellow small" href="workshop.html#author/${esc(a.id)}">${t('a.wsLink')}</a><a class="btn3d grey small" href="https://steamcommunity.com/profiles/${esc(a.id)}/myworkshopfiles/?appid=252490" target="_blank" rel="noopener">Steam ↗</a><a class="btn3d grey small" href="https://rust.scmm.app/items?creatorId=${esc(a.id)}" target="_blank" rel="noopener">SCMM ↗</a></div></div>
+        <div class="counters" style="margin:12px 0"><div class="counter"><b>${a.income ? usd0(a.income / 100) : '—'}</b><span>${t('a.income')}</span></div><div class="counter"><b>${a.subs ? a.rate + '%' : '—'}</b><span>${t('a.rateN')}${a.subs ? ` ${a.accepted}/${a.subs}` : ''}</span></div><div class="counter pub"><b>${a.solo}</b><span>${t('a.soloN')}</span></div><div class="counter hid"><b>${a.collab}</b><span>${t('a.collabN')}</span></div></div>
+        <div class="counters" style="margin:0 0 12px"><div class="counter"><b>${a.last90 ?? 0}</b><span>${t('a.last90')}</span></div><div class="counter"><b>${a.last365 ?? 0}</b><span>${t('a.last365')}</span></div><div class="counter pub"><b>${a.streak ?? 0}</b><span>${t('a.streakNow')}</span></div><div class="counter hid"><b>${a.bestStreak ?? 0}</b><span>${t('a.streakBest')}</span></div></div>
+        <div class="hint" style="margin-bottom:10px">${t('a.incomeTip')}</div>
+        ${partners ? `<div class="hint">${t('a.partners')}</div><div class="chips">${partners}</div>` : ''}
         ${sub ? `<div class="hint" style="margin-bottom:10px">micro522: ${sub.weeks}/${A.votesWeeks.length} ${t('a.weeks')}, ${sub.submissions} ${t('a.subs')}, ${t('a.avgScore')} ${sub.avgScore}</div>` : ''}
         <div class="hint">${t('a.perYear')}</div><div class="yearbar" style="margin:4px 0 14px">${yearsAll.map((v, i) => `<i class="hit ${i === yearsAll.length - 1 ? 'last' : ''}" data-tip="${yrs[i]}: ${v}" style="height:${Math.max(6, v / maxY * 100)}%"></i>`).join('')}</div>
-        <div class="hint">${t('a.latest')}</div><div class="mgrid" style="margin-top:8px">${(a.items || []).map(mcard).join('') || '—'}</div>`);
+        <div class="hint">${t('a.latest')}</div><div class="mgrid" style="margin-top:8px">${its.slice(0, 60).map((it) => mcard({ ...it, creator: it.cr.length > 1 ? `${t('a.withN', { n: it.cr.length - 1 })}` : '' })).join('') || '—'}</div>`);
     }
-    document.addEventListener('click', (e) => { const r = e.target.closest('.rank-row'); if (r && !e.target.closest('a')) openAuthor(r.dataset.author, r.dataset.name); const m = e.target.closest('.mcard'); if (m && !e.target.closest('a')) openItemByEl(m); });
+    document.addEventListener('click', (e) => {
+      const ch = e.target.closest('[data-author-open]'); if (ch) { openAuthor(ch.dataset.authorOpen); return; }
+      const r = e.target.closest('.rank-row'); if (r && !e.target.closest('a')) openAuthor(r.dataset.author, r.dataset.name);
+      const m = e.target.closest('.mcard'); if (m && !e.target.closest('a')) openItemByEl(m);
+    });
+    window.__authorItem = (id) => { const it = IT && IT[id]; if (!it) return null; const names = it.cr.map((c) => P[c]?.name).filter(Boolean); return { ...it, creator: names.join(', '), creatorId: it.cr[0] }; };
     // графік по роках
     (function years() { const W = 600, H = 200, pl = 36, pr = 10, pt = 16, pb = 26; const vals = yrs.map((y) => A.totals.yearly[y]); const mx = Math.max(1, ...vals); const bw = (W - pl - pr) / yrs.length; let out = ''; vals.forEach((v, i) => { const bh = (H - pt - pb) * v / mx, x0 = pl + i * bw + 4; out += `<rect class="hit" data-tip="${yrs[i]}: ${v}" x="${x0}" y="${H - pb - bh}" width="${bw - 8}" height="${bh}" rx="3" fill="${i === vals.length - 1 ? '#5fd36b' : '#ffc63a'}"/><text x="${x0 + (bw - 8) / 2}" y="${H - pb - bh - 5}" font-size="10" fill="#f2f0ea" text-anchor="middle" font-weight="700">${v}</text><text x="${x0 + (bw - 8) / 2}" y="${H - pb + 14}" font-size="9" fill="#9a97a0" text-anchor="middle">${yrs[i].slice(2)}</text>`; }); $('chartYears').innerHTML = svg(W, H, out); })();
     render();
@@ -95,7 +115,7 @@
 
   // ==================== РИНОК ====================
   const M = window.MARKET;
-  const allItems = M ? [...new Map([...M.gainers7, ...M.losers7, ...M.gainers30, ...M.losers30, ...M.mostTraded, ...M.mostSold, ...M.liquid, ...M.expensive, ...M.nearAth, ...M.farAth, ...M.rare, ...M.storeNow, ...M.storeRoiBest].map((x) => [x.id, x])).values()] : [];
+  const allItems = M ? [...new Map([...M.gainers7, ...M.losers7, ...M.gainers30, ...M.losers30, ...M.mostTraded, ...M.mostSold, ...M.liquid, ...M.expensive, ...M.nearAth, ...M.farAth, ...M.rare, ...M.storeNow, ...M.storeRoiBest, ...['ws', 'fp'].flatMap((k) => M.src ? Object.values(M.src[k]).filter(Array.isArray).flat() : [])].filter((x) => x && x.id).map((x) => [x.id, x])).values()] : [];
   const itemsById = Object.fromEntries(allItems.map((x) => [x.id, x]));
   function mcard(x) {
     const ch = x.c7 != null ? chg(x.c7) : (x.c30 != null ? chg(x.c30) : '');
@@ -103,8 +123,7 @@
     const sp = M && M.charts[x.id] ? `<div class="spk">${spark(M.charts[x.id].slice(-30), 120, 22, (x.c7 ?? x.c30 ?? 0) >= 0 ? '#5fd36b' : '#ff5a3c')}</div>` : '';
     return `<div class="mcard" data-item="${x.id}"><img src="${esc(x.icon)}" alt="" loading="lazy"><div class="mn"><b title="${esc(x.name)}">${esc(x.name)}</b><small>${esc(x.type || '')}${x.creator ? ' · ' + esc(x.creator) : ''}</small><div class="mp"><b>${usd(x.low || x.last || null)}</b>${ch}</div>${sp}</div>${roi}</div>`;
   }
-  function openItemByEl(el) { const x = itemsById[el.dataset.item] || (window.AUTHORS && findAuthorItem(el.dataset.item)); if (x) openItem(x); }
-  function findAuthorItem(id) { for (const a of [...window.AUTHORS.top, ...window.AUTHORS.rising, ...window.AUTHORS.streaks, ...window.AUTHORS.active90, ...window.AUTHORS.bestStreaks]) { const it = (a.items || []).find((i) => String(i.id) === String(id)); if (it) return it; } return null; }
+  function openItemByEl(el) { const x = itemsById[el.dataset.item] || (window.__authorItem && window.__authorItem(el.dataset.item)); if (x) openItem(x); }
   function openItem(x) {
     const hist = M && M.charts[x.id];
     let chart = '';
@@ -125,7 +144,9 @@
       <div class="m-actions"><a class="btn3d yellow small" href="https://steamcommunity.com/market/listings/252490/${encodeURIComponent(x.name)}" target="_blank" rel="noopener">Steam Market ↗</a><a class="btn3d blue small" href="https://rust.scmm.app/item/${esc(x.guid)}" target="_blank" rel="noopener">SCMM ↗</a>${x.wsId ? `<a class="btn3d grey small" href="https://steamcommunity.com/sharedfiles/filedetails/?id=${x.wsId}" target="_blank" rel="noopener">Workshop ↗</a>` : ''}</div></div></div>`);
   }
   if (M) {
-    paintStats([['', '$', usd0(M.totals.marketCap), t('m.stat.cap')], ['c', '⇄', M.totals.sales24.toLocaleString(), t('m.stat.sales24')], ['y', '$', usd0(M.totals.value168), t('m.stat.v168')], ['g', '#', M.totals.items.toLocaleString(), t('m.stat.items')]]);
+    let src = 'all'; const cur = () => (src === 'all' || !M.src ? M : { ...M, ...M.src[src] });
+    const paintTop = () => { const C = cur(); paintStats([['', '$', usd0(C.totals.marketCap), t('m.stat.cap')], ['c', '⇄', C.totals.sales24.toLocaleString(), t('m.stat.sales24')], ['y', '$', usd0(C.totals.value168), t('m.stat.v168')], ['g', '#', C.totals.items.toLocaleString(), t('m.stat.items')]]); };
+    paintTop();
     $('updated').textContent = `SCMM ${fmtDate(M.scmmAt)} · STORE ${M.store?.id || '—'} · ${M.detailsCount} ITEMS WITH 7D/30D DATA`;
     $('footSnap').textContent = `generated ${M.generated}`;
     const g = M.gainers7[0], l = M.losers7[0];
@@ -142,18 +163,21 @@
       const first = I[0].v, last = I.at(-1).v; $('indexHint').textContent = `${I.length} ${t('m.days')} · ${pct(first ? (last - first) / first * 100 : null)}`;
     })();
     // магазин
-    const sNow = M.storeNow || []; $('storeHint').textContent = `${sNow.length} ${t('m.items')} · ${M.store?.start ? fmtDate(M.store.start) : ''}`;
-    $('storeGrid').innerHTML = sNow.map(mcard).join('') || `<div class="empty">—</div>`;
+    const paintStore = () => { const sNow = (M.storeNow || []).filter((x) => src === 'all' || (src === 'fp' ? x.fp : !x.fp)); $('storeHint').textContent = `${sNow.length} ${t('m.items')} · ${M.store?.start ? fmtDate(M.store.start) : ''}`;
+    $('storeGrid').innerHTML = sNow.map(mcard).join('') || `<div class="empty">—</div>`; };
+    paintStore();
     // мувери
     const mnotes = { gainers7: t('m.note.7'), losers7: t('m.note.7'), gainers30: t('m.note.30'), losers30: t('m.note.30'), mostTraded: t('m.note.traded'), mostSold: t('m.note.sold'), expensive: t('m.note.exp'), nearAth: t('m.note.ath'), farAth: t('m.note.dip'), rare: t('m.note.rare'), storeRoiBest: t('m.note.roi') };
     let mtab = 'gainers7';
-    const mrender = () => { const arr = M[mtab] || []; $('mGrid').innerHTML = arr.map(mcard).join('') || `<div class="empty">${t('m.empty')}</div>`; $('moversHint').textContent = `${arr.length}`; $('mModeNote').textContent = mnotes[mtab] || ''; };
+    const mrender = () => { const arr = cur()[mtab] || []; $('mGrid').innerHTML = arr.map(mcard).join('') || `<div class="empty">${t('m.empty')}</div>`; $('moversHint').textContent = `${arr.length}`; $('mModeNote').textContent = mnotes[mtab] || ''; };
     $('mtabs').addEventListener('click', (e) => { const b = e.target.closest('button[data-tab]'); if (!b) return; mtab = b.dataset.tab; document.querySelectorAll('#mtabs button').forEach((x) => x.classList.toggle('on', x === b)); mrender(); });
     mrender();
     // ротації
     $('rotList').innerHTML = (M.rotStats || []).map((r) => `<div class="rot-row"><span class="d">${fmtDate(r.start)}</span><div class="bar">${r.avgRoi != null ? `<i class="${r.avgRoi < 0 ? 'neg' : ''}" style="width:${Math.min(100, Math.abs(r.avgRoi))}%"></i>` : ''}</div><b>${r.avgRoi != null ? pct(r.avgRoi) : '—'}</b><span class="d">${r.items} ${t('m.items')}${r.best ? ` · ${t('m.best')}: ${esc(r.best.name)} ${pct(r.maxRoi)}` : ''}</span></div>`).join('');
     // типи
-    (function types() { const T = M.typeStats; const mx = Math.max(1, ...T.map((x) => x.v168)); $('chartTypes').innerHTML = `<div class="bars">${T.map((x) => `<div class="bar-row hit" data-tip="${esc(x.type)}: ${t('m.stat.v168')} ${usd0(x.v168)} · cap ${usd0(x.cap)} · ${x.n} items"><span class="lbl">${esc(x.type)}</span><span class="track"><i style="width:${x.v168 / mx * 100}%"><b style="width:100%"></b></i></span><span class="val">${usd0(x.v168)}</span></div>`).join('')}</div>`; })();
+    function paintTypes() { const T = cur().typeStats; const mx = Math.max(1, ...T.map((x) => x.v168)); $('chartTypes').innerHTML = `<div class="bars">${T.map((x) => `<div class="bar-row hit" data-tip="${esc(x.type)}: ${t('m.stat.v168')} ${usd0(x.v168)} · cap ${usd0(x.cap)} · ${x.n} items"><span class="lbl">${esc(x.type)}</span><span class="track"><i style="width:${x.v168 / mx * 100}%"><b style="width:100%"></b></i></span><span class="val">${usd0(x.v168)}</span></div>`).join('')}</div>`; }
+    paintTypes();
+    const sw = $('srcSwitch'); if (sw) sw.addEventListener('click', (e) => { const b = e.target.closest('button[data-src]'); if (!b) return; src = b.dataset.src; sw.querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); paintTop(); paintStore(); mrender(); paintTypes(); });
     document.addEventListener('click', (e) => { const m = e.target.closest('.mcard'); if (m && !e.target.closest('a')) openItemByEl(m); });
   }
 })();

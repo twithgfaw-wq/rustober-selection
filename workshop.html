@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="uk" data-xmas>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rust Workshop Pros</title>
+<meta name="description" content="Майстерня Rust лише від авторів, чиї скіни вже є в грі: нові роботи, популярні, тренди. Rust workshop from accepted skin authors only.">
+<meta name="theme-color" content="#0b1330">
+<link rel="manifest" href="manifest.webmanifest">
+<meta property="og:title" content="Rust Workshop Pros"><meta property="og:description" content="Роботи авторів, у яких уже є скіни в грі."><meta property="og:image" content="https://twithgfaw-wq.github.io/rustober-selection/og.png">
+<link rel="stylesheet" href="fonts.css?v=mvlioiug">
+<link rel="icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css?v=mvlioiug"><link rel="stylesheet" href="v2.css?v=mvlioiug"><link rel="stylesheet" href="v3.css?v=mvlioiug"><link rel="stylesheet" href="pages.css?v=mvlioiug"><link rel="stylesheet" href="xmas.css?v=mvlioiug"><link rel="stylesheet" href="workshop.css?v=mvlioiug">
+</head>
+<body class="page ready workshop-page">
+<div class="bg" aria-hidden="true"><div class="bg-mark">Workshop</div></div>
+
+<nav class="top">
+  <a class="logo" href="index.html">Rustmas<span>26</span></a>
+  <div class="pageswitch"><a href="index.html">RUSTMAS</a><a href="authors.html">AUTHORS</a><a href="workshop.html" class="on">WORKSHOP</a><a href="market.html">MARKET</a><a href="games.html">GAMES</a></div>
+  <div class="nav-links">
+    <button class="iconbtn" id="langBtn" title="UA / EN">EN</button>
+  </div>
+</nav>
+
+<header class="wrap w-hero">
+  <div class="eyebrow">STEAM WORKSHOP · <span data-i18n="w.only">ЛИШЕ АВТОРИ З АКЦЕПТАМИ</span></div>
+  <h1 class="title"><span class="t1">Rust</span><span class="t2">Workshop</span></h1>
+  <p class="lead" data-i18n="w.lead">Як майстерня в Steam, але тут лише роботи авторів, чиї скіни вже прийняли в гру. Нові ідеї від тих, хто вміє проходити відбір.</p>
+  <div class="stats" id="stats"></div>
+  <div class="updated" id="updated"></div>
+</header>
+
+<section class="wrap" id="browse">
+  <div class="w-controls" id="controls">
+    <label class="w-search"><span>⌕</span><input id="q" type="search" autocomplete="off" data-i18n-ph="w.search" placeholder="Пошук: назва або автор"></label>
+    <select id="sort" aria-label="sort">
+      <option value="new" data-i18n="w.sort.new">Найновіші</option>
+      <option value="trend" data-i18n="w.sort.trend">У тренді</option>
+      <option value="pop" data-i18n="w.sort.pop">Найпопулярніші</option>
+      <option value="top" data-i18n="w.sort.top">Найкращі за оцінками</option>
+      <option value="fav" data-i18n="w.sort.fav">Найбільше в обраному</option>
+    </select>
+    <select id="period" aria-label="period">
+      <option value="7" data-i18n="w.p.7">За тиждень</option>
+      <option value="30" selected data-i18n="w.p.30">За місяць</option>
+      <option value="90" data-i18n="w.p.90">За 3 місяці</option>
+      <option value="365" data-i18n="w.p.365">За рік</option>
+    </select>
+    <select id="type" aria-label="type"><option value="" data-i18n="w.allTypes">Усі типи</option></select>
+    <div class="w-status" id="status" role="tablist">
+      <button data-st="all" class="on" data-i18n="w.st.all">Усі</button><button data-st="new" data-i18n="w.st.new">Ще не в грі</button><button data-st="acc" data-i18n="w.st.acc">Вже в грі</button>
+    </div>
+  </div>
+  <div class="w-author" id="authorBar" hidden></div>
+  <div class="sec-head"><h2 class="mixed" id="resTitle">Workshop</h2><span class="hint" id="resHint"></span></div>
+  <div class="w-grid" id="grid"><div class="empty" data-i18n="w.loading">Завантажую майстерню…</div></div>
+  <div class="w-more"><button class="btn3d yellow" id="more" hidden data-i18n="w.more">Показати ще</button></div>
+</section>
+
+<div class="pageswitch bottom"><a href="index.html">RUSTMAS</a><a href="authors.html">AUTHORS</a><a href="workshop.html" class="on">WORKSHOP</a><a href="market.html">MARKET</a><a href="games.html">GAMES</a></div>
+<footer class="foot"><span data-i18n="w.foot">Дані: Steam Web API · оновлюється раз на добу</span><span id="footSnap"></span></footer>
+<script src="i18n.js?v=mvlioiug"></script>
+<script src="xmas.js?v=mvlioiug"></script>
+<script src="workshop.js?v=mvlioiug"></script>
+</body>
+</html>

@@ -38,10 +38,10 @@
 .name-box { width: min(420px, 100%); padding: 24px; border-radius: 22px; background: #213553; box-shadow: 0 0 0 8px #d7d3ca, 0 30px 80px rgba(0,0,0,0.8); text-align: center; display: grid; gap: 12px; }
 .name-box input { font-family: var(--pixel); font-size: 12px; padding: 12px; border-radius: 10px; border: 3px solid #3b5a85; background: #0f1a2b; color: #fff; text-align: center; text-transform: uppercase; outline: 0; }
 .name-box .m-actions { justify-content: center; }
-.games-page .pageswitch.bottom { grid-template-columns: repeat(4, 1fr); }
+.games-page .pageswitch.bottom { grid-template-columns: repeat(5, 1fr); }
 @media (max-width: 900px) { .game-stage { grid-template-columns: 1fr; } .game-side { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 600px) { .game-side { grid-template-columns: 1fr; } .device.big { padding: 16px 12px 18px; } .dpad-ctl { grid-template-columns: repeat(3, 40px); grid-template-rows: repeat(3, 40px); } .hud { font-size: 7px; } }
-.pageswitch { flex-wrap: nowrap; } @media (max-width: 760px) { .pageswitch.bottom { grid-template-columns: repeat(4, 1fr); } .pageswitch.bottom a { font-size: 7px; padding: 12px 2px; } }
+.pageswitch { flex-wrap: nowrap; } @media (max-width: 760px) { .pageswitch.bottom { grid-template-columns: repeat(5, 1fr); } .pageswitch.bottom a { font-size: 7px; padding: 12px 2px; } }
 
 /* ---- v5.1: продуктивність і телефон ---- */
 .games-page { touch-action: manipulation; }
