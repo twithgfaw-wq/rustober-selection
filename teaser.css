@@ -30,7 +30,7 @@
 /* як це працюватиме */
 .x-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .x-step { position: relative; padding: 26px 22px 22px; border-radius: 20px; background: var(--glass); border: 1px solid var(--glass-line); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); min-width: 0; }
-.x-step i { position: absolute; top: -16px; left: 20px; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-family: var(--pixel); font-weight: 900; color: #fff; background: linear-gradient(180deg, #f2584b, #b8261e); box-shadow: 0 4px 0 #7a1510, inset 0 0 0 2px rgba(255, 210, 122, 0.6); }
+.x-step i { position: absolute; top: -16px; left: 20px; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-family: var(--pixel); font-weight: 900; color: #fff; background: var(--accent, linear-gradient(180deg, #f2584b, #b8261e)); box-shadow: 0 4px 0 var(--accent-dark, #7a1510), inset 0 0 0 2px rgba(255, 210, 122, 0.6); }
 .x-step h3 { margin: 6px 0 8px; font-family: var(--script); font-weight: 400; font-size: 30px; color: var(--gold); }
 .x-step p { margin: 0; color: #c6cfeb; font-size: 15px; }
 
@@ -38,12 +38,12 @@
 .x-arch-stats { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
 .x-arch-stats .stat b { font-size: 18px; }
 .x-finals { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; }
-.x-fin { display: grid; grid-template-rows: auto 1fr; border-radius: 18px; overflow: hidden; color: var(--plastic-ink); text-decoration: none; background: linear-gradient(160deg, #fff, var(--plastic) 50%, var(--plastic-2)); box-shadow: inset 0 4px 0 #d8392f, 0 12px 26px rgba(0, 0, 0, 0.45); transition: transform 0.15s; min-width: 0; }
+.x-fin { display: grid; grid-template-rows: auto 1fr; border-radius: 18px; overflow: hidden; color: var(--plastic-ink); text-decoration: none; background: linear-gradient(160deg, #fff, var(--plastic) 50%, var(--plastic-2)); box-shadow: inset 0 4px 0 var(--ribbon, #d8392f), 0 12px 26px rgba(0, 0, 0, 0.45); transition: transform 0.15s; min-width: 0; }
 .x-fin:hover { transform: translateY(-4px) rotate(-0.5deg); }
 .x-fin .img { position: relative; aspect-ratio: 1; background: #0f1a38; }
 .x-fin .img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .x-fin .rk { position: absolute; top: 10px; left: 10px; font-family: var(--pixel); font-weight: 900; font-size: 13px; padding: 4px 8px; border-radius: 8px; background: rgba(11, 19, 48, 0.85); color: var(--gold); }
-.x-fin .hid { position: absolute; bottom: 10px; right: 10px; font-family: var(--pixel); font-weight: 800; font-size: 11px; padding: 4px 8px; border-radius: 8px; background: #d8392f; color: #fff; }
+.x-fin .hid { position: absolute; bottom: 10px; right: 10px; font-family: var(--pixel); font-weight: 800; font-size: 11px; padding: 4px 8px; border-radius: 8px; background: var(--ribbon, #d8392f); color: #fff; }
 .x-fin .body { padding: 10px 12px 12px; min-width: 0; }
 .x-fin .ttl { font-weight: 700; font-size: 14px; line-height: 1.25; overflow-wrap: anywhere; }
 .x-fin .who { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 12px; color: var(--plastic-muted); font-weight: 600; min-width: 0; }
@@ -61,3 +61,13 @@
   .x-finals { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 }
 @media (prefers-reduced-motion: reduce) { .x-sign { animation: none; } }
+
+/* осінь: купка гарбузів замість подарунків */
+.x-pumpkins { position: relative; flex: 0 0 auto; width: 230px; height: 170px; align-self: flex-end; margin-right: 8%; }
+.pk { position: absolute; bottom: 0; border-radius: 50%; background: radial-gradient(ellipse at 50% 40%, #ffb15a, #f07a26 55%, #b8481a); box-shadow: inset 10px 0 0 -4px rgba(150, 50, 10, 0.35), inset -10px 0 0 -4px rgba(150, 50, 10, 0.35), 0 16px 26px rgba(40, 10, 0, 0.45); }
+.pk::before { content: ""; position: absolute; left: 50%; top: -10px; width: 8px; height: 16px; border-radius: 3px; background: #5a6a2a; transform: translateX(-50%) rotate(8deg); }
+.pk::after { content: ""; position: absolute; inset: 8% 30%; border-radius: 50%; box-shadow: inset 4px 0 0 rgba(150, 50, 10, 0.25), inset -4px 0 0 rgba(150, 50, 10, 0.25); }
+.p1 { left: 0; width: 130px; height: 100px; } .p2 { left: 116px; width: 104px; height: 82px; } .p3 { left: 56px; bottom: 86px; width: 80px; height: 64px; }
+.lf { position: absolute; width: 28px; height: 28px; background: #d84a1e; clip-path: polygon(50% 0, 60% 30%, 90% 20%, 75% 50%, 100% 60%, 65% 70%, 70% 100%, 50% 80%, 30% 100%, 35% 70%, 0 60%, 25% 50%, 10% 20%, 40% 30%); }
+.l1 { left: 104px; bottom: 96px; transform: rotate(-20deg); background: #f2a23a; } .l2 { left: 196px; bottom: 70px; transform: rotate(30deg); }
+@media (max-width: 520px) { .x-pumpkins { transform: scale(0.72); transform-origin: bottom right; height: 130px; } }

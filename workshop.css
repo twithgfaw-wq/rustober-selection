@@ -1,26 +1,26 @@
 /* ======================= WORKSHOP: роботи авторів з акцептами ======================= */
 .w-hero { padding-block: 34px 10px; }
-.w-controls { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 66px); z-index: 30; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 12px; margin: 10px 0 6px; border-radius: 18px; background: rgba(12, 22, 54, 0.88); border: 1px solid var(--glass-line); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.w-controls { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 66px); z-index: 30; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 12px; margin: 10px 0 6px; border-radius: 18px; background: var(--glass); border: 1px solid var(--glass-line); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 .w-search { flex: 1 1 240px; min-width: 0; display: flex; align-items: center; gap: 8px; padding: 0 14px; border-radius: 12px; background: #f3f7fd; color: var(--plastic-ink); }
 .w-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--plastic-ink); font: 600 15px var(--body); padding: 11px 0; color-scheme: light; }
 .w-controls select { flex: 0 1 auto; min-width: 0; max-width: 100%; border: 0; border-radius: 12px; padding: 11px 12px; font: 700 14px var(--body); background: #f3f7fd; color: var(--plastic-ink); color-scheme: light; cursor: pointer; }
 .w-status { display: flex; gap: 4px; padding: 4px; border-radius: 12px; background: rgba(255, 255, 255, 0.08); }
 .w-status button { border: 0; cursor: pointer; padding: 8px 12px; border-radius: 9px; background: transparent; color: #c9d3f0; font: 800 13px var(--body); }
-.w-status button.on { background: linear-gradient(180deg, #f2584b, #b8261e); color: #fff; }
+.w-status button.on { background: var(--accent, linear-gradient(180deg, #f2584b, #b8261e)); color: #fff; }
 .w-author { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 10px 0; padding: 10px 14px; border-radius: 16px; background: var(--glass); border: 1px solid var(--glass-line); }
 .w-author img { width: 40px; height: 40px; border-radius: 50%; }
 .w-author b { font-size: 17px; } .w-author span { color: var(--muted); font-size: 13px; }
 .w-author button { margin-left: auto; border: 0; cursor: pointer; border-radius: 999px; padding: 8px 14px; font: 800 13px var(--body); background: rgba(255, 255, 255, 0.12); color: #fff; }
 
 .w-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 18px; }
-.w-card { position: relative; display: grid; grid-template-rows: auto 1fr; min-width: 0; border-radius: 18px; overflow: hidden; color: var(--plastic-ink); text-decoration: none; background: linear-gradient(160deg, #fff, var(--plastic) 50%, var(--plastic-2)); box-shadow: inset 0 4px 0 #d8392f, 0 12px 26px rgba(0, 0, 0, 0.42); transition: transform 0.15s; }
+.w-card { position: relative; display: grid; grid-template-rows: auto 1fr; min-width: 0; border-radius: 18px; overflow: hidden; color: var(--plastic-ink); text-decoration: none; background: linear-gradient(160deg, #fff, var(--plastic) 50%, var(--plastic-2)); box-shadow: inset 0 4px 0 var(--ribbon, #d8392f), 0 12px 26px rgba(0, 0, 0, 0.42); transition: transform 0.15s; }
 .w-card:hover { transform: translateY(-4px); }
 .w-card.acc { box-shadow: inset 0 4px 0 #f2b53a, 0 0 0 2px rgba(255, 210, 122, 0.8), 0 12px 26px rgba(0, 0, 0, 0.42); }
 .w-card .img { position: relative; aspect-ratio: 1; background: #0f1a38; }
 .w-card .img img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .w-card .badge { position: absolute; left: 10px; top: 10px; font: 900 11px var(--pixel); padding: 4px 8px; border-radius: 8px; background: linear-gradient(180deg, #ffe39a, #f2b53a); color: #2a1a00; box-shadow: 0 2px 0 #a8701a; }
 .w-card .age { position: absolute; right: 10px; top: 10px; font: 800 11px var(--body); padding: 3px 8px; border-radius: 8px; background: rgba(11, 19, 48, 0.82); color: #fff; }
-.w-card .tag { position: absolute; left: 10px; bottom: 10px; font: 800 11px var(--body); padding: 3px 8px; border-radius: 8px; background: #d8392f; color: #fff; max-width: calc(100% - 20px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.w-card .tag { position: absolute; left: 10px; bottom: 10px; font: 800 11px var(--body); padding: 3px 8px; border-radius: 8px; background: var(--ribbon, #d8392f); color: #fff; max-width: calc(100% - 20px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .w-card .body { padding: 10px 12px 12px; min-width: 0; display: grid; gap: 6px; align-content: start; }
 .w-card .ttl { font-weight: 800; font-size: 14px; line-height: 1.25; overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .w-card .who { display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--plastic-muted); min-width: 0; }

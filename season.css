@@ -1,0 +1,130 @@
+/* ======================= Сезонна тема всього сайту =======================
+   Сезон ставить маленький скрипт у <head> (атрибут data-season на <html>): грудень–лютий = winter, інакше autumn.
+   Перегляд іншого сезону: ?season=winter або ?season=autumn. Сцену (небо, частинки, гірлянду) малює season.js.
+   Спільні правила нижче працюють через змінні; кольори кожного сезону — у своєму блоці. */
+
+/* ---------- ЗИМА: нічне небо, сніг, червоне з золотом ---------- */
+:root[data-season="winter"] {
+  --bg: #0b1330; --text: #f6f1e7; --muted: #aab5d8;
+  --yellow: #ffc94d; --orange: #ff8a3c; --red: #e2443a; --green: #3fbf74; --blue: #4e8cff; --cyan: #8fdcff; --screen: #14214a;
+  --gold: #ffd27a; --glass: rgba(16, 28, 66, 0.72); --glass-line: rgba(176, 204, 255, 0.18);
+  --plastic: #f3f7fd; --plastic-2: #dbe5f3; --plastic-3: #a9bbd6; --plastic-ink: #15213f; --plastic-muted: #52628a;
+  --sky: radial-gradient(700px 520px at 82% 14%, rgba(150, 205, 255, 0.28), transparent 62%), radial-gradient(900px 600px at 15% 100%, rgba(255, 150, 80, 0.12), transparent 70%), linear-gradient(180deg, #08102b 0%, #101e4a 38%, #22356d 72%, #3b5191 100%);
+  --nav-bg: linear-gradient(180deg, rgba(8, 14, 38, 0.92), rgba(12, 22, 54, 0.78)); --nav-line: rgba(255, 210, 122, 0.22); --bottom-bg: rgba(10, 18, 46, 0.92); --switch-ink: #c9d3f0;
+  --accent: linear-gradient(180deg, #f2584b, #b8261e); --accent-btn: linear-gradient(180deg, #f2584b, #c22e24); --accent-dark: #7a1510; --ribbon: #d8392f;
+  --t1-glow: 0 0 22px rgba(200, 225, 255, 0.35), 0 4px 0 rgba(0, 0, 0, 0.25); --t2: #ffd27a; --t2-glow: 0 0 6px #ffb05a, 0 0 22px #ff7a2a, 0 0 48px rgba(255, 90, 20, 0.55);
+  --lead: #c6cfeb; --h2-glow: 0 0 18px rgba(255, 190, 110, 0.35); --foot: #8f9bc4; --mark: rgba(255, 255, 255, 0.035);
+  --device: linear-gradient(160deg, #ff7465 0%, #d8342a 42%, #8e1b14 100%);
+  --cap: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 40' preserveAspectRatio='none'%3E%3Cpath d='M0 22 C20 6 40 10 60 16 C80 4 110 6 130 16 C150 2 180 4 200 14 C220 4 250 6 270 16 C290 2 320 6 340 14 C360 4 385 8 400 20 L400 28 C390 34 380 30 372 38 C366 30 356 30 350 34 C330 30 300 34 280 30 C268 36 258 36 250 30 C220 34 190 30 170 32 C160 38 150 38 142 32 C110 34 80 30 56 32 C48 38 38 38 30 32 C20 34 8 32 0 30 Z' fill='%23f6fbff'/%3E%3Cpath d='M0 22 C20 6 40 10 60 16 C80 4 110 6 130 16 C150 2 180 4 200 14 C220 4 250 6 270 16 C290 2 320 6 340 14 C360 4 385 8 400 20' fill='none' stroke='%23ffffff' stroke-width='2'/%3E%3C/svg%3E");
+}
+
+/* ---------- ОСІНЬ: золотий захід, паперові шари, клени, гарбузи ---------- */
+:root[data-season="autumn"] {
+  --bg: #2a1420; --text: #fff4e6; --muted: #e8c7a8;
+  --yellow: #ffc24a; --orange: #ff8a3c; --red: #e0552e; --green: #8db84a; --blue: #c46a3a; --cyan: #ffd9a0; --screen: #3a1a1e;
+  --gold: #ffd27a; --glass: rgba(58, 24, 26, 0.74); --glass-line: rgba(255, 196, 140, 0.22);
+  --plastic: #fff6e8; --plastic-2: #f2dcbd; --plastic-3: #d9b58a; --plastic-ink: #3a1d12; --plastic-muted: #7a5236;
+  --sky: radial-gradient(760px 480px at 78% 74%, rgba(255, 220, 150, 0.55), transparent 62%), linear-gradient(180deg, #3b1c40 0%, #6e2e47 22%, #b5513f 48%, #e7843f 70%, #f8b866 86%, #ffd99a 100%);
+  --nav-bg: linear-gradient(180deg, rgba(42, 18, 28, 0.94), rgba(62, 26, 30, 0.8)); --nav-line: rgba(255, 196, 120, 0.28); --bottom-bg: rgba(48, 20, 26, 0.94); --switch-ink: #f1d5b8;
+  --accent: linear-gradient(180deg, #f5874a, #c4471f); --accent-btn: linear-gradient(180deg, #f5874a, #c94b22); --accent-dark: #7c2a10; --ribbon: #d2602a;
+  --t1-glow: 0 0 22px rgba(255, 210, 160, 0.35), 0 4px 0 rgba(60, 20, 10, 0.35); --t2: #ffd27a; --t2-glow: 0 0 6px #ffb05a, 0 0 22px #ff7a2a, 0 0 48px rgba(255, 90, 20, 0.6);
+  --lead: #f6dcc4; --h2-glow: 0 0 18px rgba(255, 160, 80, 0.45); --foot: #e4bf9c; --mark: rgba(255, 240, 220, 0.05);
+  --device: linear-gradient(160deg, #ffad62 0%, #e8702a 42%, #9b3a0e 100%);
+  --cap: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 44' preserveAspectRatio='none'%3E%3Cg%3E%3Cpath d='M30 30 l8-14 4 8 10-6-2 10 10 2-10 6 4 8-12-4-4 10-4-10-12 4 4-8-10-6 10-2-2-10 10 6z' fill='%23d84a1e'/%3E%3Cpath d='M120 26 l8-14 4 8 10-6-2 10 10 2-10 6 4 8-12-4-4 10-4-10-12 4 4-8-10-6 10-2-2-10 10 6z' fill='%23f2a23a'/%3E%3Cpath d='M210 30 l8-14 4 8 10-6-2 10 10 2-10 6 4 8-12-4-4 10-4-10-12 4 4-8-10-6 10-2-2-10 10 6z' fill='%23b8361a'/%3E%3Cpath d='M300 26 l8-14 4 8 10-6-2 10 10 2-10 6 4 8-12-4-4 10-4-10-12 4 4-8-10-6 10-2-2-10 10 6z' fill='%23e8782a'/%3E%3Cpath d='M375 30 l8-14 4 8 10-6-2 10 10 2-10 6 4 8-12-4-4 10-4-10-12 4 4-8-10-6 10-2-2-10 10 6z' fill='%23c9501f'/%3E%3Cpath d='M75 32 l7-12 3 7 9-5-2 9 9 2-9 5 3 7-10-3-4 9-3-9-11 3 4-7-9-5 9-2-2-9 9 5z' fill='%23ffc24a'/%3E%3Cpath d='M165 34 l7-12 3 7 9-5-2 9 9 2-9 5 3 7-10-3-4 9-3-9-11 3 4-7-9-5 9-2-2-9 9 5z' fill='%23e05a24'/%3E%3Cpath d='M255 32 l7-12 3 7 9-5-2 9 9 2-9 5 3 7-10-3-4 9-3-9-11 3 4-7-9-5 9-2-2-9 9 5z' fill='%23ffb040'/%3E%3Cpath d='M340 34 l7-12 3 7 9-5-2 9 9 2-9 5 3 7-10-3-4 9-3-9-11 3 4-7-9-5 9-2-2-9 9 5z' fill='%23a8301a'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ---------- спільне для всіх сезонів ---------- */
+:root[data-season] {
+  --pixel: 'XLabel', 'Rubik', 'Segoe UI', sans-serif;
+  --script: 'Lobster', 'Rubik', cursive;
+}
+:root[data-season] body { background: var(--bg); }
+:root[data-season] #themeBtn { display: none; }
+:root[data-season] .bg { background: var(--sky); }
+:root[data-season] .bg-grid, :root[data-season] .bg-noise { display: none; }
+:root[data-season] .bg-mark { font-family: var(--script); -webkit-text-stroke: 0; color: var(--mark); text-transform: lowercase; transform: translate(-50%, -50%) rotate(-6deg); }
+
+:root[data-season] .top { background: var(--nav-bg); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-bottom: 1px solid var(--nav-line); }
+:root[data-season] .logo { font-family: var(--script); font-size: 26px; letter-spacing: 0; color: #fff; text-shadow: 0 0 14px rgba(255, 255, 255, 0.25); }
+:root[data-season] .logo span { color: var(--gold); margin-left: 2px; font-size: 0.8em; text-shadow: 0 0 10px rgba(255, 150, 60, 0.6); }
+:root[data-season] .pageswitch { background: rgba(255, 255, 255, 0.06); border-color: var(--nav-line); }
+:root[data-season] .pageswitch a { color: var(--switch-ink); }
+:root[data-season] .pageswitch a.on { background: var(--accent); color: #fff; box-shadow: 0 3px 0 var(--accent-dark), inset 0 0 0 1px rgba(255, 210, 122, 0.55); }
+:root[data-season] .pageswitch.bottom { background: var(--bottom-bg); border-color: var(--nav-line); }
+:root[data-season] .iconbtn { background: rgba(255, 255, 255, 0.08); color: #fff; box-shadow: inset 0 0 0 1px var(--nav-line); }
+
+:root[data-season] .eyebrow { color: var(--gold); letter-spacing: 0.12em; }
+:root[data-season] .title { font-family: var(--script); font-weight: 400; font-size: clamp(46px, 7vw, 100px); line-height: 0.98; gap: 0; }
+:root[data-season] .title span, :root[data-season] .sec-head h2 { text-transform: lowercase; }
+:root[data-season] .title span::first-letter, :root[data-season] .sec-head h2::first-letter { text-transform: uppercase; }
+:root[data-season] .title .t1 { color: #fff; text-shadow: var(--t1-glow); }
+:root[data-season] .title .t2 { color: var(--t2); text-shadow: var(--t2-glow); margin-left: 0.6em; }
+:root[data-season] .lead { color: var(--lead); }
+:root[data-season] .sec-head h2 { font-family: var(--script); font-weight: 400; font-size: clamp(30px, 3.4vw, 44px); color: #fff; text-shadow: var(--h2-glow); max-width: 100%; overflow-wrap: anywhere; }
+:root[data-season] .sec-head h2 small { text-transform: none; }
+:root[data-season] .sec-head h2.mixed { text-transform: none; }
+:root[data-season] .sec-head h2.ok { color: #9ff0bf; text-shadow: 0 0 16px rgba(80, 220, 140, 0.4); }
+:root[data-season] .sec-head h2.bad { color: #ff9c8f; text-shadow: 0 0 16px rgba(255, 90, 70, 0.35); }
+
+:root[data-season] .btn3d.yellow { background: linear-gradient(180deg, #ffe39a, #f2b53a); box-shadow: 0 7px 0 #a8701a, 0 16px 30px rgba(0, 0, 0, 0.45); }
+:root[data-season] .btn3d.blue { background: var(--accent-btn); box-shadow: 0 7px 0 var(--accent-dark), 0 16px 30px rgba(0, 0, 0, 0.45); }
+:root[data-season] .stat .ico { background: var(--accent); }
+:root[data-season="winter"] .stat.c .ico { background: #2f6fd6; } :root[data-season] .stat.y .ico { background: #f2b53a; color: #2a1a00; } :root[data-season] .stat.g .ico { background: #2f9e5f; }
+:root[data-season="autumn"] .stat.c .ico { background: #8a4a2a; }
+
+:root[data-season] :is(.tabs button:not(.on), .index-chart, .rot-row, .board, .cart, .full-btn, .chart-card, .author-card, .ev-group, .predict, .catch-strip, .stage, .theme-pop, .toast) {
+  background: var(--glass); border-color: var(--glass-line); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+:root[data-season] .tabs button.on { background: var(--accent); color: #fff; }
+:root[data-season] .cart.on { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(255, 210, 122, 0.2); }
+:root[data-season] .card, :root[data-season] .rank-row, :root[data-season] .mcard { box-shadow: inset 0 4px 0 var(--ribbon), inset 0 2px 0 #fff, 0 12px 30px rgba(0, 0, 0, 0.45); }
+
+:root[data-season] .device { background: var(--device); box-shadow: inset 0 3px 0 rgba(255, 255, 255, 0.45), inset 0 -10px 0 rgba(0, 0, 0, 0.25), 0 30px 60px rgba(0, 0, 0, 0.55); }
+:root[data-season] .device::before { content: ""; position: absolute; left: -8px; right: -8px; top: -16px; height: 38px; z-index: 2; pointer-events: none; background: var(--cap) center / 100% 100% no-repeat; filter: drop-shadow(0 3px 2px rgba(0, 0, 0, 0.25)); }
+:root[data-season="autumn"] .device::before { top: -20px; height: 44px; }
+:root[data-season] .screw { background: radial-gradient(circle at 35% 35%, #fff2c2, #e2a93a 60%, #8a5a10); }
+:root[data-season] .grill i { background: rgba(0, 0, 0, 0.25); }
+:root[data-season] .foot { color: var(--foot); }
+:root[data-season] .pill input, :root[data-season] #search { background: transparent; color: var(--plastic-ink); color-scheme: light; }
+@media (max-width: 520px) { :root[data-season] .sec-head h2 { font-size: 28px; } :root[data-season] .title { font-size: 50px; } }
+@media (max-width: 600px) { :root[data-season] .device::before { top: -12px; height: 24px; left: -4px; right: -4px; } }
+
+/* ---------- сцена: спільні шари ---------- */
+.s-layer { position: absolute; inset: 0; pointer-events: none; }
+.s-particles { position: absolute; inset: 0; width: 100%; height: 100%; }
+.s-ground { position: absolute; left: 0; right: 0; bottom: 0; height: clamp(150px, 26vh, 280px); transition: opacity 0.6s ease; }
+.s-ground svg { width: 100%; height: 100%; display: block; }
+:root[data-scrolled] .s-ground { opacity: 0.28; }
+.s-garland { position: absolute; left: 0; right: 0; bottom: -16px; height: 24px; pointer-events: none; z-index: 1; overflow: visible; }
+.s-garland svg { width: 100%; height: 100%; display: block; overflow: visible; }
+
+/* зима */
+.x-stars { position: absolute; inset: 0 0 30% 0; }
+.x-stars i { position: absolute; width: 2px; height: 2px; border-radius: 50%; background: #fff; opacity: 0.7; animation: xTwinkle 3.6s ease-in-out infinite; }
+@keyframes xTwinkle { 50% { opacity: 0.15; } }
+.x-moon { position: absolute; right: 7%; top: 9%; width: clamp(130px, 20vw, 300px); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 38% 36%, #fbfdff 0%, #e2f1fb 42%, #b9d9ee 72%, #94bfdc 100%); box-shadow: 0 0 60px 20px rgba(170, 220, 255, 0.35), 0 0 160px 60px rgba(120, 180, 255, 0.18); }
+.x-moon::before, .x-moon::after { content: ""; position: absolute; border-radius: 50%; background: rgba(120, 165, 200, 0.22); }
+.x-moon::before { width: 22%; height: 22%; left: 56%; top: 52%; } .x-moon::after { width: 12%; height: 12%; left: 30%; top: 64%; box-shadow: 70px -90px 0 -4px rgba(120, 165, 200, 0.18); }
+.x-sleigh { position: absolute; top: 15%; left: 0; width: clamp(130px, 14vw, 200px); opacity: 0; animation: xFly 30s linear infinite 4s; }
+@keyframes xFly { 0% { transform: translate(-30vw, 40px) rotate(-4deg); opacity: 0; } 4% { opacity: 1; } 46% { opacity: 1; } 50% { transform: translate(110vw, -60px) rotate(-8deg); opacity: 0; } 100% { transform: translate(110vw, -60px); opacity: 0; } }
+.x-town .win { animation: xWindow 7s ease-in-out infinite; }
+@keyframes xWindow { 50% { opacity: 0.75; } }
+.x-bulb { animation: xBulb 2.4s ease-in-out infinite; }
+@keyframes xBulb { 50% { opacity: 0.45; } }
+
+/* осінь */
+.a-sun { position: absolute; right: 12%; bottom: clamp(110px, 20vh, 220px); width: clamp(150px, 22vw, 320px); aspect-ratio: 1; border-radius: 50%; background: radial-gradient(circle at 45% 42%, #fff8de 0%, #ffe6a8 45%, #ffc876 75%, #f6a858 100%); box-shadow: 0 0 80px 30px rgba(255, 200, 120, 0.45), 0 0 220px 90px rgba(255, 140, 60, 0.28); }
+.a-clouds { position: absolute; left: 0; right: 0; top: 38%; height: 34%; opacity: 0.75; }
+.a-clouds svg { width: 100%; height: 100%; }
+.a-fly { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #ffe9a0; box-shadow: 0 0 8px 3px rgba(255, 220, 120, 0.7); opacity: 0; animation: aFly 6s ease-in-out infinite; }
+@keyframes aFly { 0%, 100% { opacity: 0; transform: translate(0, 0); } 30% { opacity: 0.9; } 50% { transform: translate(14px, -18px); } 70% { opacity: 0.8; } }
+.a-flag { transform-origin: 50% 0; animation: aSway 4s ease-in-out infinite; }
+@keyframes aSway { 50% { transform: rotate(4deg); } }
+@media (prefers-reduced-motion: reduce) { .x-sleigh, .x-stars i, .x-town .win, .x-bulb, .a-fly, .a-flag { animation: none !important; } .x-sleigh { opacity: 0; } }
+
+/* декор, що є лише в одному сезоні */
+:root:not([data-season="winter"]) .only-winter { display: none !important; }
+:root:not([data-season="autumn"]) .only-autumn { display: none !important; }
+.a-canopy { position: absolute; left: 0; top: 0; width: clamp(200px, 30vw, 500px); pointer-events: none; filter: drop-shadow(0 6px 10px rgba(60, 20, 10, 0.35)); }
+.a-canopy svg { width: 100%; height: auto; display: block; }
+:root[data-scrolled] .a-canopy { opacity: 0.6; transition: opacity 0.6s ease; }
+:root[data-season="autumn"] .lead, :root[data-season="autumn"] .updated, :root[data-season="autumn"] .mode-note, :root[data-season="autumn"] .hint { text-shadow: 0 1px 3px rgba(60, 20, 10, 0.65); }

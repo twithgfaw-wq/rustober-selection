@@ -1,16 +1,17 @@
 <!doctype html>
-<html lang="uk" data-xmas>
+<html lang="uk">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>(function(){var q=(location.search.match(/[?&]season=(winter|autumn)/)||[])[1],m=new Date().getMonth();document.documentElement.dataset.season=q||(m===11||m<2?'winter':'autumn');})();</script>
 <title>Rustmas Selection</title>
 <meta name="description" content="Новорічний відбір скінів Rust: стартує, щойно з'явиться колекція конкурсу. Rust Christmas skin selection tracker.">
 <meta name="theme-color" content="#0b1330">
 <link rel="manifest" href="manifest.webmanifest">
 <meta property="og:title" content="Rustmas Selection"><meta property="og:description" content="Новорічний відбір скінів Rust скоро стартує. Підсумок Rustober 2026 уже тут."><meta property="og:image" content="https://twithgfaw-wq.github.io/rustober-selection/og.png">
-<link rel="stylesheet" href="fonts.css?v=mvlioiug">
+<link rel="stylesheet" href="fonts.css?v=mvlj2ugk">
 <link rel="icon" href="icon-192.png">
-<link rel="stylesheet" href="style.css?v=mvlioiug"><link rel="stylesheet" href="v2.css?v=mvlioiug"><link rel="stylesheet" href="v3.css?v=mvlioiug"><link rel="stylesheet" href="pages.css?v=mvlioiug"><link rel="stylesheet" href="xmas.css?v=mvlioiug"><link rel="stylesheet" href="teaser.css?v=mvlioiug">
+<link rel="stylesheet" href="style.css?v=mvlj2ugk"><link rel="stylesheet" href="v2.css?v=mvlj2ugk"><link rel="stylesheet" href="v3.css?v=mvlj2ugk"><link rel="stylesheet" href="pages.css?v=mvlj2ugk"><link rel="stylesheet" href="season.css?v=mvlj2ugk"><link rel="stylesheet" href="teaser.css?v=mvlj2ugk">
 </head>
 <body class="page ready teaser-page">
 <div class="bg" aria-hidden="true"><div class="bg-mark">Rustmas</div></div>
@@ -41,10 +42,12 @@
     </div>
   </div>
   <div class="x-hero-art" aria-hidden="true">
-    <div class="x-sign">Merry<br><em>Rustmas</em></div>
-    <div class="x-gifts">
+    <div class="x-sign only-winter">Merry<br><em>Rustmas</em></div>
+    <div class="x-gifts only-winter">
       <i class="gift g1"><b></b></i><i class="gift g2"><b></b></i><i class="gift g3"><b></b></i>
     </div>
+    <div class="x-sign only-autumn">Soon<br><em>Rustmas</em></div>
+    <div class="x-pumpkins only-autumn"><i class="pk p1"></i><i class="pk p2"></i><i class="pk p3"></i><i class="lf l1"></i><i class="lf l2"></i></div>
   </div>
 </header>
 
@@ -65,9 +68,9 @@
 
 <div class="pageswitch bottom"><a href="index.html" class="on">RUSTMAS</a><a href="authors.html">AUTHORS</a><a href="workshop.html">WORKSHOP</a><a href="market.html">MARKET</a><a href="games.html">GAMES</a></div>
 <footer class="foot"><span data-i18n="x.foot">Rustmas Selection · дані зі Steam Workshop</span><span>RSTBR26</span></footer>
-<script src="rustober26.js?v=mvlioiug"></script>
-<script src="i18n.js?v=mvlioiug"></script>
-<script src="xmas.js?v=mvlioiug"></script>
-<script src="teaser.js?v=mvlioiug"></script>
+<script src="rustober26.js?v=mvlj2ugk"></script>
+<script src="i18n.js?v=mvlj2ugk"></script>
+<script src="season.js?v=mvlj2ugk"></script>
+<script src="teaser.js?v=mvlj2ugk"></script>
 </body>
 </html>
