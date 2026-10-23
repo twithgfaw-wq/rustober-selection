@@ -1,288 +1,73 @@
 <!doctype html>
-<html lang="uk">
+<html lang="uk" data-xmas>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Rustober Selection</title>
-<meta name="description" content="Трекер відбору скінів Rust з Halloween 2026 Contest: хто проходить голосування, а хто вибув.">
-<meta name="theme-color" content="#0b0b0d">
+<title>Rustmas Selection</title>
+<meta name="description" content="Новорічний відбір скінів Rust: стартує, щойно з'явиться колекція конкурсу. Rust Christmas skin selection tracker.">
+<meta name="theme-color" content="#0b1330">
 <link rel="manifest" href="manifest.webmanifest">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Rustober Selection">
-<meta property="og:description" content="Хто зі скінів Halloween 2026 Contest проходить голосування за прихованими колекціями, а хто вибув. Оновлюється автоматично.">
-<meta property="og:url" content="https://twithgfaw-wq.github.io/rustober-selection/">
-<meta property="og:image" content="https://twithgfaw-wq.github.io/rustober-selection/og.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Rustober Selection">
-<meta name="twitter:image" content="https://twithgfaw-wq.github.io/rustober-selection/og.png">
-<link rel="stylesheet" href="fonts.css?v=mvl9hegc">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%23e8e5de%27/%3E%3Crect x=%276%27 y=%276%27 width=%2720%27 height=%2714%27 rx=%272%27 fill=%27%23213553%27/%3E%3Ccircle cx=%2710%27 cy=%2726%27 r=%272.5%27 fill=%27%232f7bff%27/%3E%3Ccircle cx=%2716%27 cy=%2726%27 r=%272.5%27 fill=%27%23ffc63a%27/%3E%3Ccircle cx=%2722%27 cy=%2726%27 r=%272.5%27 fill=%27%23ff5a3c%27/%3E%3C/svg%3E">
-<link rel="apple-touch-icon" href="icon-192.png">
-<link rel="stylesheet" href="style.css?v=mvl9hegc">
-<link rel="stylesheet" href="v2.css?v=mvl9hegc">
-<link rel="stylesheet" href="v3.css?v=mvl9hegc">
-<link rel="stylesheet" href="pages.css?v=mvl9hegc">
+<meta property="og:title" content="Rustmas Selection"><meta property="og:description" content="Новорічний відбір скінів Rust скоро стартує. Підсумок Rustober 2026 уже тут."><meta property="og:image" content="https://twithgfaw-wq.github.io/rustober-selection/og.png">
+<link rel="stylesheet" href="fonts.css?v=mvlhtypb">
+<link rel="icon" href="icon-192.png">
+<link rel="stylesheet" href="style.css?v=mvlhtypb"><link rel="stylesheet" href="v2.css?v=mvlhtypb"><link rel="stylesheet" href="v3.css?v=mvlhtypb"><link rel="stylesheet" href="pages.css?v=mvlhtypb"><link rel="stylesheet" href="xmas.css?v=mvlhtypb"><link rel="stylesheet" href="teaser.css?v=mvlhtypb">
 </head>
-<body class="has-tabbar">
-<div class="bg" aria-hidden="true">
-  <div class="bg-grid" data-depth="0.15"></div>
-  <div class="bg-mark" data-depth="0.35">RSTBR</div>
-  <div class="bg-moon" id="moon" hidden></div>
-  <div class="bats" id="bats"></div>
-  <div class="fog"></div>
-  <div class="bg-noise"></div>
-</div>
-
-<!-- інтро: консоль вмикається -->
-<div class="boot" id="boot" aria-hidden="true">
-  <div class="boot-tv">
-    <div class="boot-screen">
-      <div class="boot-static"></div>
-      <div class="boot-content">
-        <div class="px pumpkin" id="bootPumpkin"></div>
-        <div class="boot-title">RUSTOBER</div>
-        <div class="boot-lines" id="bootLines"></div>
-        <div class="boot-bar"><span class="boot-pct" id="bootPct">0%</span><i></i></div>
-        <div class="boot-press">PRESS START</div>
-      </div>
-    </div>
-  </div>
-  <div class="boot-skip" data-i18n="boot.skip">натисни будь-де, щоб пропустити</div>
-</div>
+<body class="page ready teaser-page">
+<div class="bg" aria-hidden="true"><div class="bg-mark">Rustmas</div></div>
 
 <nav class="top">
-  <a class="logo" href="#top">RSTBR<span>26</span></a>
-  <div class="pageswitch"><a href="index.html" class="on">SELECTION</a><a href="authors.html">AUTHORS</a><a href="market.html">MARKET</a><a href="games.html">GAMES</a></div>
-  <div class="pill small" id="status"><i class="led on"></i><span>LIVE</span></div>
-  <div class="pill small countdown" id="countdown" data-i18n-title="nav.countdown" title="до наступного оновлення даних"><span class="ico">⟳</span><span id="countdownText">—</span></div>
+  <a class="logo" href="index.html">Rustmas<span>26</span></a>
+  <div class="pageswitch"><a href="index.html" class="on">RUSTMAS</a><a href="authors.html">AUTHORS</a><a href="market.html">MARKET</a><a href="games.html">GAMES</a></div>
   <div class="nav-links">
-    <a href="#survivors" data-i18n="nav.players">Проходять</a>
-    <a href="#charts" data-i18n="nav.charts">Графіки</a>
-    <a href="#howto" data-i18n="nav.rules">Правила</a>
     <button class="iconbtn" id="langBtn" title="UA / EN">EN</button>
-    <button class="iconbtn" id="themeBtn" data-i18n-title="nav.theme" title="Колір консолі">◐</button>
-    <button class="iconbtn" id="soundBtn" data-i18n-title="nav.sound" title="Звук" aria-label="Звук">🔇</button>
-    <button class="iconbtn" id="tvBtn" data-i18n-title="nav.tv" title="TV-режим (повний екран)" aria-label="TV-режим">▭</button>
-    <a id="collLink" class="pill small link" href="#" target="_blank" rel="noopener"><span class="ico">↗</span><span data-i18n="nav.collection">Колекція Steam</span></a>
   </div>
 </nav>
 
-<!-- перемикач кольору корпусу -->
-<div class="theme-pop" id="themePop" hidden>
-  <div class="theme-title" data-i18n="theme.title">Видання консолі</div>
-  <div class="theme-grid">
-    <button data-theme="grey" title="Classic Grey"><i style="--c1:#f4f2ec;--c2:#d7d3ca"></i>Classic</button>
-    <button data-theme="purple" title="Atomic Purple"><i style="--c1:#c9a8ff;--c2:#8a5cff"></i>Atomic</button>
-    <button data-theme="yellow" title="Dandelion"><i style="--c1:#ffe08a;--c2:#ffb000"></i>Dandelion</button>
-    <button data-theme="black" title="Carbon"><i style="--c1:#4a4a52;--c2:#1f1f24"></i>Carbon</button>
-    <button data-theme="pumpkin" title="Pumpkin"><i style="--c1:#ffb06b;--c2:#ff7a1f"></i>Pumpkin</button>
-    <button data-theme="mint" title="Mint"><i style="--c1:#c9f7dc;--c2:#6bd39a"></i>Mint</button>
-  </div>
-</div>
-
-<header class="hero" id="top">
-  <div class="hero-text" data-depth="0.05">
-    <div class="eyebrow">RUST WORKSHOP · HALLOWEEN 2026 CONTEST</div>
-    <h1 class="title"><span class="t1">RUSTOBER</span><span class="t2">SELECTION</span></h1>
-    <p class="lead" data-i18n="hero.lead">
-      Хто зі скінів конкурсу потрапляє в приховані колекції голосування і йде далі, а хто вибуває.
-      Пройшов усі рівні — лишився на екрані й потрапив у гру. Не пройшов — консоль вимикається.
-    </p>
-    <div class="cta">
-      <a href="#survivors" class="btn3d yellow pxbtn">START ▶</a>
-      <a href="#find" class="btn3d blue" data-i18n="hero.find">Знайти мій скін</a>
+<header class="x-hero wrap">
+  <div class="x-hero-text">
+    <div class="eyebrow">RUST WORKSHOP · CHRISTMAS 2026 · <span data-i18n="x.soon">СКОРО</span></div>
+    <h1 class="title"><span class="t1" data-i18n="x.t1">Новорічний</span><span class="t2" data-i18n="x.t2">відбір</span></h1>
+    <p class="lead" data-i18n="x.lead">Колекції новорічного конкурсу ще немає. Щойно вона з'явиться, тут запуститься відбір: хто зі скінів потрапляє в приховані колекції голосування і йде далі, а хто вибуває.</p>
+    <div class="x-count" id="count" aria-live="off">
+      <div class="x-tag"><b id="cD">00</b><span data-i18n="x.d">днів</span></div>
+      <div class="x-tag"><b id="cH">00</b><span data-i18n="x.h">годин</span></div>
+      <div class="x-tag"><b id="cM">00</b><span data-i18n="x.m">хвилин</span></div>
+      <div class="x-tag"><b id="cS">00</b><span data-i18n="x.s">секунд</span></div>
+      <div class="x-count-label" data-i18n="x.toNY">до Нового року</div>
     </div>
-    <div class="stats" id="stats"></div>
-    <div class="updated" id="updated"></div>
-  </div>
-
-  <div class="hero-device" data-depth="-0.08">
-    <div class="device" id="device">
-      <i class="screw tl"></i><i class="screw tr"></i><i class="screw bl"></i><i class="screw br"></i>
-      <div class="grill"><i></i><i></i><i></i><i></i><i></i></div>
-      <div class="screen" id="screen">
-        <div class="screen-inner">
-          <div class="frame f0 on">
-            <div class="px pumpkin" id="heroPumpkin"></div>
-            <div class="screen-title">RUSTOBER<br>SELECTION</div>
-            <div class="screen-sub" id="screenSub">LEVEL —</div>
-          </div>
-          <div class="frame f1"><div class="frame-head">HIGH SCORE</div><ol class="arcade" id="arcadeList"></ol></div>
-          <div class="frame f2"><div class="frame-head">STATUS</div><div class="arcade-stats" id="arcadeStats"></div></div>
-          <div class="frame f3"><div class="frame-head">NEXT WAVE</div><div class="arcade-next" id="arcadeNext"></div></div>
-          <div class="screen-ticker"><span id="ticker"></span></div>
-        </div>
-        <div class="screen-glare"></div>
-      </div>
-      <div class="slot"></div>
-      <div class="buttons">
-        <i class="rb blue" data-frame="1" title="HIGH SCORE"></i><i class="rb yellow" data-frame="2" title="STATUS"></i><i class="rb red" data-frame="3" title="NEXT WAVE"></i>
-        <a class="bigbtn" href="#survivors" title="Start"><i></i></a>
-      </div>
-      <div class="dpad"></div>
-      <div class="led-strip"><i class="led on"></i><i class="led" id="ledScan"></i></div>
+    <div class="x-cta">
+      <a class="btn3d blue" href="#how" data-i18n="x.how">Як це працює</a>
+      <a class="btn3d yellow" href="#rustober" data-i18n="x.last">Підсумок Halloween</a>
     </div>
-    <svg class="cable" viewBox="0 0 400 220" aria-hidden="true"><path d="M200 0 C 200 90, 60 60, 40 150 S 180 230, 400 200" fill="none" stroke="#f1efe9" stroke-width="7" stroke-linecap="round"/><path d="M200 0 C 200 90, 60 60, 40 150 S 180 230, 400 200" fill="none" stroke="#b9b5ad" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 10"/></svg>
+  </div>
+  <div class="x-hero-art" aria-hidden="true">
+    <div class="x-sign">Merry<br><em>Rustmas</em></div>
+    <div class="x-gifts">
+      <i class="gift g1"><b></b></i><i class="gift g2"><b></b></i><i class="gift g3"><b></b></i>
+    </div>
   </div>
 </header>
 
-<!-- міні-консоль, що супроводжує прокрутку -->
-<a class="mini" id="mini" href="#top" hidden aria-label="Нагору">
-  <div class="mini-screen"><div class="mini-head" id="miniHead">HIGH SCORE</div><div class="mini-body" id="miniBody"></div></div>
-  <div class="mini-btns"><i class="blue"></i><i class="yellow"></i><i class="red"></i></div>
-  <button class="mini-close" id="miniClose" title="×">✕</button>
-</a>
-
-<section class="wrap reveal" id="find">
-  <div class="finder">
-    <div class="finder-text">
-      <h2>FIND MY SKIN</h2>
-      <p data-i18n="find.text">Встав посилання на свою роботу в майстерні (або її ID) і отримай картку зі статусом та місцем у рейтингу.</p>
-    </div>
-    <form class="finder-form" id="findForm">
-      <label class="pill search"><span class="ico">⌕</span><input id="findInput" type="search" placeholder="https://steamcommunity.com/sharedfiles/filedetails/?id=…" autocomplete="off"></label>
-      <button class="btn3d yellow pxbtn" type="submit">GO</button>
-    </form>
-    <div class="finder-result" id="findResult" hidden></div>
+<section class="wrap" id="how">
+  <div class="sec-head"><h2 class="mixed" data-i18n="x.howTitle">Як це працюватиме</h2></div>
+  <div class="x-steps">
+    <article class="x-step"><i>1</i><h3 data-i18n="x.s1t">Колекція</h3><p data-i18n="x.s1">Щойно з'явиться новорічна колекція конкурсу, сканер почне перевіряти кожен скін цілодобово.</p></article>
+    <article class="x-step"><i>2</i><h3 data-i18n="x.s2t">Хвилі</h3><p data-i18n="x.s2">Скіни, що потрапляють у приховані колекції голосування, проходять далі. Кожна нова хвиля відкриває новий рівень.</p></article>
+    <article class="x-step"><i>3</i><h3 data-i18n="x.s3t">Фінал</h3><p data-i18n="x.s3">Хто дійде до останнього рівня, має найбільші шанси потрапити в гру. На Halloween саме так і сталося.</p></article>
   </div>
 </section>
 
-<section class="wrap reveal" id="watch" hidden>
-  <div class="sec-head"><h2>★ WATCHLIST</h2><span class="hint" id="watchHint" data-i18n="watch.hint">твої обрані скіни · зміни підсвічуються</span></div>
-  <div class="grid" id="watchGrid"></div>
+<section class="wrap" id="rustober">
+  <div class="sec-head"><h2 class="mixed" data-i18n="x.archTitle">Підсумок Rustober</h2><span class="hint" id="archHint"></span></div>
+  <div class="x-arch-stats" id="archStats"></div>
+  <div class="x-finals" id="finals"></div>
 </section>
 
-<section class="wrap reveal" id="highscore">
-  <div class="sec-head"><h2>HIGH SCORE</h2><span class="hint" data-i18n="podium.hint">топ-3 за прихованими колекціями</span></div>
-  <div class="podium" id="podium"></div>
-</section>
-
-<section class="wrap reveal" id="levels">
-  <div class="sec-head"><h2>LEVELS</h2><span class="hint" id="stageHint"></span></div>
-  <div class="rail" id="stages"></div>
-</section>
-
-<section class="wrap reveal" id="charts">
-  <div class="sec-head"><h2>STATS</h2><span class="hint" data-i18n="charts.hint">хвилі, розподіл і час активності</span></div>
-  <div class="charts">
-    <div class="chart-card race-card"><div class="chart-title"><span data-i18n="charts.race">Гонка лідерів · по знімках</span><button class="iconbtn" id="racePlay" title="Play">▶</button></div><div class="chart" id="chartRace"></div></div>
-    <div class="chart-card"><div class="chart-title" data-i18n="charts.timeline">Скільки скінів на кожному рівні · по знімках</div><div class="chart" id="chartTimeline"></div></div>
-    <div class="chart-card"><div class="chart-title" data-i18n="charts.dist">Розподіл за прихованими колекціями</div><div class="chart" id="chartDist"></div></div>
-    <div class="chart-card"><div class="chart-title" data-i18n="charts.heat">Коли приходять нові приховані · по годинах</div><div class="chart" id="chartHeat"></div></div>
-    <div class="chart-card"><div class="chart-title" data-i18n="charts.tags">Предмети у відборі · топ-10 типів</div><div class="chart" id="chartTags"></div></div>
-  </div>
-</section>
-
-<section class="wrap reveal" id="predict">
-  <div class="sec-head"><h2>YOUR CALL</h2><span class="hint" id="predictHint" data-i18n="predict.hint">постав свої прогнози: хто пройде наступний рівень</span></div>
-  <div class="predict" id="predictBox"></div>
-</section>
-
-<section class="wrap reveal" id="authors">
-  <div class="sec-head"><h2>AUTHORS</h2><span class="hint" data-i18n="authors.hint">хто має найбільше скінів, що проходять</span></div>
-  <div class="authors" id="authorsList"></div>
-</section>
-
-<section class="wrap controls-wrap">
-  <div class="controls">
-    <label class="pill search"><span class="ico">⌕</span><input id="search" type="search" data-i18n-ph="controls.search" placeholder="пошук: назва, автор, предмет…  ( / )" autocomplete="off"></label>
-    <label class="pill"><span class="ico">▣</span><select id="tag"><option value="" data-i18n="controls.allItems">Усі предмети</option></select></label>
-    <label class="pill"><span class="ico">☺</span><select id="author"><option value="" data-i18n="controls.allAuthors">Усі автори</option></select></label>
-    <label class="pill"><span class="ico">⇅</span><select id="sort">
-      <option value="rank" data-i18n="sort.rank">Рейтинг</option>
-      <option value="delta" data-i18n="sort.delta">Нові приховані (+)</option>
-      <option value="total" data-i18n="sort.total">Усього колекцій</option>
-      <option value="score" data-i18n="sort.score">За оцінкою (micro522)</option>
-      <option value="title" data-i18n="sort.title">Назва</option>
-      <option value="author" data-i18n="sort.author">Автор</option>
-    </select></label>
-    <label class="pill toggle"><input type="checkbox" id="showDead"><i class="sw"></i><span data-i18n="controls.dead">Вибули</span></label>
-    <label class="pill toggle"><input type="checkbox" id="onlyNew"><i class="sw"></i><span data-i18n="controls.changed">Що змінилось</span></label>
-  </div>
-</section>
-
-<main class="wrap">
-  <section class="block" id="survivors">
-    <div class="sec-head"><h2 class="ok">PLAYERS <small data-i18n="players.sub">// проходять далі</small></h2><span class="hint" id="aliveCount"></span></div>
-    <div class="grid" id="aliveGrid"></div>
-    <div class="more-sentinel" id="aliveMore" hidden></div>
-    <div class="empty" id="aliveEmpty" hidden data-i18n="players.empty">нічого не знайдено за цим фільтром</div>
-  </section>
-
-  <section class="block" id="chasing" hidden>
-    <div class="sec-head"><h2 class="chase">ONE STEP <small data-i18n="chase.sub">// за крок: майже вибули або доганяють</small></h2><span class="hint" id="chaseCount"></span></div>
-    <div class="catch-strip" id="catchStrip"></div>
-    <div class="grid" id="chaseGrid"></div>
-    <div class="more-sentinel" id="chaseMore" hidden></div>
-  </section>
-
-  <section class="block" id="terminated" hidden>
-    <div class="sec-head"><h2 class="bad">GAME OVER <small data-i18n="dead.sub">// вибули з голосування</small></h2><span class="hint" id="deadCount"></span></div>
-    <div class="grid" id="deadGrid"></div>
-    <div class="more-sentinel" id="deadMore" hidden></div>
-  </section>
-
-  <section class="block reveal" id="howto">
-    <div class="sec-head"><h2>MANUAL</h2><span class="hint" data-i18n="howto.hint">як працює відбір</span></div>
-    <div class="howto" id="howtoBody"></div>
-  </section>
-</main>
-
-<section class="wrap block reveal" id="log">
-  <div class="sec-head"><h2>ACTIVITY LOG</h2><span class="hint" id="logHint"></span></div>
-  <div class="log" id="logList"></div>
-  <button class="btn3d blue small" id="logMore" hidden data-i18n="log.more">Показати ще</button>
-</section>
-
-<footer class="foot">
-  <span><span data-i18n="foot.src">Джерело: сторінки майстерні Steam · приховані = усі колекції − публічні</span> · <span class="kbd">/</span> <span data-i18n="foot.search">пошук</span> · <span class="kbd">Esc</span> <span data-i18n="foot.close">закрити</span> · <a href="state.json" target="_blank" rel="noopener">JSON API</a></span>
-  <span id="footSnap"></span>
-</footer>
-
-<!-- мобільна нижня панель -->
-<nav class="tabbar" id="tabbar">
-  <a href="#survivors"><i>▶</i><span data-i18n="tab.players">Гравці</span></a>
-  <a href="#log"><i>≡</i><span data-i18n="tab.log">Події</span></a>
-  <a href="#charts"><i>▦</i><span data-i18n="tab.charts">Графіки</span></a>
-  <a href="#find"><i>⌕</i><span data-i18n="tab.find">Мій скін</span></a>
-</nav>
-
-<!-- панель порівняння -->
-<div class="compare" id="compare" hidden>
-  <div class="compare-head"><b>VS</b><span id="compareHint"></span><button class="iconbtn" id="compareClear">✕</button></div>
-  <div class="compare-body" id="compareBody"></div>
-</div>
-
-<!-- модальне вікно скіна / автора -->
-<div class="modal" id="modal" hidden>
-  <div class="modal-back" data-close></div>
-  <div class="modal-box" role="dialog" aria-modal="true">
-    <button class="iconbtn modal-close" data-close aria-label="Закрити">✕</button>
-    <div class="modal-content" id="modalContent"></div>
-  </div>
-</div>
-
-<!-- TV-режим -->
-<div class="tv" id="tv" hidden>
-  <div class="tv-head"><span class="logo">RSTBR<span>26</span></span><span id="tvTitle">TOP PLAYERS</span><span class="hint">Esc</span></div>
-  <div class="tv-body" id="tvBody"></div>
-</div>
-
-<!-- Konami: гра -->
-<div class="game" id="game" hidden>
-  <canvas id="gameCanvas" width="480" height="640"></canvas>
-  <div class="game-ui"><span id="gameScore">0</span><button class="iconbtn" id="gameClose">✕</button></div>
-</div>
-
-<div class="pageswitch bottom"><a href="index.html" class="on">SELECTION</a><a href="authors.html">AUTHORS</a><a href="market.html">MARKET</a><a href="games.html">GAMES</a></div>
-<div class="toast" id="toast" hidden></div>
-
-<script src="state.js?v=mvl9hegc"></script>
-<script src="lqip.js?v=mvl9hegc"></script>
-<script src="i18n.js?v=mvl9hegc"></script>
-<script src="app.js?v=mvl9hegc"></script>
-<script src="v3.js?v=mvl9hegc"></script>
+<div class="pageswitch bottom"><a href="index.html" class="on">RUSTMAS</a><a href="authors.html">AUTHORS</a><a href="market.html">MARKET</a><a href="games.html">GAMES</a></div>
+<footer class="foot"><span data-i18n="x.foot">Rustmas Selection · дані зі Steam Workshop</span><span>RSTBR26</span></footer>
+<script src="rustober26.js?v=mvlhtypb"></script>
+<script src="i18n.js?v=mvlhtypb"></script>
+<script src="xmas.js?v=mvlhtypb"></script>
+<script src="teaser.js?v=mvlhtypb"></script>
 </body>
 </html>

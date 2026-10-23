@@ -1,0 +1,63 @@
+/* ======================= RUSTMAS: тизер на головній ======================= */
+.x-hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 30px; align-items: center; min-height: calc(100vh - 140px); padding-block: 40px 70px; }
+.x-hero-text { min-width: 0; }
+.x-count { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin: 6px 0 30px; }
+.x-tag { position: relative; display: grid; justify-items: center; min-width: 74px; padding: 14px 10px 10px; border-radius: 12px; background: linear-gradient(180deg, #fff8ea, #f1e2c2); color: #3a1d0b; box-shadow: 0 6px 0 #b98d4e, 0 14px 26px rgba(0, 0, 0, 0.45); transform: rotate(-2deg); }
+.x-tag:nth-child(2n) { transform: rotate(2deg); }
+.x-tag::before { content: ""; position: absolute; top: 5px; width: 8px; height: 8px; border-radius: 50%; background: #0b1330; box-shadow: inset 0 0 0 2px #b98d4e; }
+.x-tag b { font-family: var(--pixel); font-size: 26px; font-weight: 900; font-variant-numeric: tabular-nums; color: #b8261e; line-height: 1.1; }
+.x-tag span { font-size: 12px; font-weight: 700; color: #7a5a3a; }
+.x-count-label { font-family: var(--script); font-size: 26px; color: var(--gold); text-shadow: 0 0 14px rgba(255, 150, 60, 0.5); }
+.x-cta { display: flex; flex-wrap: wrap; gap: 16px; }
+.x-cta .btn3d { text-decoration: none; }
+
+/* праворуч: неонова вивіска і гора подарунків */
+.x-hero-art { position: relative; min-height: 420px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 70px; }
+.x-sign { font-family: var(--script); font-size: clamp(54px, 7vw, 104px); line-height: 0.9; text-align: center; color: #ffe6b0; transform: rotate(-8deg); text-shadow: 0 0 6px #ffb05a, 0 0 18px #ff7a2a, 0 0 42px rgba(255, 90, 20, 0.7), 0 0 80px rgba(255, 90, 20, 0.35); animation: xNeon 5s ease-in-out infinite; }
+.x-sign em { font-style: normal; font-size: 1.3em; color: #fff3d6; }
+@keyframes xNeon { 0%, 100% { opacity: 1; } 47% { opacity: 1; } 48% { opacity: 0.55; } 49% { opacity: 1; } 51% { opacity: 0.7; } 52% { opacity: 1; } }
+.x-gifts { position: relative; flex: 0 0 auto; width: 210px; height: 190px; align-self: flex-end; margin-right: 8%; }
+.gift { position: absolute; bottom: 0; border-radius: 6px; box-shadow: inset 0 -10px 0 rgba(0, 0, 0, 0.18), 0 16px 26px rgba(0, 0, 0, 0.45); }
+.gift::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 16%; transform: translateX(-50%); background: var(--rib); }
+.gift::after { content: ""; position: absolute; left: -5%; right: -5%; top: -8%; height: 22%; border-radius: 5px; background: inherit; box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.2); }
+.gift b { position: absolute; z-index: 2; left: 50%; top: -24%; width: 50%; height: 26%; transform: translateX(-50%); }
+.gift b::before, .gift b::after { content: ""; position: absolute; bottom: 0; width: 54%; height: 100%; background: var(--rib); border-radius: 60% 60% 30% 30%; box-shadow: inset 0 -5px 0 rgba(0, 0, 0, 0.22), inset 0 3px 0 rgba(255, 255, 255, 0.35); }
+.gift b::before { left: -2%; transform: rotate(-28deg); transform-origin: bottom right; } .gift b::after { right: -2%; transform: rotate(28deg); transform-origin: bottom left; }
+.g1 { left: 0; width: 120px; height: 104px; background: linear-gradient(160deg, #f2584b, #b8261e); --rib: #ffd27a; }
+.g2 { left: 104px; width: 96px; height: 74px; background: linear-gradient(160deg, #3fbf74, #1f7a48); --rib: #f6fbff; }
+.g3 { left: 46px; bottom: 114px; width: 82px; height: 64px; background: linear-gradient(160deg, #4e8cff, #2a54b8); --rib: #ff6a5c; transform: rotate(6deg); }
+
+/* як це працюватиме */
+.x-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.x-step { position: relative; padding: 26px 22px 22px; border-radius: 20px; background: var(--glass); border: 1px solid var(--glass-line); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); min-width: 0; }
+.x-step i { position: absolute; top: -16px; left: 20px; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-style: normal; font-family: var(--pixel); font-weight: 900; color: #fff; background: linear-gradient(180deg, #f2584b, #b8261e); box-shadow: 0 4px 0 #7a1510, inset 0 0 0 2px rgba(255, 210, 122, 0.6); }
+.x-step h3 { margin: 6px 0 8px; font-family: var(--script); font-weight: 400; font-size: 30px; color: var(--gold); }
+.x-step p { margin: 0; color: #c6cfeb; font-size: 15px; }
+
+/* підсумок Rustober */
+.x-arch-stats { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; }
+.x-arch-stats .stat b { font-size: 18px; }
+.x-finals { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 18px; }
+.x-fin { display: grid; grid-template-rows: auto 1fr; border-radius: 18px; overflow: hidden; color: var(--plastic-ink); text-decoration: none; background: linear-gradient(160deg, #fff, var(--plastic) 50%, var(--plastic-2)); box-shadow: inset 0 4px 0 #d8392f, 0 12px 26px rgba(0, 0, 0, 0.45); transition: transform 0.15s; min-width: 0; }
+.x-fin:hover { transform: translateY(-4px) rotate(-0.5deg); }
+.x-fin .img { position: relative; aspect-ratio: 1; background: #0f1a38; }
+.x-fin .img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.x-fin .rk { position: absolute; top: 10px; left: 10px; font-family: var(--pixel); font-weight: 900; font-size: 13px; padding: 4px 8px; border-radius: 8px; background: rgba(11, 19, 48, 0.85); color: var(--gold); }
+.x-fin .hid { position: absolute; bottom: 10px; right: 10px; font-family: var(--pixel); font-weight: 800; font-size: 11px; padding: 4px 8px; border-radius: 8px; background: #d8392f; color: #fff; }
+.x-fin .body { padding: 10px 12px 12px; min-width: 0; }
+.x-fin .ttl { font-weight: 700; font-size: 14px; line-height: 1.25; overflow-wrap: anywhere; }
+.x-fin .who { display: flex; align-items: center; gap: 6px; margin-top: 6px; font-size: 12px; color: var(--plastic-muted); font-weight: 600; min-width: 0; }
+.x-fin .who img { width: 18px; height: 18px; border-radius: 50%; flex: 0 0 auto; }
+.x-fin .who span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 900px) {
+  .x-hero { grid-template-columns: 1fr; min-height: 0; padding-block: 24px 40px; }
+  .x-hero-art { min-height: 0; order: -1; gap: 40px; padding-top: 10px; }
+  .x-steps { grid-template-columns: 1fr; gap: 26px; }
+}
+@media (max-width: 520px) {
+  .x-tag { min-width: 62px; padding: 12px 6px 8px; } .x-tag b { font-size: 21px; }
+  .x-gifts { transform: scale(0.72); transform-origin: bottom right; height: 140px; }
+  .x-finals { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { .x-sign { animation: none; } }

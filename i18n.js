@@ -333,3 +333,29 @@ Object.assign(window.I18N.en, {
   'cs.note': 'Skins with {h} hidden: survivors need {l}. Not counted as GAME OVER and rechecked every hour.',
   'm.chase.near': 'Nearly out: {h} hidden, one short of the level', 'm.chase.gaining': 'Catching up: gained hidden collections after elimination, now {h}', 'm.chase.caught': 'Caught up: {h} hidden, same as survivors',
 });
+
+// ---- RUSTMAS тизер ----
+Object.assign(window.I18N.ua, {
+  'x.soon': 'СКОРО', 'x.t1': 'Новорічний', 'x.t2': 'відбір',
+  'x.lead': "Колекції новорічного конкурсу ще немає. Щойно вона з'явиться, тут запуститься відбір: хто зі скінів потрапляє в приховані колекції голосування і йде далі, а хто вибуває.",
+  'x.d': 'днів', 'x.h': 'годин', 'x.m': 'хвилин', 'x.s': 'секунд', 'x.toNY': 'до Нового року',
+  'x.how': 'Як це працює', 'x.last': 'Підсумок Halloween', 'x.howTitle': 'Як це працюватиме',
+  'x.s1t': 'Колекція', 'x.s1': "Щойно з'явиться новорічна колекція конкурсу, сканер почне перевіряти кожен скін цілодобово.",
+  'x.s2t': 'Хвилі', 'x.s2': 'Скіни, що потрапляють у приховані колекції голосування, проходять далі. Кожна нова хвиля відкриває новий рівень.',
+  'x.s3t': 'Фінал', 'x.s3': 'Хто дійде до останнього рівня, має найбільші шанси потрапити в гру. На Halloween саме так і сталося.',
+  'x.archTitle': 'Підсумок Rustober', 'x.archHint': 'Halloween 2026 · {n} фіналістів із {total}',
+  'x.stTotal': 'у конкурсі', 'x.stFinal': 'у фіналі', 'x.stLevels': 'рівнів', 'x.hidden': 'прих.',
+  'x.foot': 'Rustmas Selection · дані зі Steam Workshop',
+});
+Object.assign(window.I18N.en, {
+  'x.soon': 'SOON', 'x.t1': 'Christmas', 'x.t2': 'selection',
+  'x.lead': 'The Christmas contest collection is not out yet. As soon as it appears, the selection starts here: which skins land in hidden voting collections and move on, and which drop out.',
+  'x.d': 'days', 'x.h': 'hours', 'x.m': 'minutes', 'x.s': 'seconds', 'x.toNY': 'until New Year',
+  'x.how': 'How it works', 'x.last': 'Halloween results', 'x.howTitle': 'How it will work',
+  'x.s1t': 'Collection', 'x.s1': 'Once the Christmas contest collection appears, the scanner starts checking every skin around the clock.',
+  'x.s2t': 'Waves', 'x.s2': 'Skins that land in hidden voting collections move on. Every new wave unlocks a new level.',
+  'x.s3t': 'Final', 'x.s3': 'Whoever reaches the last level has the best shot at getting into the game. That is exactly how Halloween went.',
+  'x.archTitle': 'Rustober results', 'x.archHint': 'Halloween 2026 · {n} finalists out of {total}',
+  'x.stTotal': 'in the contest', 'x.stFinal': 'in the final', 'x.stLevels': 'levels', 'x.hidden': 'hidden',
+  'x.foot': 'Rustmas Selection · data from the Steam Workshop',
+});
