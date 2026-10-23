@@ -413,3 +413,9 @@ Object.assign(window.I18N.en, {
 
 Object.assign(window.I18N.ua, { 'x.plaque': 'скоро новорічний відбір' });
 Object.assign(window.I18N.en, { 'x.plaque': 'Christmas selection soon' });
+
+Object.assign(window.I18N.ua, { 'a.stat.fp': 'скінів Facepunch окремо' });
+Object.assign(window.I18N.en, { 'a.stat.fp': 'Facepunch skins (separate)' });
+
+Object.assign(window.I18N.ua, { 'm.lead': 'Куди рухаються ціни на скіни Rust: хто росте і падає, що найбільше купують і як виглядає ринок загалом. Скіни майстерні й Facepunch окремо.' });
+Object.assign(window.I18N.en, { 'm.lead': 'Where Rust skin prices are heading: what rises and falls, what sells the most and how the market looks overall. Workshop and Facepunch skins separately.' });
